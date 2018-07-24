@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Tesi.dir/main.cpp.o"
+  "CMakeFiles/Tesi.dir/data_structures.cpp.o"
   "Tesi.pdb"
   "Tesi.exe"
   "libTesi.dll.a"

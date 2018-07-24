@@ -3,4 +3,4 @@ project(Tesi)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Tesi main.cpp)
+add_executable(Tesi main.cpp data_structures.cpp)
