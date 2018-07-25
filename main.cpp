@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
+#include <unordered_map>
 #include "symbols.h"
 #include "util.h"
 
@@ -22,19 +23,19 @@ int lc; //location counter
 int main() {
     lc=0;
     int ntoken, vtoken;
+
     //Read new token
     ntoken = yylex();
     while(ntoken){
-        printf("%d %s\n", ntoken, yytext);
+       // printf("%d %s\n", ntoken, yytext);
         switch(ntoken){
-            case I_OP_1: {
-
-            } //Operation expecting 1 Integer parameter
-            case I_OP_2:{
-
-            }//Operation expecting 2 Integer parameters
             case LABEL: {
-                printf("Is Label! %s\n", yytext);
+                if (symTable.find(yytext)!=symTable.end())
+                    printf("Label already in symtab...\n");
+                else{
+                    symTable[yytext]=lc;
+                    printf("Inserted label %s with lc %d\n", yytext, symTable[yytext]);
+                }
                 break;
             }
             case START: {
@@ -43,14 +44,18 @@ int main() {
                 printf("Updated lc value to %d\n", lc);
                 break;
             }
+            case I_END: {
+                lc++;
+                break;
+            }
             case END:{
                 return 0;
             }
-           /* case OPERATION: {
+            case OPERATION: {
                 if(searchOP(yytext)) break;
                 else printf("Error! Opcode not in table\n");
                 break;
-            }*/
+            }
 
         }
         ntoken = yylex();
