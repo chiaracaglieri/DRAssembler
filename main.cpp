@@ -8,8 +8,7 @@
 using namespace std;
 
 extern "C" {
-    int yylex();
-    char* yytext;
+    int yyparse();
 }
 
 bool searchOP(char* opname){
@@ -20,7 +19,7 @@ bool searchOP(char* opname){
 }
 int lc; //location counter
 
-int main() {
+/*int main() {
     lc=0;
     int ntoken, vtoken;
 
@@ -61,4 +60,4 @@ int main() {
         ntoken = yylex();
     }
     return 0;
-}
+}*/

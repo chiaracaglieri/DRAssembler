@@ -5,14 +5,29 @@
 %option noinput yylineno
 
 %%
-"loc"|"memloc"|"regval"|"clear"|"incr"|"add"|"sub"|"mul"|"load"|"store"|"memlocs"|"if<"|"if>"|"if=" return OPERATION;
+"loc" return LOC;
+"memloc" return MEMLOC;
+"memloc" return MEMLOCS;
+"regval" return REGVAL;
+"clear" return CLEAR;
+"incr" return INCR;
+"add" return ADD;
+"sub" return SUB;
+"mul" return MUL;
+"load" return LOAD;
+"store" return STORE;
+"if=" return EQ;
+"if>" return GT;
+"if<" return LT;
 "start" return START;
 "end"   return END;
-[R][0-9]* return REGISTER;
-[a-zA-Z][_a-zA-Z0-9]*   return LABEL;
+[R][0-9]* return REG;
+[a-zA-Z][_a-zA-Z0-9]*   return ID;
 [0-9]*  return VALUE;
 [\n] return I_END;
-[$^, \t:]+ ;
+[:] return SEMICOLON;
+[,] return COMMA;
+[$^ \t]+ ;
 
 %%
 

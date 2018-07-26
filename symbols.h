@@ -1,7 +1,23 @@
 #define OPERATION 1
 #define START 2
 #define END 3
-#define LABEL 4
+#define ID 4
 #define VALUE 5
-#define REGISTER 6
+#define REG 6
 #define I_END 7 //Fine istruzione
+#define SEMICOLON 8
+#define COMMA 9
+#define LOC 10
+#define MEMLOC 11
+#define MEMLOCS 12
+#define REGVAL 13
+#define GT 14
+#define LT 15
+#define EQ 16
+#define STORE 17
+#define LOAD 18
+#define CLEAR 19
+#define INCR 20
+#define ADD 21
+#define SUB 22
+#define MUL 23
