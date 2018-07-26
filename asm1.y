@@ -1,18 +1,26 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "asm1.tab.h"
 
-int yylex();
-void yyerror();
+/* Flex functions */
+extern int yylex(void);
+extern void yyterminate();
+void yyerror(const char *s);
+
+int yydebug=1;
+
 %}
 
+%locations
 %token VALUE SEMICOLON COMMA REG
 %token ID
 %token LOAD STORE
 %token ADD SUB MUL
 %token EQ GT LT
-%token CLEAR INCR END START
+%token CLEAR INCR
 %token MEMLOC MEMLOCS LOC REGVAL
+%token END START
 
 
 %%
@@ -68,13 +76,9 @@ exp
     ;
 
 %%
-void yyerror()
+
+/* Display error messages */
+void yyerror(const char *s)
 {
-  printf("\nError");
-}
-
-int main(){
-
-    yyparse();
-    return 0;
+	printf("ERROR: %s\n", s);
 }

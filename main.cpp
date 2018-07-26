@@ -7,8 +7,12 @@
 
 using namespace std;
 
-extern "C" {
-    int yyparse();
+extern "C"
+{
+    int yyparse(void);
+    int yylex(void);
+
+
 }
 
 bool searchOP(char* opname){
@@ -19,14 +23,17 @@ bool searchOP(char* opname){
 }
 int lc; //location counter
 
-/*int main() {
+int main() {
     lc=0;
-    int ntoken, vtoken;
+    printf("in main\n");
+    yyparse();
+
+    /*int ntoken, vtoken;
 
     //Read new token
     ntoken = yylex();
     while(ntoken){
-       // printf("%d %s\n", ntoken, yytext);
+        // printf("%d %s\n", ntoken, yytext);
         switch(ntoken){
             case LABEL: {
                 if (symTable.find(yytext)!=symTable.end())
@@ -58,6 +65,6 @@ int lc; //location counter
 
         }
         ntoken = yylex();
-    }
+    }*/
     return 0;
-}*/
+}

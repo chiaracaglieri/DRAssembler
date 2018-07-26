@@ -1,13 +1,14 @@
 %{
-#include "symbols.h"
+#include "asm1.tab.h"
 %}
 
-%option noinput yylineno
+%option noyywrap
+%option noinput nounput
 
 %%
 "loc" return LOC;
 "memloc" return MEMLOC;
-"memloc" return MEMLOCS;
+"memlocs" return MEMLOCS;
 "regval" return REGVAL;
 "clear" return CLEAR;
 "incr" return INCR;
@@ -24,13 +25,8 @@
 [R][0-9]* return REG;
 [a-zA-Z][_a-zA-Z0-9]*   return ID;
 [0-9]*  return VALUE;
-[\n] return I_END;
 [:] return SEMICOLON;
 [,] return COMMA;
-[$^ \t]+ ;
+[$^ \t\n]+ ;
 
 %%
-
-int yywrap(void){
-    return 1;
-}
