@@ -3,70 +3,72 @@ Grammatica
     0 $accept: program $end
 
     1 program: instruction
-    2        | pseudo_instruction
-    3        | label
+    2        | instruction instructions
 
-    4 instruction: MEMLOC VALUE VALUE
-    5            | MEMLOCS VALUE seq
-    6            | LOC VALUE
-    7            | REGVAL VALUE VALUE
-    8            | ar_instruction exp COMMA exp COMMA REG
-    9            | rego_instruction REG
-   10            | ls_instruction REG COMMA REG COMMA REG
-   11            | cond_instruction exp COMMA exp COMMA label
+    3 instructions: instruction
+    4             | instruction instructions
 
-   12 ls_instruction: LOAD
-   13               | STORE
+    5 instruction: MEMLOC VALUE VALUE
+    6            | MEMLOCS VALUE seq
+    7            | LOC VALUE
+    8            | REGVAL VALUE VALUE
+    9            | END
+   10            | START VALUE
+   11            | ar_instruction exp COMMA exp COMMA REG
+   12            | rego_instruction REG
+   13            | ls_instruction REG COMMA REG COMMA REG
+   14            | cond_instruction exp COMMA exp COMMA label
+   15            | label instruction
 
-   14 ar_instruction: ADD
-   15               | SUB
-   16               | MUL
+   16 ls_instruction: LOAD
+   17               | STORE
 
-   17 cond_instruction: EQ
-   18                 | LT
-   19                 | GT
+   18 ar_instruction: ADD
+   19               | SUB
+   20               | MUL
 
-   20 rego_instruction: CLEAR
-   21                 | INCR
+   21 cond_instruction: EQ
+   22                 | LT
+   23                 | GT
 
-   22 seq: VALUE
-   23    | VALUE seq
+   24 rego_instruction: CLEAR
+   25                 | INCR
 
-   24 pseudo_instruction: END
-   25                   | START VALUE
+   26 seq: VALUE
+   27    | VALUE seq
 
-   26 label: ID SEMICOLON
-   27      | ID
+   28 label: ID SEMICOLON
+   29      | ID
 
-   28 exp: REG
-   29    | VALUE
+   30 exp: REG
+   31    | VALUE
 
 
 Simboli terminali e regole in cui appaiono
 
 $end (0) 0
 error (256)
-VALUE (258) 4 5 6 7 22 23 25 29
-SEMICOLON (259) 26
-COMMA (260) 8 10 11
-REG (261) 8 9 10 28
-ID (262) 26 27
-LOAD (263) 12
-STORE (264) 13
-ADD (265) 14
-SUB (266) 15
-MUL (267) 16
-EQ (268) 17
-GT (269) 19
-LT (270) 18
-CLEAR (271) 20
-INCR (272) 21
-MEMLOC (273) 4
-MEMLOCS (274) 5
-LOC (275) 6
-REGVAL (276) 7
-END (277) 24
-START (278) 25
+VALUE (258) 5 6 7 8 10 26 27 31
+SEMICOLON (259) 28
+COMMA (260) 11 13 14
+REG (261) 11 12 13 30
+ID (262) 28 29
+LOAD (263) 16
+STORE (264) 17
+ADD (265) 18
+SUB (266) 19
+MUL (267) 20
+EQ (268) 21
+GT (269) 23
+LT (270) 22
+CLEAR (271) 24
+INCR (272) 25
+MEMLOC (273) 5
+MEMLOCS (274) 6
+LOC (275) 7
+REGVAL (276) 8
+END (277) 9
+START (278) 10
 
 
 Simboli nonterminali e regole in cui appaiono
@@ -74,25 +76,26 @@ Simboli nonterminali e regole in cui appaiono
 $accept (24)
     nel primo membro: 0
 program (25)
-    nel primo membro: 1 2 3, nel secondo membro: 0
-instruction (26)
-    nel primo membro: 4 5 6 7 8 9 10 11, nel secondo membro: 1
-ls_instruction (27)
-    nel primo membro: 12 13, nel secondo membro: 10
-ar_instruction (28)
-    nel primo membro: 14 15 16, nel secondo membro: 8
-cond_instruction (29)
-    nel primo membro: 17 18 19, nel secondo membro: 11
-rego_instruction (30)
-    nel primo membro: 20 21, nel secondo membro: 9
-seq (31)
-    nel primo membro: 22 23, nel secondo membro: 5 23
-pseudo_instruction (32)
-    nel primo membro: 24 25, nel secondo membro: 2
+    nel primo membro: 1 2, nel secondo membro: 0
+instructions (26)
+    nel primo membro: 3 4, nel secondo membro: 2 4
+instruction (27)
+    nel primo membro: 5 6 7 8 9 10 11 12 13 14 15, nel secondo membro:
+    1 2 3 4 15
+ls_instruction (28)
+    nel primo membro: 16 17, nel secondo membro: 13
+ar_instruction (29)
+    nel primo membro: 18 19 20, nel secondo membro: 11
+cond_instruction (30)
+    nel primo membro: 21 22 23, nel secondo membro: 14
+rego_instruction (31)
+    nel primo membro: 24 25, nel secondo membro: 12
+seq (32)
+    nel primo membro: 26 27, nel secondo membro: 6 27
 label (33)
-    nel primo membro: 26 27, nel secondo membro: 3 11
+    nel primo membro: 28 29, nel secondo membro: 14 15
 exp (34)
-    nel primo membro: 28 29, nel secondo membro: 8 11
+    nel primo membro: 30 31, nel secondo membro: 11 14
 
 
 State 0
@@ -117,420 +120,517 @@ State 0
     END      shift e prosecuzione allo stato 16
     START    shift e prosecuzione allo stato 17
 
-    program             prosecuzione allo stato 18
-    instruction         prosecuzione allo stato 19
-    ls_instruction      prosecuzione allo stato 20
-    ar_instruction      prosecuzione allo stato 21
-    cond_instruction    prosecuzione allo stato 22
-    rego_instruction    prosecuzione allo stato 23
-    pseudo_instruction  prosecuzione allo stato 24
-    label               prosecuzione allo stato 25
+    program           prosecuzione allo stato 18
+    instruction       prosecuzione allo stato 19
+    ls_instruction    prosecuzione allo stato 20
+    ar_instruction    prosecuzione allo stato 21
+    cond_instruction  prosecuzione allo stato 22
+    rego_instruction  prosecuzione allo stato 23
+    label             prosecuzione allo stato 24
 
 
 State 1
 
-   26 label: ID . SEMICOLON
-   27      | ID .
+   28 label: ID . SEMICOLON
+   29      | ID .
 
-    SEMICOLON  shift e prosecuzione allo stato 26
+    SEMICOLON  shift e prosecuzione allo stato 25
 
-    $default  riduzione con la regola 27 (label)
+    $default  riduzione con la regola 29 (label)
 
 
 State 2
 
-   12 ls_instruction: LOAD .
+   16 ls_instruction: LOAD .
 
-    $default  riduzione con la regola 12 (ls_instruction)
+    $default  riduzione con la regola 16 (ls_instruction)
 
 
 State 3
 
-   13 ls_instruction: STORE .
+   17 ls_instruction: STORE .
 
-    $default  riduzione con la regola 13 (ls_instruction)
+    $default  riduzione con la regola 17 (ls_instruction)
 
 
 State 4
 
-   14 ar_instruction: ADD .
+   18 ar_instruction: ADD .
 
-    $default  riduzione con la regola 14 (ar_instruction)
+    $default  riduzione con la regola 18 (ar_instruction)
 
 
 State 5
 
-   15 ar_instruction: SUB .
+   19 ar_instruction: SUB .
 
-    $default  riduzione con la regola 15 (ar_instruction)
+    $default  riduzione con la regola 19 (ar_instruction)
 
 
 State 6
 
-   16 ar_instruction: MUL .
+   20 ar_instruction: MUL .
 
-    $default  riduzione con la regola 16 (ar_instruction)
+    $default  riduzione con la regola 20 (ar_instruction)
 
 
 State 7
 
-   17 cond_instruction: EQ .
+   21 cond_instruction: EQ .
 
-    $default  riduzione con la regola 17 (cond_instruction)
+    $default  riduzione con la regola 21 (cond_instruction)
 
 
 State 8
 
-   19 cond_instruction: GT .
+   23 cond_instruction: GT .
 
-    $default  riduzione con la regola 19 (cond_instruction)
+    $default  riduzione con la regola 23 (cond_instruction)
 
 
 State 9
 
-   18 cond_instruction: LT .
+   22 cond_instruction: LT .
 
-    $default  riduzione con la regola 18 (cond_instruction)
+    $default  riduzione con la regola 22 (cond_instruction)
 
 
 State 10
 
-   20 rego_instruction: CLEAR .
+   24 rego_instruction: CLEAR .
 
-    $default  riduzione con la regola 20 (rego_instruction)
+    $default  riduzione con la regola 24 (rego_instruction)
 
 
 State 11
 
-   21 rego_instruction: INCR .
+   25 rego_instruction: INCR .
 
-    $default  riduzione con la regola 21 (rego_instruction)
+    $default  riduzione con la regola 25 (rego_instruction)
 
 
 State 12
 
-    4 instruction: MEMLOC . VALUE VALUE
+    5 instruction: MEMLOC . VALUE VALUE
 
-    VALUE  shift e prosecuzione allo stato 27
+    VALUE  shift e prosecuzione allo stato 26
 
 
 State 13
 
-    5 instruction: MEMLOCS . VALUE seq
+    6 instruction: MEMLOCS . VALUE seq
 
-    VALUE  shift e prosecuzione allo stato 28
+    VALUE  shift e prosecuzione allo stato 27
 
 
 State 14
 
-    6 instruction: LOC . VALUE
+    7 instruction: LOC . VALUE
 
-    VALUE  shift e prosecuzione allo stato 29
+    VALUE  shift e prosecuzione allo stato 28
 
 
 State 15
 
-    7 instruction: REGVAL . VALUE VALUE
+    8 instruction: REGVAL . VALUE VALUE
 
-    VALUE  shift e prosecuzione allo stato 30
+    VALUE  shift e prosecuzione allo stato 29
 
 
 State 16
 
-   24 pseudo_instruction: END .
+    9 instruction: END .
 
-    $default  riduzione con la regola 24 (pseudo_instruction)
+    $default  riduzione con la regola 9 (instruction)
 
 
 State 17
 
-   25 pseudo_instruction: START . VALUE
+   10 instruction: START . VALUE
 
-    VALUE  shift e prosecuzione allo stato 31
+    VALUE  shift e prosecuzione allo stato 30
 
 
 State 18
 
     0 $accept: program . $end
 
-    $end  shift e prosecuzione allo stato 32
+    $end  shift e prosecuzione allo stato 31
 
 
 State 19
 
     1 program: instruction .
+    2        | instruction . instructions
+
+    ID       shift e prosecuzione allo stato 1
+    LOAD     shift e prosecuzione allo stato 2
+    STORE    shift e prosecuzione allo stato 3
+    ADD      shift e prosecuzione allo stato 4
+    SUB      shift e prosecuzione allo stato 5
+    MUL      shift e prosecuzione allo stato 6
+    EQ       shift e prosecuzione allo stato 7
+    GT       shift e prosecuzione allo stato 8
+    LT       shift e prosecuzione allo stato 9
+    CLEAR    shift e prosecuzione allo stato 10
+    INCR     shift e prosecuzione allo stato 11
+    MEMLOC   shift e prosecuzione allo stato 12
+    MEMLOCS  shift e prosecuzione allo stato 13
+    LOC      shift e prosecuzione allo stato 14
+    REGVAL   shift e prosecuzione allo stato 15
+    END      shift e prosecuzione allo stato 16
+    START    shift e prosecuzione allo stato 17
 
     $default  riduzione con la regola 1 (program)
+
+    instructions      prosecuzione allo stato 32
+    instruction       prosecuzione allo stato 33
+    ls_instruction    prosecuzione allo stato 20
+    ar_instruction    prosecuzione allo stato 21
+    cond_instruction  prosecuzione allo stato 22
+    rego_instruction  prosecuzione allo stato 23
+    label             prosecuzione allo stato 24
 
 
 State 20
 
-   10 instruction: ls_instruction . REG COMMA REG COMMA REG
+   13 instruction: ls_instruction . REG COMMA REG COMMA REG
 
-    REG  shift e prosecuzione allo stato 33
+    REG  shift e prosecuzione allo stato 34
 
 
 State 21
 
-    8 instruction: ar_instruction . exp COMMA exp COMMA REG
+   11 instruction: ar_instruction . exp COMMA exp COMMA REG
 
-    VALUE  shift e prosecuzione allo stato 34
-    REG    shift e prosecuzione allo stato 35
-
-    exp  prosecuzione allo stato 36
-
-
-State 22
-
-   11 instruction: cond_instruction . exp COMMA exp COMMA label
-
-    VALUE  shift e prosecuzione allo stato 34
-    REG    shift e prosecuzione allo stato 35
+    VALUE  shift e prosecuzione allo stato 35
+    REG    shift e prosecuzione allo stato 36
 
     exp  prosecuzione allo stato 37
 
 
+State 22
+
+   14 instruction: cond_instruction . exp COMMA exp COMMA label
+
+    VALUE  shift e prosecuzione allo stato 35
+    REG    shift e prosecuzione allo stato 36
+
+    exp  prosecuzione allo stato 38
+
+
 State 23
 
-    9 instruction: rego_instruction . REG
+   12 instruction: rego_instruction . REG
 
-    REG  shift e prosecuzione allo stato 38
+    REG  shift e prosecuzione allo stato 39
 
 
 State 24
 
-    2 program: pseudo_instruction .
+   15 instruction: label . instruction
 
-    $default  riduzione con la regola 2 (program)
+    ID       shift e prosecuzione allo stato 1
+    LOAD     shift e prosecuzione allo stato 2
+    STORE    shift e prosecuzione allo stato 3
+    ADD      shift e prosecuzione allo stato 4
+    SUB      shift e prosecuzione allo stato 5
+    MUL      shift e prosecuzione allo stato 6
+    EQ       shift e prosecuzione allo stato 7
+    GT       shift e prosecuzione allo stato 8
+    LT       shift e prosecuzione allo stato 9
+    CLEAR    shift e prosecuzione allo stato 10
+    INCR     shift e prosecuzione allo stato 11
+    MEMLOC   shift e prosecuzione allo stato 12
+    MEMLOCS  shift e prosecuzione allo stato 13
+    LOC      shift e prosecuzione allo stato 14
+    REGVAL   shift e prosecuzione allo stato 15
+    END      shift e prosecuzione allo stato 16
+    START    shift e prosecuzione allo stato 17
+
+    instruction       prosecuzione allo stato 40
+    ls_instruction    prosecuzione allo stato 20
+    ar_instruction    prosecuzione allo stato 21
+    cond_instruction  prosecuzione allo stato 22
+    rego_instruction  prosecuzione allo stato 23
+    label             prosecuzione allo stato 24
 
 
 State 25
 
-    3 program: label .
+   28 label: ID SEMICOLON .
 
-    $default  riduzione con la regola 3 (program)
+    $default  riduzione con la regola 28 (label)
 
 
 State 26
 
-   26 label: ID SEMICOLON .
+    5 instruction: MEMLOC VALUE . VALUE
 
-    $default  riduzione con la regola 26 (label)
+    VALUE  shift e prosecuzione allo stato 41
 
 
 State 27
 
-    4 instruction: MEMLOC VALUE . VALUE
+    6 instruction: MEMLOCS VALUE . seq
 
-    VALUE  shift e prosecuzione allo stato 39
+    VALUE  shift e prosecuzione allo stato 42
+
+    seq  prosecuzione allo stato 43
 
 
 State 28
 
-    5 instruction: MEMLOCS VALUE . seq
+    7 instruction: LOC VALUE .
 
-    VALUE  shift e prosecuzione allo stato 40
-
-    seq  prosecuzione allo stato 41
+    $default  riduzione con la regola 7 (instruction)
 
 
 State 29
 
-    6 instruction: LOC VALUE .
+    8 instruction: REGVAL VALUE . VALUE
 
-    $default  riduzione con la regola 6 (instruction)
+    VALUE  shift e prosecuzione allo stato 44
 
 
 State 30
 
-    7 instruction: REGVAL VALUE . VALUE
+   10 instruction: START VALUE .
 
-    VALUE  shift e prosecuzione allo stato 42
+    $default  riduzione con la regola 10 (instruction)
 
 
 State 31
-
-   25 pseudo_instruction: START VALUE .
-
-    $default  riduzione con la regola 25 (pseudo_instruction)
-
-
-State 32
 
     0 $accept: program $end .
 
     $default  accetta
 
 
+State 32
+
+    2 program: instruction instructions .
+
+    $default  riduzione con la regola 2 (program)
+
+
 State 33
 
-   10 instruction: ls_instruction REG . COMMA REG COMMA REG
+    3 instructions: instruction .
+    4             | instruction . instructions
 
-    COMMA  shift e prosecuzione allo stato 43
+    ID       shift e prosecuzione allo stato 1
+    LOAD     shift e prosecuzione allo stato 2
+    STORE    shift e prosecuzione allo stato 3
+    ADD      shift e prosecuzione allo stato 4
+    SUB      shift e prosecuzione allo stato 5
+    MUL      shift e prosecuzione allo stato 6
+    EQ       shift e prosecuzione allo stato 7
+    GT       shift e prosecuzione allo stato 8
+    LT       shift e prosecuzione allo stato 9
+    CLEAR    shift e prosecuzione allo stato 10
+    INCR     shift e prosecuzione allo stato 11
+    MEMLOC   shift e prosecuzione allo stato 12
+    MEMLOCS  shift e prosecuzione allo stato 13
+    LOC      shift e prosecuzione allo stato 14
+    REGVAL   shift e prosecuzione allo stato 15
+    END      shift e prosecuzione allo stato 16
+    START    shift e prosecuzione allo stato 17
+
+    $default  riduzione con la regola 3 (instructions)
+
+    instructions      prosecuzione allo stato 45
+    instruction       prosecuzione allo stato 33
+    ls_instruction    prosecuzione allo stato 20
+    ar_instruction    prosecuzione allo stato 21
+    cond_instruction  prosecuzione allo stato 22
+    rego_instruction  prosecuzione allo stato 23
+    label             prosecuzione allo stato 24
 
 
 State 34
 
-   29 exp: VALUE .
+   13 instruction: ls_instruction REG . COMMA REG COMMA REG
 
-    $default  riduzione con la regola 29 (exp)
+    COMMA  shift e prosecuzione allo stato 46
 
 
 State 35
 
-   28 exp: REG .
+   31 exp: VALUE .
 
-    $default  riduzione con la regola 28 (exp)
+    $default  riduzione con la regola 31 (exp)
 
 
 State 36
 
-    8 instruction: ar_instruction exp . COMMA exp COMMA REG
+   30 exp: REG .
 
-    COMMA  shift e prosecuzione allo stato 44
+    $default  riduzione con la regola 30 (exp)
 
 
 State 37
 
-   11 instruction: cond_instruction exp . COMMA exp COMMA label
+   11 instruction: ar_instruction exp . COMMA exp COMMA REG
 
-    COMMA  shift e prosecuzione allo stato 45
+    COMMA  shift e prosecuzione allo stato 47
 
 
 State 38
 
-    9 instruction: rego_instruction REG .
+   14 instruction: cond_instruction exp . COMMA exp COMMA label
 
-    $default  riduzione con la regola 9 (instruction)
+    COMMA  shift e prosecuzione allo stato 48
 
 
 State 39
 
-    4 instruction: MEMLOC VALUE VALUE .
+   12 instruction: rego_instruction REG .
 
-    $default  riduzione con la regola 4 (instruction)
+    $default  riduzione con la regola 12 (instruction)
 
 
 State 40
 
-   22 seq: VALUE .
-   23    | VALUE . seq
+   15 instruction: label instruction .
 
-    VALUE  shift e prosecuzione allo stato 40
-
-    $default  riduzione con la regola 22 (seq)
-
-    seq  prosecuzione allo stato 46
+    $default  riduzione con la regola 15 (instruction)
 
 
 State 41
 
-    5 instruction: MEMLOCS VALUE seq .
+    5 instruction: MEMLOC VALUE VALUE .
 
     $default  riduzione con la regola 5 (instruction)
 
 
 State 42
 
-    7 instruction: REGVAL VALUE VALUE .
+   26 seq: VALUE .
+   27    | VALUE . seq
 
-    $default  riduzione con la regola 7 (instruction)
+    VALUE  shift e prosecuzione allo stato 42
+
+    $default  riduzione con la regola 26 (seq)
+
+    seq  prosecuzione allo stato 49
 
 
 State 43
 
-   10 instruction: ls_instruction REG COMMA . REG COMMA REG
+    6 instruction: MEMLOCS VALUE seq .
 
-    REG  shift e prosecuzione allo stato 47
+    $default  riduzione con la regola 6 (instruction)
 
 
 State 44
 
-    8 instruction: ar_instruction exp COMMA . exp COMMA REG
-
-    VALUE  shift e prosecuzione allo stato 34
-    REG    shift e prosecuzione allo stato 35
-
-    exp  prosecuzione allo stato 48
-
-
-State 45
-
-   11 instruction: cond_instruction exp COMMA . exp COMMA label
-
-    VALUE  shift e prosecuzione allo stato 34
-    REG    shift e prosecuzione allo stato 35
-
-    exp  prosecuzione allo stato 49
-
-
-State 46
-
-   23 seq: VALUE seq .
-
-    $default  riduzione con la regola 23 (seq)
-
-
-State 47
-
-   10 instruction: ls_instruction REG COMMA REG . COMMA REG
-
-    COMMA  shift e prosecuzione allo stato 50
-
-
-State 48
-
-    8 instruction: ar_instruction exp COMMA exp . COMMA REG
-
-    COMMA  shift e prosecuzione allo stato 51
-
-
-State 49
-
-   11 instruction: cond_instruction exp COMMA exp . COMMA label
-
-    COMMA  shift e prosecuzione allo stato 52
-
-
-State 50
-
-   10 instruction: ls_instruction REG COMMA REG COMMA . REG
-
-    REG  shift e prosecuzione allo stato 53
-
-
-State 51
-
-    8 instruction: ar_instruction exp COMMA exp COMMA . REG
-
-    REG  shift e prosecuzione allo stato 54
-
-
-State 52
-
-   11 instruction: cond_instruction exp COMMA exp COMMA . label
-
-    ID  shift e prosecuzione allo stato 1
-
-    label  prosecuzione allo stato 55
-
-
-State 53
-
-   10 instruction: ls_instruction REG COMMA REG COMMA REG .
-
-    $default  riduzione con la regola 10 (instruction)
-
-
-State 54
-
-    8 instruction: ar_instruction exp COMMA exp COMMA REG .
+    8 instruction: REGVAL VALUE VALUE .
 
     $default  riduzione con la regola 8 (instruction)
 
 
+State 45
+
+    4 instructions: instruction instructions .
+
+    $default  riduzione con la regola 4 (instructions)
+
+
+State 46
+
+   13 instruction: ls_instruction REG COMMA . REG COMMA REG
+
+    REG  shift e prosecuzione allo stato 50
+
+
+State 47
+
+   11 instruction: ar_instruction exp COMMA . exp COMMA REG
+
+    VALUE  shift e prosecuzione allo stato 35
+    REG    shift e prosecuzione allo stato 36
+
+    exp  prosecuzione allo stato 51
+
+
+State 48
+
+   14 instruction: cond_instruction exp COMMA . exp COMMA label
+
+    VALUE  shift e prosecuzione allo stato 35
+    REG    shift e prosecuzione allo stato 36
+
+    exp  prosecuzione allo stato 52
+
+
+State 49
+
+   27 seq: VALUE seq .
+
+    $default  riduzione con la regola 27 (seq)
+
+
+State 50
+
+   13 instruction: ls_instruction REG COMMA REG . COMMA REG
+
+    COMMA  shift e prosecuzione allo stato 53
+
+
+State 51
+
+   11 instruction: ar_instruction exp COMMA exp . COMMA REG
+
+    COMMA  shift e prosecuzione allo stato 54
+
+
+State 52
+
+   14 instruction: cond_instruction exp COMMA exp . COMMA label
+
+    COMMA  shift e prosecuzione allo stato 55
+
+
+State 53
+
+   13 instruction: ls_instruction REG COMMA REG COMMA . REG
+
+    REG  shift e prosecuzione allo stato 56
+
+
+State 54
+
+   11 instruction: ar_instruction exp COMMA exp COMMA . REG
+
+    REG  shift e prosecuzione allo stato 57
+
+
 State 55
 
-   11 instruction: cond_instruction exp COMMA exp COMMA label .
+   14 instruction: cond_instruction exp COMMA exp COMMA . label
+
+    ID  shift e prosecuzione allo stato 1
+
+    label  prosecuzione allo stato 58
+
+
+State 56
+
+   13 instruction: ls_instruction REG COMMA REG COMMA REG .
+
+    $default  riduzione con la regola 13 (instruction)
+
+
+State 57
+
+   11 instruction: ar_instruction exp COMMA exp COMMA REG .
 
     $default  riduzione con la regola 11 (instruction)
+
+
+State 58
+
+   14 instruction: cond_instruction exp COMMA exp COMMA label .
+
+    $default  riduzione con la regola 14 (instruction)

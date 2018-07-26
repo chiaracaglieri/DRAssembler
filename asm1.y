@@ -12,7 +12,7 @@ int yydebug=1;
 
 %}
 
-%locations
+
 %token VALUE SEMICOLON COMMA REG
 %token ID
 %token LOAD STORE
@@ -21,24 +21,30 @@ int yydebug=1;
 %token CLEAR INCR
 %token MEMLOC MEMLOCS LOC REGVAL
 %token END START
-
+%start program
 
 %%
 
 program
     :instruction
-    |pseudo_instruction
-    |label
+    |instruction instructions
+    ;
+instructions
+    :instruction
+    |instruction instructions
     ;
 instruction
     :MEMLOC VALUE VALUE
     |MEMLOCS VALUE seq
     |LOC VALUE
     |REGVAL VALUE VALUE
+    |END
+    |START VALUE
     |ar_instruction exp COMMA exp COMMA REG
     |rego_instruction REG
     |ls_instruction REG COMMA REG COMMA REG
     |cond_instruction exp COMMA exp COMMA label
+    |label instruction
     ;
 ls_instruction
     :LOAD
@@ -62,10 +68,7 @@ seq
     :VALUE
     |VALUE seq
     ;
-pseudo_instruction
-    :END
-    |START VALUE
-    ;
+
 label
     :ID SEMICOLON
     |ID
