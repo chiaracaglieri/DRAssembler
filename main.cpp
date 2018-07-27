@@ -2,18 +2,12 @@
 #include <cstdio>
 #include <string>
 #include <unordered_map>
-#include "symbols.h"
+
 #include "util.h"
 
 using namespace std;
 
-extern "C"
-{
-    int yyparse(void);
-    int yylex(void);
-
-
-}
+int yyparse(void);
 
 bool searchOP(char* opname){
     for(int i=0; i< optable.size(); i++){
@@ -21,11 +15,14 @@ bool searchOP(char* opname){
     }
     return false;
 }
-int lc; //location counter
+
+void checkSymbol(char* sym){
+
+}
 
 int main() {
-    lc=0;
     printf("in main\n");
+
     yyparse();
 
     /*int ntoken, vtoken;

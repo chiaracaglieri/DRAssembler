@@ -9,3 +9,4 @@ struct opcode{
 extern std::vector<struct opcode> optable;
 
 extern std::unordered_map<std::string, int> symTable;
+

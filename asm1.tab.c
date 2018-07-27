@@ -64,19 +64,18 @@
 /* Copy the first part of user declarations.  */
 #line 1 "asm1.y" /* yacc.c:339  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "asm1.tab.h"
+#include <cstdio>
+#include <iostream>
+using namespace std;
 
-/* Flex functions */
-extern int yylex(void);
-extern void yyterminate();
+
+extern int yylex();
+extern int yyparse();
+
 void yyerror(const char *s);
 
-int yydebug=1;
 
-
-#line 80 "asm1.tab.c" /* yacc.c:339  */
+#line 79 "asm1.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -151,7 +150,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 155 "asm1.tab.c" /* yacc.c:358  */
+#line 154 "asm1.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -450,10 +449,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    29,    29,    30,    33,    34,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    50,    51,    54,
-      55,    56,    59,    60,    61,    64,    65,    68,    69,    73,
-      74,    77,    78
+       0,    28,    28,    29,    32,    33,    36,    37,    38,    39,
+      40,    41,    42,    43,    44,    45,    46,    49,    50,    53,
+      54,    55,    58,    59,    60,    63,    64,    67,    68,    72,
+      73,    76,    77
 };
 #endif
 
@@ -1256,7 +1255,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1260 "asm1.tab.c" /* yacc.c:1646  */
+#line 1259 "asm1.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1484,11 +1483,11 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 81 "asm1.y" /* yacc.c:1906  */
+#line 80 "asm1.y" /* yacc.c:1906  */
 
 
-/* Display error messages */
-void yyerror(const char *s)
-{
-	printf("ERROR: %s\n", s);
+void yyerror(const char *s) {
+	cout << "EEK, parse error!  Message: " << s << endl;
+	// might as well halt now:
+	exit(-1);
 }

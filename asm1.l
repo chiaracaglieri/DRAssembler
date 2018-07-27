@@ -1,5 +1,6 @@
 %{
 #include "asm1.tab.h"
+extern int yylex();
 %}
 
 %option noyywrap
@@ -23,7 +24,7 @@
 "start" return START;
 "end"   return END;
 [R][0-9]* return REG;
-[a-zA-Z][_a-zA-Z0-9]*   return ID;
+[a-zA-Z][_a-zA-Z0-9]* return ID;
 [0-9]*  return VALUE;
 [:] return SEMICOLON;
 [,] return COMMA;

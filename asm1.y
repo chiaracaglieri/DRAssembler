@@ -1,19 +1,18 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
-#include "asm1.tab.h"
+#include <cstdio>
+#include <iostream>
+using namespace std;
 
-/* Flex functions */
-extern int yylex(void);
-extern void yyterminate();
+
+extern int yylex();
+extern "C" int yyparse();
+
 void yyerror(const char *s);
-
-int yydebug=1;
 
 %}
 
-
-%token VALUE SEMICOLON COMMA REG
+%token VALUE
+%token SEMICOLON COMMA REG
 %token ID
 %token LOAD STORE
 %token ADD SUB MUL
@@ -80,8 +79,8 @@ exp
 
 %%
 
-/* Display error messages */
-void yyerror(const char *s)
-{
-	printf("ERROR: %s\n", s);
+void yyerror(const char *s) {
+	cout << "EEK, parse error!  Message: " << s << endl;
+	// might as well halt now:
+	exit(-1);
 }
