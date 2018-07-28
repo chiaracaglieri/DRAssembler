@@ -27,12 +27,9 @@ int yydebug=1;
 
 program
     :instruction
-    |instruction instructions
+    |instruction program
     ;
-instructions
-    :instruction
-    |instruction instructions
-    ;
+
 instruction
     :MEMLOC VALUE VALUE { lc++; printf("Updated lc to %d\n", lc);}
     |MEMLOCS VALUE seq  { lc++; printf("Updated lc to %d\n", lc);}
@@ -43,8 +40,8 @@ instruction
     |ar_instruction exp COMMA exp COMMA REG { lc++; printf("Updated lc to %d\n", lc);}
     |rego_instruction REG   { lc++; printf("Updated lc to %d\n", lc);}
     |ls_instruction REG COMMA REG COMMA REG { lc++; printf("Updated lc to %d\n", lc);}
-    |cond_instruction exp COMMA exp COMMA label { lc++; printf("Updated lc to %d\n", lc);}
-    |label instruction  { lc++; printf("Updated lc to %d\n", lc);}
+    |cond_instruction exp COMMA exp COMMA label { lc++; printf("Updated lc to %d\n", lc); checkSymbol(last_string, lc); }
+    |label instruction  { checkSymbol(last_string, lc); }
     ;
 ls_instruction
     :LOAD
@@ -70,7 +67,7 @@ seq
     ;
 
 label
-    :ID SEMICOLON   { checkSymbol(last_string, lc); }
+    :ID SEMICOLON
     |ID
     ;
 exp

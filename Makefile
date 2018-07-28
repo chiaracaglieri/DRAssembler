@@ -13,8 +13,8 @@ lex.o: lex.yy.c
 data_structures.o: data_structures.cpp
 	gcc -c -o data_structures.o data_structures.cpp
 
-symbols.o: symbols.c
-	gcc -c -o symbols.o symbols.c
+symbols.o: symbols.cpp
+	g++ -c -o symbols.o symbols.cpp
 
 main.o: main.cpp
 	g++ -c -o main.o main.cpp
