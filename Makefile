@@ -1,5 +1,5 @@
 asm1.tab.c: asm1.y
-	bison -d --debug -v asm1.y
+	bison -d asm1.y
 
 yacc.o: asm1.tab.c
 	gcc -c -o yacc.o asm1.tab.c
@@ -13,11 +13,14 @@ lex.o: lex.yy.c
 data_structures.o: data_structures.cpp
 	gcc -c -o data_structures.o data_structures.cpp
 
+symbols.o: symbols.c
+	gcc -c -o symbols.o symbols.c
+
 main.o: main.cpp
 	g++ -c -o main.o main.cpp
 
-pass1.o: main.o lex.o yacc.o data_structures.o
-	g++ -o pass1 lex.o yacc.o main.o data_structures.o
+pass1.o: main.o lex.o yacc.o symbols.o
+	g++ -o pass1 lex.o yacc.o main.o symbols.o
 
 run: pass1.o
 	./pass1 < samplecode.txt

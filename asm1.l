@@ -1,5 +1,6 @@
 %{
 #include "asm1.tab.h"
+#include "symbols.h"
 %}
 
 %option noyywrap
@@ -23,8 +24,11 @@
 "start" return START;
 "end"   return END;
 [R][0-9]* return REG;
-[a-zA-Z][_a-zA-Z0-9]*   return ID;
-[0-9]*  return VALUE;
+[a-zA-Z][_a-zA-Z0-9]*   {last_string=malloc(sizeof(char)*strlen(yytext));
+                         strcpy(last_string,yytext);
+                         return ID;
+                         }
+[0-9]*  {last_value=atoi(yytext); return VALUE; }
 [:] return SEMICOLON;
 [,] return COMMA;
 [$^ \t\n]+ ;

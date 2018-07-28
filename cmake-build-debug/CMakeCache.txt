@@ -46,17 +46,17 @@ CMAKE_CXX_COMPILER_RANLIB:FILEPATH=/usr/bin/gcc-ranlib.exe
 CMAKE_CXX_FLAGS:STRING=
 
 //Flags used by the compiler during debug builds.
-CMAKE_CXX_FLAGS_DEBUG:STRING=
+CMAKE_CXX_FLAGS_DEBUG:STRING=-g
 
 //Flags used by the compiler during release builds for minimum
 // size.
-CMAKE_CXX_FLAGS_MINSIZEREL:STRING=
+CMAKE_CXX_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG
 
 //Flags used by the compiler during release builds.
-CMAKE_CXX_FLAGS_RELEASE:STRING=
+CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 
 //Flags used by the compiler during release builds with debug info.
-CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=
+CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
 //C compiler
 CMAKE_C_COMPILER:FILEPATH=/usr/bin/cc
@@ -73,20 +73,20 @@ CMAKE_C_COMPILER_RANLIB:FILEPATH=/usr/bin/gcc-ranlib.exe
 CMAKE_C_FLAGS:STRING=
 
 //Flags used by the compiler during debug builds.
-CMAKE_C_FLAGS_DEBUG:STRING=
+CMAKE_C_FLAGS_DEBUG:STRING=-g
 
 //Flags used by the compiler during release builds for minimum
 // size.
-CMAKE_C_FLAGS_MINSIZEREL:STRING=
+CMAKE_C_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG
 
 //Flags used by the compiler during release builds.
-CMAKE_C_FLAGS_RELEASE:STRING=
+CMAKE_C_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 
 //Flags used by the compiler during release builds with debug info.
-CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=
+CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
 //Flags used by the linker.
-CMAKE_EXE_LINKER_FLAGS:STRING=
+CMAKE_EXE_LINKER_FLAGS:STRING=-Wl,--enable-auto-import
 
 //Flags used by the linker during debug builds.
 CMAKE_EXE_LINKER_FLAGS_DEBUG:STRING=
@@ -138,6 +138,9 @@ CMAKE_OBJDUMP:FILEPATH=/usr/bin/objdump.exe
 
 //Value Computed by CMake
 CMAKE_PROJECT_NAME:STATIC=Tesi
+
+//Path to a program.
+CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib.exe
 
 //RC compiler
 CMAKE_RC_COMPILER:FILEPATH=/usr/bin/windres.exe
@@ -329,8 +332,8 @@ CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 CMAKE_OBJDUMP-ADVANCED:INTERNAL=1
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
-//noop for ranlib
-CMAKE_RANLIB:INTERNAL=:
+//ADVANCED property for variable: CMAKE_RANLIB
+CMAKE_RANLIB-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_RC_COMPILER
 CMAKE_RC_COMPILER-ADVANCED:INTERNAL=1
 CMAKE_RC_COMPILER_WORKS:INTERNAL=1

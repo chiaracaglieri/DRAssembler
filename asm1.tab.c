@@ -66,7 +66,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "asm1.tab.h"
+#include "symbols.h"
 
 /* Flex functions */
 extern int yylex(void);
@@ -100,7 +100,7 @@ int yydebug=1;
 # define YY_YY_ASM1_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -1255,8 +1255,74 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
-#line 1260 "asm1.tab.c" /* yacc.c:1646  */
+        case 6:
+#line 37 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1262 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 7:
+#line 38 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1268 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 39 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1274 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 9:
+#line 40 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1280 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 42 "asm1.y" /* yacc.c:1646  */
+    { lc=last_value; printf("Updated lc to %d\n", lc);}
+#line 1286 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 12:
+#line 43 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1292 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 13:
+#line 44 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1298 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 14:
+#line 45 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1304 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 15:
+#line 46 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1310 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 16:
+#line 47 "asm1.y" /* yacc.c:1646  */
+    { lc++; printf("Updated lc to %d\n", lc);}
+#line 1316 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 29:
+#line 73 "asm1.y" /* yacc.c:1646  */
+    { checkSymbol(last_string, lc); }
+#line 1322 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1326 "asm1.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "asm1.tab.h"
+#include "symbols.h"
 
 /* Flex functions */
 extern int yylex(void);
@@ -34,17 +34,17 @@ instructions
     |instruction instructions
     ;
 instruction
-    :MEMLOC VALUE VALUE
-    |MEMLOCS VALUE seq
-    |LOC VALUE
-    |REGVAL VALUE VALUE
+    :MEMLOC VALUE VALUE { lc++; printf("Updated lc to %d\n", lc);}
+    |MEMLOCS VALUE seq  { lc++; printf("Updated lc to %d\n", lc);}
+    |LOC VALUE  { lc++; printf("Updated lc to %d\n", lc);}
+    |REGVAL VALUE VALUE { lc++; printf("Updated lc to %d\n", lc);}
     |END
-    |START VALUE
-    |ar_instruction exp COMMA exp COMMA REG
-    |rego_instruction REG
-    |ls_instruction REG COMMA REG COMMA REG
-    |cond_instruction exp COMMA exp COMMA label
-    |label instruction
+    |START VALUE    { lc=last_value; printf("Updated lc to %d\n", lc);}
+    |ar_instruction exp COMMA exp COMMA REG { lc++; printf("Updated lc to %d\n", lc);}
+    |rego_instruction REG   { lc++; printf("Updated lc to %d\n", lc);}
+    |ls_instruction REG COMMA REG COMMA REG { lc++; printf("Updated lc to %d\n", lc);}
+    |cond_instruction exp COMMA exp COMMA label { lc++; printf("Updated lc to %d\n", lc);}
+    |label instruction  { lc++; printf("Updated lc to %d\n", lc);}
     ;
 ls_instruction
     :LOAD
@@ -70,7 +70,7 @@ seq
     ;
 
 label
-    :ID SEMICOLON
+    :ID SEMICOLON   { checkSymbol(last_string, lc); }
     |ID
     ;
 exp

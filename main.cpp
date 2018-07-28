@@ -15,17 +15,17 @@ extern "C"
 
 }
 
-bool searchOP(char* opname){
+/*bool searchOP(char* opname){
     for(int i=0; i< optable.size(); i++){
         if(opname==optable[i].literal) return true;
     }
     return false;
 }
-int lc; //location counter
 
+*/
 int main() {
     lc=0;
-    printf("in main\n");
+
     yyparse();
 
     /*int ntoken, vtoken;

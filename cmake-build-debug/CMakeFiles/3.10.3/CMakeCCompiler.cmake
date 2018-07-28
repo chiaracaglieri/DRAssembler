@@ -18,7 +18,7 @@ set(CMAKE_C_SIMULATE_VERSION "")
 
 set(CMAKE_AR "/usr/bin/ar.exe")
 set(CMAKE_C_COMPILER_AR "/usr/bin/gcc-ar.exe")
-set(CMAKE_RANLIB ":")
+set(CMAKE_RANLIB "/usr/bin/ranlib.exe")
 set(CMAKE_C_COMPILER_RANLIB "/usr/bin/gcc-ranlib.exe")
 set(CMAKE_LINKER "/usr/bin/ld.exe")
 set(CMAKE_COMPILER_IS_GNUCC 1)
