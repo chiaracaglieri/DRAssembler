@@ -1,5 +1,22 @@
-int lc;
-int last_value;
-char* last_string;
+#define LOC 1
+#define MEMLOC 2
+#define MEMLOCS 3
+#define REGVAL 4
+#define CLEAR 5
+#define INCR 6
+#define ADD 7
+#define SUB 8
+#define MUL 9
+#define LOAD 10
+#define STORE 11
+#define EQ 12
+#define GT 13
+#define LT 14
+#define START 15
+#define END 16
+#define REG 17
+#define ID 18
+#define VALUE 19
+#define SEMICOLON 21
+#define COMMA 22
 
-void updateLC(int x);

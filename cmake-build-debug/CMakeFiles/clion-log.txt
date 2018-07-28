@@ -1,0 +1,4 @@
+C:\Users\chiar\.CLion2018.1\system\cygwin_cmake\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /cygdrive/c/Users/chiar/Desktop/Tesi
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /cygdrive/c/Users/chiar/Desktop/Tesi/cmake-build-debug

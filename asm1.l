@@ -1,6 +1,5 @@
 %{
 #include "asm1.tab.h"
-#include "symbols.h"
 %}
 
 %option noyywrap
@@ -25,7 +24,7 @@
 "end"   return END;
 [R][0-9]* return REG;
 [a-zA-Z][_a-zA-Z0-9]*   return ID;
-[0-9]*  { last_value=atoi(yytext); return VALUE;}   //Memorizza l'ultimo intero letto in una variabile condivisa
+[0-9]*  return VALUE;
 [:] return SEMICOLON;
 [,] return COMMA;
 [$^ \t\n]+ ;

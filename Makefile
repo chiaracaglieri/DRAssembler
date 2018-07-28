@@ -11,7 +11,7 @@ lex.o: lex.yy.c
 	gcc -c -o lex.o lex.yy.c
 
 data_structures.o: data_structures.cpp
-	g++ -c -o data_structures.o data_structures.cpp
+	gcc -c -o data_structures.o data_structures.cpp
 
 main.o: main.cpp
 	g++ -c -o main.o main.cpp

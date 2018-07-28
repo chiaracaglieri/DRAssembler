@@ -2,9 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "asm1.tab.h"
-#include "symbols.h"
-
-
 
 /* Flex functions */
 extern int yylex(void);
@@ -42,7 +39,7 @@ instruction
     |LOC VALUE
     |REGVAL VALUE VALUE
     |END
-    |START VALUE    { updateLC(last_value); }
+    |START VALUE
     |ar_instruction exp COMMA exp COMMA REG
     |rego_instruction REG
     |ls_instruction REG COMMA REG COMMA REG
@@ -73,7 +70,7 @@ seq
     ;
 
 label
-    :ID SEMICOLON   {  }
+    :ID SEMICOLON
     |ID
     ;
 exp

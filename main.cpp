@@ -5,7 +5,6 @@
 #include "symbols.h"
 #include "util.h"
 
-
 using namespace std;
 
 extern "C"
@@ -22,10 +21,10 @@ bool searchOP(char* opname){
     }
     return false;
 }
-
+int lc; //location counter
 
 int main() {
-
+    lc=0;
     printf("in main\n");
     yyparse();
 

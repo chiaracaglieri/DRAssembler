@@ -1,0 +1,1 @@
+/usr/bin/c++.exe    CMakeFiles/Tesi.dir/main.cpp.o CMakeFiles/Tesi.dir/data_structures.cpp.o  -o Tesi.exe -Wl,--out-implib,libTesi.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
