@@ -13,14 +13,14 @@ lex.o: lex.yy.c
 data_structures.o: data_structures.cpp
 	gcc -c -o data_structures.o data_structures.cpp
 
-symbols.o: symbols.cpp
-	g++ -c -o symbols.o symbols.cpp
+util.o: util.cpp
+	g++ -c -o util.o util.cpp
 
 main.o: main.cpp
 	g++ -c -o main.o main.cpp
 
-pass1.o: main.o lex.o yacc.o symbols.o
-	g++ -o pass1 lex.o yacc.o main.o symbols.o
+pass1.o: main.o lex.o yacc.o util.o
+	g++ -o pass1 lex.o yacc.o main.o util.o
 
 run: pass1.o
 	./pass1 < samplecode.txt

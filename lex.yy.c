@@ -484,7 +484,7 @@ char *yytext;
 #line 1 "asm1.l"
 #line 2 "asm1.l"
 #include "asm1.tab.h"
-#include "symbols.h"
+#include "util.h"
 #line 488 "lex.yy.c"
 #define YY_NO_INPUT 1
 #line 490 "lex.yy.c"

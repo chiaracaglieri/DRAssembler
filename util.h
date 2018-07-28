@@ -1,11 +1,9 @@
-#include <vector>
-#include <unordered_map>
+#include <stdlib.h>
 
-struct opcode{
-    std::string literal;
-    int code;
-};
 
-extern std::vector<struct opcode> optable;
+int lc;
+int last_value;
+char* last_string;
 
-extern std::unordered_map<std::string, int> symTable;
+void checkSymbol(char* label, int lc);
+

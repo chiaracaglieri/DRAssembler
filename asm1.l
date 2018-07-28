@@ -1,6 +1,6 @@
 %{
 #include "asm1.tab.h"
-#include "symbols.h"
+#include "util.h"
 %}
 
 %option noyywrap

@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "symbols.h"
+#include "util.h"
 
 /* Flex functions */
 extern int yylex(void);

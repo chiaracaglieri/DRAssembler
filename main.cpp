@@ -1,8 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
-#include <unordered_map>
-#include "symbols.h"
+#include <fstream>
 #include "util.h"
 
 using namespace std;
@@ -11,6 +10,8 @@ extern "C"
 {
     int yyparse(void);
     int yylex(void);
+    char* yytext;
+    void yyrestart();
 
 
 }
@@ -23,7 +24,7 @@ extern "C"
 }
 
 */
-int main() {
+int main(int argc,  char** argv) {
     lc=0;
     printf("Starting Pass 1\n");
     yyparse();
@@ -32,5 +33,10 @@ int main() {
     printf("Parsing finished, value of lc is %d\n", lc);
     printf("Starting Pass 2\n");
 
+    std::ofstream outfile ("final.txt");
+
+   //outfile << "my text here!" << std::endl;
+
+    outfile.close();
     return 0;
 }
