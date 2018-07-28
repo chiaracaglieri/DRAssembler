@@ -67,6 +67,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "asm1.tab.h"
+#include "symbols.h"
+
+
 
 /* Flex functions */
 extern int yylex(void);
@@ -76,7 +79,7 @@ void yyerror(const char *s);
 int yydebug=1;
 
 
-#line 80 "asm1.tab.c" /* yacc.c:339  */
+#line 83 "asm1.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -151,7 +154,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 155 "asm1.tab.c" /* yacc.c:358  */
+#line 158 "asm1.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -450,10 +453,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    29,    29,    30,    33,    34,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    50,    51,    54,
-      55,    56,    59,    60,    61,    64,    65,    68,    69,    73,
-      74,    77,    78
+       0,    32,    32,    33,    36,    37,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    53,    54,    57,
+      58,    59,    62,    63,    64,    67,    68,    71,    72,    76,
+      77,    80,    81
 };
 #endif
 
@@ -1255,8 +1258,20 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
-#line 1260 "asm1.tab.c" /* yacc.c:1646  */
+        case 11:
+#line 45 "asm1.y" /* yacc.c:1646  */
+    { updateLC(last_value); }
+#line 1265 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 29:
+#line 76 "asm1.y" /* yacc.c:1646  */
+    {  }
+#line 1271 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1275 "asm1.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1484,7 +1499,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 81 "asm1.y" /* yacc.c:1906  */
+#line 84 "asm1.y" /* yacc.c:1906  */
 
 
 /* Display error messages */
