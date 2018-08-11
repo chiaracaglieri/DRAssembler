@@ -1,9 +1,9 @@
-#include <stdlib.h>
+#include <unordered_map>
+using namespace std;
 
-
-int lc;
-int last_value;
-char* last_string;
-
-void checkSymbol(char* label, int lc);
+extern std::string last_string;
+extern std::unordered_map<std::string, int> symTable;
+extern int lc;
+bool find_symbol(std::string);
+void insert_symbol(std::string,int);
 

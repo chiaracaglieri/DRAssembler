@@ -65,18 +65,14 @@
 #line 1 "asm1.y" /* yacc.c:339  */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <string>
 #include "util.h"
 
-/* Flex functions */
-extern int yylex(void);
-extern void yyterminate();
-void yyerror(const char *s);
+int yylex(void);
+inline void yyerror(const char *s) { std::cout << s << std::endl; }
 
-int yydebug=1;
-
-
-#line 80 "asm1.tab.c" /* yacc.c:339  */
+#line 76 "asm1.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -100,7 +96,7 @@ int yydebug=1;
 # define YY_YY_ASM1_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -151,7 +147,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 155 "asm1.tab.c" /* yacc.c:358  */
+#line 151 "asm1.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -450,10 +446,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    29,    29,    30,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    47,    48,    51,    52,    53,
-      56,    57,    58,    61,    62,    65,    66,    70,    71,    74,
-      75
+       0,    25,    25,    26,    30,    31,    32,    33,    34,    35,
+      36,    37,    38,    39,    40,    43,    44,    47,    48,    49,
+      52,    53,    54,    57,    58,    61,    62,    66,    67,    70,
+      71
 };
 #endif
 
@@ -1253,67 +1249,73 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 34 "asm1.y" /* yacc.c:1646  */
-    { lc++; printf("Updated lc to %d\n", lc);}
-#line 1259 "asm1.tab.c" /* yacc.c:1646  */
+#line 30 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1255 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 35 "asm1.y" /* yacc.c:1646  */
-    { lc++; printf("Updated lc to %d\n", lc);}
-#line 1265 "asm1.tab.c" /* yacc.c:1646  */
+#line 31 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1261 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 36 "asm1.y" /* yacc.c:1646  */
-    { lc++; printf("Updated lc to %d\n", lc);}
-#line 1271 "asm1.tab.c" /* yacc.c:1646  */
+#line 32 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1267 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 37 "asm1.y" /* yacc.c:1646  */
-    { lc++; printf("Updated lc to %d\n", lc);}
-#line 1277 "asm1.tab.c" /* yacc.c:1646  */
+#line 33 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1273 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 34 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1279 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 39 "asm1.y" /* yacc.c:1646  */
-    { lc=last_value; printf("Updated lc to %d\n", lc);}
-#line 1283 "asm1.tab.c" /* yacc.c:1646  */
+#line 35 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1285 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 40 "asm1.y" /* yacc.c:1646  */
-    { lc++; printf("Updated lc to %d\n", lc);}
-#line 1289 "asm1.tab.c" /* yacc.c:1646  */
+#line 36 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1291 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 41 "asm1.y" /* yacc.c:1646  */
-    { lc++; printf("Updated lc to %d\n", lc);}
-#line 1295 "asm1.tab.c" /* yacc.c:1646  */
+#line 37 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1297 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 42 "asm1.y" /* yacc.c:1646  */
-    { lc++; printf("Updated lc to %d\n", lc);}
-#line 1301 "asm1.tab.c" /* yacc.c:1646  */
+#line 38 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1303 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 43 "asm1.y" /* yacc.c:1646  */
-    { lc++; printf("Updated lc to %d\n", lc); checkSymbol(last_string, lc); }
-#line 1307 "asm1.tab.c" /* yacc.c:1646  */
+#line 39 "asm1.y" /* yacc.c:1646  */
+    { insert_symbol(last_string,-1); lc++;}
+#line 1309 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 44 "asm1.y" /* yacc.c:1646  */
-    { checkSymbol(last_string, lc); }
-#line 1313 "asm1.tab.c" /* yacc.c:1646  */
+#line 40 "asm1.y" /* yacc.c:1646  */
+    { insert_symbol(last_string,lc); }
+#line 1315 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1317 "asm1.tab.c" /* yacc.c:1646  */
+#line 1319 "asm1.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1541,11 +1543,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 78 "asm1.y" /* yacc.c:1906  */
+#line 74 "asm1.y" /* yacc.c:1906  */
 
-
-/* Display error messages */
-void yyerror(const char *s)
-{
-	printf("ERROR: %s\n", s);
-}
+extern int yyparse();

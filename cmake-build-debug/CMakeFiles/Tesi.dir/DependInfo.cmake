@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/cygdrive/c/Users/chiar/Desktop/Tesi/data_structures.cpp" "/cygdrive/c/Users/chiar/Desktop/Tesi/cmake-build-debug/CMakeFiles/Tesi.dir/data_structures.cpp.o"
-  "/cygdrive/c/Users/chiar/Desktop/Tesi/main.cpp" "/cygdrive/c/Users/chiar/Desktop/Tesi/cmake-build-debug/CMakeFiles/Tesi.dir/main.cpp.o"
+  "/cygdrive/c/Users/chiar/Desktop/Tesi_cpp/data_structures.cpp" "/cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug/CMakeFiles/Tesi.dir/data_structures.cpp.o"
+  "/cygdrive/c/Users/chiar/Desktop/Tesi_cpp/main.cpp" "/cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug/CMakeFiles/Tesi.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

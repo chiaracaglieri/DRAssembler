@@ -1,15 +1,11 @@
 %{
 #include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <string>
 #include "util.h"
 
-/* Flex functions */
-extern int yylex(void);
-extern void yyterminate();
-void yyerror(const char *s);
-
-int yydebug=1;
-
+int yylex(void);
+inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %}
 
 
@@ -31,17 +27,17 @@ program
     ;
 
 instruction
-    :MEMLOC VALUE VALUE { lc++; printf("Updated lc to %d\n", lc);}
-    |MEMLOCS VALUE seq  { lc++; printf("Updated lc to %d\n", lc);}
-    |LOC VALUE  { lc++; printf("Updated lc to %d\n", lc);}
-    |REGVAL VALUE VALUE { lc++; printf("Updated lc to %d\n", lc);}
-    |END
-    |START VALUE    { lc=last_value; printf("Updated lc to %d\n", lc);}
-    |ar_instruction exp COMMA exp COMMA REG { lc++; printf("Updated lc to %d\n", lc);}
-    |rego_instruction REG   { lc++; printf("Updated lc to %d\n", lc);}
-    |ls_instruction REG COMMA REG COMMA REG { lc++; printf("Updated lc to %d\n", lc);}
-    |cond_instruction exp COMMA exp COMMA label { lc++; printf("Updated lc to %d\n", lc); checkSymbol(last_string, lc); }
-    |label instruction  { checkSymbol(last_string, lc); }
+    :MEMLOC VALUE VALUE { lc++; }
+    |MEMLOCS VALUE seq  { lc++; }
+    |LOC VALUE  { lc++; }
+    |REGVAL VALUE VALUE { lc++; }
+    |END    { lc++; }
+    |START VALUE    { lc++; }
+    |ar_instruction exp COMMA exp COMMA REG { lc++; }
+    |rego_instruction REG   { lc++; }
+    |ls_instruction REG COMMA REG COMMA REG { lc++; }
+    |cond_instruction exp COMMA exp COMMA label { insert_symbol(last_string,-1); lc++;}
+    |label instruction { insert_symbol(last_string,lc); }
     ;
 ls_instruction
     :LOAD
@@ -76,9 +72,4 @@ exp
     ;
 
 %%
-
-/* Display error messages */
-void yyerror(const char *s)
-{
-	printf("ERROR: %s\n", s);
-}
+extern int yyparse();
