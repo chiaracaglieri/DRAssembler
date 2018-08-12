@@ -1,15 +1,22 @@
 %{
-#include <stdio.h>
 #include <iostream>
 #include <string>
 #include "util.h"
-
 int yylex(void);
 inline void yyerror(const char *s) { std::cout << s << std::endl; }
+
+
+
 %}
 
 
-%token VALUE SEMICOLON COMMA REG
+%union {
+  int intval;
+  struct node* nd;
+}
+
+%token <intval> VALUE
+%token SEMICOLON COMMA REG
 %token ID
 %token LOAD STORE
 %token ADD SUB MUL
@@ -18,21 +25,25 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token MEMLOC MEMLOCS LOC REGVAL
 %token END START
 %start program
-
+%type <nd> instruction program
 %%
 
 program
-    :instruction
-    |instruction program
+    :instruction    { $$=make_node("INSTRUCTION",-1,$1,NULL,NULL);}
+    |instruction program    { $$=make_node("PROGRAM",-1,$1,$2,NULL); appendTree($$);}
     ;
 
 instruction
-    :MEMLOC VALUE VALUE { lc++; }
+    :MEMLOC VALUE VALUE { node* v1=make_node("",$2,NULL,NULL,NULL);
+                          node* v2=make_node("",$3,NULL,NULL,NULL);
+                          $$=make_node("MEMLOC",-1,v1,v2,NULL);
+                          lc++;
+                        }
     |MEMLOCS VALUE seq  { lc++; }
     |LOC VALUE  { lc++; }
     |REGVAL VALUE VALUE { lc++; }
     |END    { lc++; }
-    |START VALUE    { lc++; }
+    |START VALUE    { lc=last_value; }
     |ar_instruction exp COMMA exp COMMA REG { lc++; }
     |rego_instruction REG   { lc++; }
     |ls_instruction REG COMMA REG COMMA REG { lc++; }

@@ -14,6 +14,6 @@ int main(int argc,  char** argv) {
     printf("Starting Pass 1...\n");
     yyparse();
     printf("Parsing finished, lc is %d \n Starting pass 2...\n", lc);
-
+    cout << SynTree->type << SynTree->param1->type << SynTree->param2->type<< SynTree->param2->param1->type <<"\n";
     return 0;
 }

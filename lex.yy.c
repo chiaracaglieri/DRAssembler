@@ -483,14 +483,17 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "asm1.l"
 #line 2 "asm1.l"
+
 #include <cstdlib>
 #include <string>
+#include <iostream>
 #include "util.h"
 #include "asm1.tab.h"
 
-#line 491 "lex.yy.c"
+
+#line 494 "lex.yy.c"
 #define YY_NO_INPUT 1
-#line 493 "lex.yy.c"
+#line 496 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -705,9 +708,9 @@ YY_DECL
 		}
 
 	{
-#line 12 "asm1.l"
+#line 15 "asm1.l"
 
-#line 710 "lex.yy.c"
+#line 713 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -766,123 +769,123 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 13 "asm1.l"
+#line 16 "asm1.l"
 return LOC;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 14 "asm1.l"
+#line 17 "asm1.l"
 return MEMLOC;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 15 "asm1.l"
+#line 18 "asm1.l"
 return MEMLOCS;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 16 "asm1.l"
+#line 19 "asm1.l"
 return REGVAL;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 17 "asm1.l"
+#line 20 "asm1.l"
 return CLEAR;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 18 "asm1.l"
+#line 21 "asm1.l"
 return INCR;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 19 "asm1.l"
+#line 22 "asm1.l"
 return ADD;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 20 "asm1.l"
+#line 23 "asm1.l"
 return SUB;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 21 "asm1.l"
+#line 24 "asm1.l"
 return MUL;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 22 "asm1.l"
+#line 25 "asm1.l"
 return LOAD;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 23 "asm1.l"
+#line 26 "asm1.l"
 return STORE;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 24 "asm1.l"
+#line 27 "asm1.l"
 return EQ;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 25 "asm1.l"
+#line 28 "asm1.l"
 return GT;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 26 "asm1.l"
+#line 29 "asm1.l"
 return LT;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 27 "asm1.l"
+#line 30 "asm1.l"
 return START;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 28 "asm1.l"
+#line 31 "asm1.l"
 return END;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 29 "asm1.l"
+#line 32 "asm1.l"
 return REG;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 30 "asm1.l"
+#line 33 "asm1.l"
 {last_string=yytext;
                          return ID;
                         }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 33 "asm1.l"
-return VALUE;
+#line 36 "asm1.l"
+{last_value=atoi(yytext); yylval.intval=atoi(yytext); return VALUE;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 34 "asm1.l"
+#line 37 "asm1.l"
 return SEMICOLON;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 35 "asm1.l"
+#line 38 "asm1.l"
 return COMMA;
 	YY_BREAK
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 36 "asm1.l"
+#line 39 "asm1.l"
 ;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 38 "asm1.l"
+#line 41 "asm1.l"
 ECHO;
 	YY_BREAK
-#line 885 "lex.yy.c"
+#line 888 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1850,5 +1853,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 38 "asm1.l"
+#line 41 "asm1.l"
 

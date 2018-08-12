@@ -64,15 +64,16 @@
 /* Copy the first part of user declarations.  */
 #line 1 "asm1.y" /* yacc.c:339  */
 
-#include <stdio.h>
 #include <iostream>
 #include <string>
 #include "util.h"
-
 int yylex(void);
 inline void yyerror(const char *s) { std::cout << s << std::endl; }
 
-#line 76 "asm1.tab.c" /* yacc.c:339  */
+
+
+
+#line 77 "asm1.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -133,7 +134,18 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 13 "asm1.y" /* yacc.c:355  */
+
+  int intval;
+  struct node* nd;
+
+#line 146 "asm1.tab.c" /* yacc.c:355  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -147,7 +159,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 151 "asm1.tab.c" /* yacc.c:358  */
+#line 163 "asm1.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -446,10 +458,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    25,    25,    26,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    43,    44,    47,    48,    49,
-      52,    53,    54,    57,    58,    61,    62,    66,    67,    70,
-      71
+       0,    32,    32,    33,    37,    42,    43,    44,    45,    46,
+      47,    48,    49,    50,    51,    54,    55,    58,    59,    60,
+      63,    64,    65,    68,    69,    72,    73,    77,    78,    81,
+      82
 };
 #endif
 
@@ -1248,74 +1260,90 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 4:
-#line 30 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
-#line 1255 "asm1.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 5:
-#line 31 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
-#line 1261 "asm1.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 6:
+        case 2:
 #line 32 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
+    { (yyval.nd)=make_node("INSTRUCTION",-1,(yyvsp[0].nd),NULL,NULL);}
 #line 1267 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
-  case 7:
+  case 3:
 #line 33 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
+    { (yyval.nd)=make_node("PROGRAM",-1,(yyvsp[-1].nd),(yyvsp[0].nd),NULL); appendTree((yyval.nd));}
 #line 1273 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
-  case 8:
-#line 34 "asm1.y" /* yacc.c:1646  */
+  case 4:
+#line 37 "asm1.y" /* yacc.c:1646  */
+    { node* v1=make_node("",(yyvsp[-1].intval),NULL,NULL,NULL);
+                          node* v2=make_node("",(yyvsp[0].intval),NULL,NULL,NULL);
+                          (yyval.nd)=make_node("MEMLOC",-1,v1,v2,NULL);
+                          lc++;
+                        }
+#line 1283 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 5:
+#line 42 "asm1.y" /* yacc.c:1646  */
     { lc++; }
-#line 1279 "asm1.tab.c" /* yacc.c:1646  */
+#line 1289 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 6:
+#line 43 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1295 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 7:
+#line 44 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1301 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 45 "asm1.y" /* yacc.c:1646  */
+    { lc++; }
+#line 1307 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 35 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
-#line 1285 "asm1.tab.c" /* yacc.c:1646  */
+#line 46 "asm1.y" /* yacc.c:1646  */
+    { lc=last_value; }
+#line 1313 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 36 "asm1.y" /* yacc.c:1646  */
+#line 47 "asm1.y" /* yacc.c:1646  */
     { lc++; }
-#line 1291 "asm1.tab.c" /* yacc.c:1646  */
+#line 1319 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 37 "asm1.y" /* yacc.c:1646  */
+#line 48 "asm1.y" /* yacc.c:1646  */
     { lc++; }
-#line 1297 "asm1.tab.c" /* yacc.c:1646  */
+#line 1325 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 38 "asm1.y" /* yacc.c:1646  */
+#line 49 "asm1.y" /* yacc.c:1646  */
     { lc++; }
-#line 1303 "asm1.tab.c" /* yacc.c:1646  */
+#line 1331 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 39 "asm1.y" /* yacc.c:1646  */
+#line 50 "asm1.y" /* yacc.c:1646  */
     { insert_symbol(last_string,-1); lc++;}
-#line 1309 "asm1.tab.c" /* yacc.c:1646  */
+#line 1337 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 40 "asm1.y" /* yacc.c:1646  */
+#line 51 "asm1.y" /* yacc.c:1646  */
     { insert_symbol(last_string,lc); }
-#line 1315 "asm1.tab.c" /* yacc.c:1646  */
+#line 1343 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1319 "asm1.tab.c" /* yacc.c:1646  */
+#line 1347 "asm1.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1543,6 +1571,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 74 "asm1.y" /* yacc.c:1906  */
+#line 85 "asm1.y" /* yacc.c:1906  */
 
 extern int yyparse();
