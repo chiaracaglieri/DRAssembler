@@ -14,6 +14,15 @@ int main(int argc,  char** argv) {
     printf("Starting Pass 1...\n");
     yyparse();
     printf("Parsing finished, lc is %d \n Starting pass 2...\n", lc);
-    cout << SynTree->type << SynTree->param1->type << SynTree->param2->type<< SynTree->param2->param1->type <<"\n";
+    /*cout << SynTree->type << SynTree->param1->type << SynTree->param2->type << SynTree->param1->param1->type
+            << SynTree->param1->param1->param1->value << SynTree->param1->param1->param2->value <<
+            SynTree->param2->param1->param1->param1->value <<"\n";*/
+
+    std::ofstream outfile ("assembled.txt");
+
+    //outfile << "my text here!" << std::endl;
+
+    outfile.close();
+
     return 0;
 }

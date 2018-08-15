@@ -44,11 +44,11 @@
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.o" beforeDir="false" afterPath="$PROJECT_DIR$/main.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parser.exe" beforeDir="false" afterPath="$PROJECT_DIR$/parser.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser.exe.stackdump" beforeDir="false" afterPath="$PROJECT_DIR$/parser.exe.stackdump" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/samplecode.txt" beforeDir="false" afterPath="$PROJECT_DIR$/samplecode.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/smallsmp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/smallsmp.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/util.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util.h" beforeDir="false" afterPath="$PROJECT_DIR$/util.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util.o" beforeDir="false" afterPath="$PROJECT_DIR$/util.o" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -61,11 +61,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="asm1.y" pinned="false" current-in-tab="false">
+      <file leaf-file-name="asm1.y" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/asm1.y">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="620">
-              <caret line="37" column="67" lean-forward="true" selection-start-line="37" selection-start-column="67" selection-end-line="37" selection-end-column="67" />
+            <state relative-caret-position="640">
+              <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -73,20 +73,17 @@
       <file leaf-file-name="asm1.l" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/asm1.l">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="680">
-              <caret line="34" column="25" lean-forward="true" selection-start-line="34" selection-start-column="25" selection-end-line="34" selection-end-column="25" />
+            <state relative-caret-position="660">
+              <caret line="33" column="44" selection-start-line="33" selection-start-column="44" selection-end-line="33" selection-end-column="44" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="16" column="110" selection-start-line="16" selection-start-column="110" selection-end-line="16" selection-end-column="110" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="460">
+              <caret line="23" selection-start-line="23" selection-end-line="23" />
             </state>
           </provider>
         </entry>
@@ -94,8 +91,8 @@
       <file leaf-file-name="samplecode.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/samplecode.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="10" lean-forward="true" selection-end-line="1" selection-end-column="17" />
+            <state relative-caret-position="240">
+              <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -112,8 +109,8 @@
       <file leaf-file-name="Makefile" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Makefile">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="580">
+              <caret line="29" column="83" selection-start-line="29" selection-start-column="83" selection-end-line="29" selection-end-column="83" />
             </state>
           </provider>
         </entry>
@@ -133,8 +130,8 @@
       <file leaf-file-name="util.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="257">
-              <caret line="21" column="1" lean-forward="true" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
+            <state relative-caret-position="391">
+              <caret line="21" column="1" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -181,12 +178,12 @@
         <option value="$PROJECT_DIR$/symbols.cpp" />
         <option value="$PROJECT_DIR$/tree.hh" />
         <option value="$PROJECT_DIR$/smallsmp.txt" />
-        <option value="$PROJECT_DIR$/Makefile" />
-        <option value="$PROJECT_DIR$/asm1.l" />
         <option value="$PROJECT_DIR$/util.h" />
         <option value="$PROJECT_DIR$/util.cpp" />
-        <option value="$PROJECT_DIR$/asm1.y" />
+        <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/asm1.l" />
+        <option value="$PROJECT_DIR$/asm1.y" />
       </list>
     </option>
   </component>
@@ -200,9 +197,9 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="680" />
+    <option name="x" value="673" />
     <option name="y" value="150" />
-    <option name="width" value="1667" />
+    <option name="width" value="1674" />
     <option name="height" value="1202" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -211,7 +208,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -223,6 +219,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -287,7 +284,8 @@
       <workItem from="1533824747337" duration="10011000" />
       <workItem from="1534003193744" duration="2385000" />
       <workItem from="1534060947857" duration="8171000" />
-      <workItem from="1534078004946" duration="8330000" />
+      <workItem from="1534078004946" duration="9004000" />
+      <workItem from="1534343583872" duration="5468000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1532253466867</created>
@@ -300,16 +298,17 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="82647000" />
+    <option name="totallyTimeSpent" value="88789000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="680" y="150" width="1667" height="1202" extended-state="0" />
+    <frame x="673" y="150" width="1674" height="1202" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.270745" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26960194" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="CMake" order="7" sideWeight="0.9033352" weight="0.32849365" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50028265" side_tool="true" visible="true" weight="0.21619135" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50060314" side_tool="true" visible="true" weight="0.07451702" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49939686" visible="true" weight="0.07451702" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -322,7 +321,6 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49971735" weight="0.32940108" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -357,9 +355,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="440">
           <caret line="22" column="1" lean-forward="true" selection-start-line="22" selection-start-column="1" selection-end-line="22" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -374,9 +369,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -470,30 +462,6 @@
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Temp/Temp1_chatterbox-master.zip/chatterbox-master/chatty.c" />
     <entry file="file://$PROJECT_DIR$/tree.hh" />
-    <entry file="file://$PROJECT_DIR$/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samplecode.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="10" lean-forward="true" selection-end-line="1" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="21" column="1" lean-forward="true" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/smallsmp.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20">
@@ -511,27 +479,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asm1.l">
+    <entry file="file://$PROJECT_DIR$/Makefile">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="34" column="25" lean-forward="true" selection-start-line="34" selection-start-column="25" selection-end-line="34" selection-end-column="25" />
+        <state relative-caret-position="580">
+          <caret line="29" column="83" selection-start-line="29" selection-start-column="83" selection-end-line="29" selection-end-column="83" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/asm1.y">
+    <entry file="file://$PROJECT_DIR$/asm1.l">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="620">
-          <caret line="37" column="67" lean-forward="true" selection-start-line="37" selection-start-column="67" selection-end-line="37" selection-end-column="67" />
+        <state relative-caret-position="660">
+          <caret line="33" column="44" selection-start-line="33" selection-start-column="44" selection-end-line="33" selection-end-column="44" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="16" column="110" selection-start-line="16" selection-start-column="110" selection-end-line="16" selection-end-column="110" />
+        <state relative-caret-position="460">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="21" column="1" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#24#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/samplecode.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/asm1.y">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="640">
+          <caret line="65" column="46" selection-start-line="65" selection-start-column="46" selection-end-line="65" selection-end-column="46" />
         </state>
       </provider>
     </entry>

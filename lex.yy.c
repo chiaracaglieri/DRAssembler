@@ -850,42 +850,46 @@ return END;
 case 17:
 YY_RULE_SETUP
 #line 32 "asm1.l"
-return REG;
+{ last_string=yytext;
+            last_string=last_string.substr(1);
+            yylval.intval=stoi(last_string);
+            return REG;
+}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 33 "asm1.l"
+#line 37 "asm1.l"
 {last_string=yytext;
                          return ID;
                         }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 36 "asm1.l"
+#line 40 "asm1.l"
 {last_value=atoi(yytext); yylval.intval=atoi(yytext); return VALUE;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 37 "asm1.l"
+#line 41 "asm1.l"
 return SEMICOLON;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 38 "asm1.l"
+#line 42 "asm1.l"
 return COMMA;
 	YY_BREAK
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 39 "asm1.l"
+#line 43 "asm1.l"
 ;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 41 "asm1.l"
+#line 45 "asm1.l"
 ECHO;
 	YY_BREAK
-#line 888 "lex.yy.c"
+#line 892 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1853,5 +1857,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 41 "asm1.l"
+#line 45 "asm1.l"
 

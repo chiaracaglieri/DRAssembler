@@ -29,7 +29,11 @@
 "if<" return LT;
 "start" return START;
 "end"   return END;
-[R][0-9]* return REG;
+[R][0-9]* { last_string=yytext;
+            last_string=last_string.substr(1);
+            yylval.intval=stoi(last_string);
+            return REG;
+}
 [a-zA-Z][_a-zA-Z0-9]*   {last_string=yytext;
                          return ID;
                         }

@@ -77,9 +77,10 @@ union YYSTYPE
 #line 13 "asm1.y" /* yacc.c:1909  */
 
   int intval;
+  char* str;
   struct node* nd;
 
-#line 83 "asm1.tab.h" /* yacc.c:1909  */
+#line 84 "asm1.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

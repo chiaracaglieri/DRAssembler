@@ -140,9 +140,10 @@ union YYSTYPE
 #line 13 "asm1.y" /* yacc.c:355  */
 
   int intval;
+  char* str;
   struct node* nd;
 
-#line 146 "asm1.tab.c" /* yacc.c:355  */
+#line 147 "asm1.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -159,7 +160,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 163 "asm1.tab.c" /* yacc.c:358  */
+#line 164 "asm1.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -458,10 +459,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    33,    37,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    54,    55,    58,    59,    60,
-      63,    64,    65,    68,    69,    72,    73,    77,    78,    81,
-      82
+       0,    34,    34,    35,    42,    47,    48,    52,    57,    60,
+      64,    65,    66,    71,    72,    75,    76,    79,    80,    81,
+      84,    85,    86,    89,    90,    93,    94,    98,    99,   102,
+     103
 };
 #endif
 
@@ -1261,89 +1262,114 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 32 "asm1.y" /* yacc.c:1646  */
+#line 34 "asm1.y" /* yacc.c:1646  */
     { (yyval.nd)=make_node("INSTRUCTION",-1,(yyvsp[0].nd),NULL,NULL);}
-#line 1267 "asm1.tab.c" /* yacc.c:1646  */
+#line 1268 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 33 "asm1.y" /* yacc.c:1646  */
-    { (yyval.nd)=make_node("PROGRAM",-1,(yyvsp[-1].nd),(yyvsp[0].nd),NULL); appendTree((yyval.nd));}
-#line 1273 "asm1.tab.c" /* yacc.c:1646  */
+#line 35 "asm1.y" /* yacc.c:1646  */
+    { node* i=make_node("INSTRUCTION",-1,(yyvsp[-1].nd),NULL,NULL);
+                              node* p=make_node("PROGRAM",-1,(yyvsp[0].nd),NULL,NULL);
+                              (yyval.nd)=make_node("PROGRAM",-1,i,p,NULL);
+                              appendTree((yyval.nd));}
+#line 1277 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 37 "asm1.y" /* yacc.c:1646  */
+#line 42 "asm1.y" /* yacc.c:1646  */
     { node* v1=make_node("",(yyvsp[-1].intval),NULL,NULL,NULL);
                           node* v2=make_node("",(yyvsp[0].intval),NULL,NULL,NULL);
                           (yyval.nd)=make_node("MEMLOC",-1,v1,v2,NULL);
                           lc++;
                         }
-#line 1283 "asm1.tab.c" /* yacc.c:1646  */
+#line 1287 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 42 "asm1.y" /* yacc.c:1646  */
+#line 47 "asm1.y" /* yacc.c:1646  */
     { lc++; }
-#line 1289 "asm1.tab.c" /* yacc.c:1646  */
+#line 1293 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 43 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
-#line 1295 "asm1.tab.c" /* yacc.c:1646  */
+#line 48 "asm1.y" /* yacc.c:1646  */
+    { node* v1=make_node("",(yyvsp[0].intval),NULL,NULL,NULL);
+                  (yyval.nd)=make_node("LOC",-1,v1,NULL,NULL);
+                  lc++;
+                }
+#line 1302 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 44 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
-#line 1301 "asm1.tab.c" /* yacc.c:1646  */
+#line 52 "asm1.y" /* yacc.c:1646  */
+    { node* v1=make_node("",(yyvsp[-1].intval),NULL,NULL,NULL);
+                          node* v2=make_node("",(yyvsp[0].intval),NULL,NULL,NULL);
+                          (yyval.nd)=make_node("REGVAL",-1,v1,v2,NULL);
+                          lc++;
+                        }
+#line 1312 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 45 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
-#line 1307 "asm1.tab.c" /* yacc.c:1646  */
+#line 57 "asm1.y" /* yacc.c:1646  */
+    { (yyval.nd)=make_node("END",-1,NULL,NULL,NULL);
+              lc++;
+            }
+#line 1320 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 46 "asm1.y" /* yacc.c:1646  */
-    { lc=last_value; }
-#line 1313 "asm1.tab.c" /* yacc.c:1646  */
+#line 60 "asm1.y" /* yacc.c:1646  */
+    { node* v1=make_node("",(yyvsp[0].intval),NULL,NULL,NULL);
+                      (yyval.nd)=make_node("START",-1,v1,NULL,NULL);
+                      lc=last_value;
+                    }
+#line 1329 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 47 "asm1.y" /* yacc.c:1646  */
+#line 64 "asm1.y" /* yacc.c:1646  */
     { lc++; }
-#line 1319 "asm1.tab.c" /* yacc.c:1646  */
+#line 1335 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 48 "asm1.y" /* yacc.c:1646  */
+#line 65 "asm1.y" /* yacc.c:1646  */
     { lc++; }
-#line 1325 "asm1.tab.c" /* yacc.c:1646  */
+#line 1341 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 49 "asm1.y" /* yacc.c:1646  */
-    { lc++; }
-#line 1331 "asm1.tab.c" /* yacc.c:1646  */
+#line 66 "asm1.y" /* yacc.c:1646  */
+    { printf("%d\n", (yyvsp[-4].intval));
+    node* v1=make_node("REGISTER",(yyvsp[-4].intval),NULL,NULL,NULL);
+                                              node* v2=make_node("REGISTER",(yyvsp[-2].intval),NULL,NULL,NULL);
+                                              node* v3=make_node("REGISTER",(yyvsp[0].intval),NULL,NULL,NULL);
+                                                 lc++; }
+#line 1351 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 50 "asm1.y" /* yacc.c:1646  */
+#line 71 "asm1.y" /* yacc.c:1646  */
     { insert_symbol(last_string,-1); lc++;}
-#line 1337 "asm1.tab.c" /* yacc.c:1646  */
+#line 1357 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 51 "asm1.y" /* yacc.c:1646  */
+#line 72 "asm1.y" /* yacc.c:1646  */
     { insert_symbol(last_string,lc); }
-#line 1343 "asm1.tab.c" /* yacc.c:1646  */
+#line 1363 "asm1.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 15:
+#line 75 "asm1.y" /* yacc.c:1646  */
+    { (yyval.intval)=1;}
+#line 1369 "asm1.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1347 "asm1.tab.c" /* yacc.c:1646  */
+#line 1373 "asm1.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1571,6 +1597,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 85 "asm1.y" /* yacc.c:1906  */
+#line 106 "asm1.y" /* yacc.c:1906  */
 
 extern int yyparse();

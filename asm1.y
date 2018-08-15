@@ -12,13 +12,14 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 
 %union {
   int intval;
+  char* str;
   struct node* nd;
 }
 
 %token <intval> VALUE
-%token SEMICOLON COMMA REG
-%token ID
-%token LOAD STORE
+%token SEMICOLON COMMA
+%token <intval> REG
+%token ID LOAD STORE
 %token ADD SUB MUL
 %token EQ GT LT
 %token CLEAR INCR
@@ -26,11 +27,15 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token END START
 %start program
 %type <nd> instruction program
+%type <intval> ls_instruction
 %%
 
 program
     :instruction    { $$=make_node("INSTRUCTION",-1,$1,NULL,NULL);}
-    |instruction program    { $$=make_node("PROGRAM",-1,$1,$2,NULL); appendTree($$);}
+    |instruction program    { node* i=make_node("INSTRUCTION",-1,$1,NULL,NULL);
+                              node* p=make_node("PROGRAM",-1,$2,NULL,NULL);
+                              $$=make_node("PROGRAM",-1,i,p,NULL);
+                              appendTree($$);}
     ;
 
 instruction
@@ -40,18 +45,34 @@ instruction
                           lc++;
                         }
     |MEMLOCS VALUE seq  { lc++; }
-    |LOC VALUE  { lc++; }
-    |REGVAL VALUE VALUE { lc++; }
-    |END    { lc++; }
-    |START VALUE    { lc=last_value; }
+    |LOC VALUE  { node* v1=make_node("",$2,NULL,NULL,NULL);
+                  $$=make_node("LOC",-1,v1,NULL,NULL);
+                  lc++;
+                }
+    |REGVAL VALUE VALUE { node* v1=make_node("",$2,NULL,NULL,NULL);
+                          node* v2=make_node("",$3,NULL,NULL,NULL);
+                          $$=make_node("REGVAL",-1,v1,v2,NULL);
+                          lc++;
+                        }
+    |END    { $$=make_node("END",-1,NULL,NULL,NULL);
+              lc++;
+            }
+    |START VALUE    { node* v1=make_node("",$2,NULL,NULL,NULL);
+                      $$=make_node("START",-1,v1,NULL,NULL);
+                      lc=last_value;
+                    }
     |ar_instruction exp COMMA exp COMMA REG { lc++; }
     |rego_instruction REG   { lc++; }
-    |ls_instruction REG COMMA REG COMMA REG { lc++; }
+    |ls_instruction REG COMMA REG COMMA REG {
+    node* v1=make_node("REGISTER",$2,NULL,NULL,NULL);
+                                              node* v2=make_node("REGISTER",$4,NULL,NULL,NULL);
+                                              node* v3=make_node("REGISTER",$6,NULL,NULL,NULL);
+                                                 lc++; }
     |cond_instruction exp COMMA exp COMMA label { insert_symbol(last_string,-1); lc++;}
     |label instruction { insert_symbol(last_string,lc); }
     ;
 ls_instruction
-    :LOAD
+    :LOAD { $$=1;}
     |STORE
     ;
 ar_instruction
