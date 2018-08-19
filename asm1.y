@@ -5,8 +5,6 @@
 int yylex(void);
 inline void yyerror(const char *s) { std::cout << s << std::endl; }
 
-
-
 %}
 
 
@@ -26,8 +24,8 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token MEMLOC MEMLOCS LOC REGVAL
 %token END START
 %start program
-%type <nd> instruction program
-%type <intval> ls_instruction
+%type <nd> instruction program exp
+%type <intval> ls_instruction ar_instruction rego_instruction cond_instruction
 %%
 
 program
@@ -39,55 +37,72 @@ program
     ;
 
 instruction
-    :MEMLOC VALUE VALUE { node* v1=make_node("",$2,NULL,NULL,NULL);
-                          node* v2=make_node("",$3,NULL,NULL,NULL);
+    :MEMLOC VALUE VALUE { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
+                          node* v2=make_node("VALUE",$3,NULL,NULL,NULL);
                           $$=make_node("MEMLOC",-1,v1,v2,NULL);
                           lc++;
                         }
-    |MEMLOCS VALUE seq  { lc++; }
-    |LOC VALUE  { node* v1=make_node("",$2,NULL,NULL,NULL);
+    |MEMLOCS VALUE seq  { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
+                          
+                          lc++; }
+    |LOC VALUE  { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
                   $$=make_node("LOC",-1,v1,NULL,NULL);
                   lc++;
                 }
-    |REGVAL VALUE VALUE { node* v1=make_node("",$2,NULL,NULL,NULL);
-                          node* v2=make_node("",$3,NULL,NULL,NULL);
+    |REGVAL VALUE VALUE { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
+                          node* v2=make_node("VALUE",$3,NULL,NULL,NULL);
                           $$=make_node("REGVAL",-1,v1,v2,NULL);
                           lc++;
                         }
     |END    { $$=make_node("END",-1,NULL,NULL,NULL);
               lc++;
             }
-    |START VALUE    { node* v1=make_node("",$2,NULL,NULL,NULL);
+    |START VALUE    { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
                       $$=make_node("START",-1,v1,NULL,NULL);
                       lc=last_value;
                     }
-    |ar_instruction exp COMMA exp COMMA REG { lc++; }
-    |rego_instruction REG   { lc++; }
-    |ls_instruction REG COMMA REG COMMA REG {
-    node* v1=make_node("REGISTER",$2,NULL,NULL,NULL);
+    |ar_instruction exp COMMA exp COMMA REG {   node* v1=make_node("REGISTER", $6, NULL,NULL,NULL);
+                                                if($1==1) $$=make_node("ADD",-1,$2,$4,v1);
+                                                else if($1==2) $$=make_node("SUB",-1,$2,$4,v1);
+                                                else $$=make_node("MUL",-1,$2,$4,v1);
+                                                lc++; }
+    |rego_instruction REG   {  node* v1=make_node("REGISTER", $2, NULL,NULL,NULL);
+                               if($1==1) $$=make_node("CLEAR",-1,v1,NULL,NULL);
+                               else $$=make_node("INCR",-1,v1,NULL,NULL);
+                               lc++; }
+    |ls_instruction REG COMMA REG COMMA REG { node* v1=make_node("REGISTER",$2,NULL,NULL,NULL);
                                               node* v2=make_node("REGISTER",$4,NULL,NULL,NULL);
                                               node* v3=make_node("REGISTER",$6,NULL,NULL,NULL);
-                                                 lc++; }
-    |cond_instruction exp COMMA exp COMMA label { insert_symbol(last_string,-1); lc++;}
-    |label instruction { insert_symbol(last_string,lc); }
+                                              if($1==1) $$=make_node("LOAD",-1,v1,v2,v3);
+                                              else $$=make_node("STORE",-1,v1,v2,v3);
+                                              lc++; }
+    |cond_instruction exp COMMA exp COMMA label { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
+                                                  if($1==1) $$=make_node("EQ",-1,$2,$4,v1);
+                                                  else if($1==2) $$=make_node("LT",-1,$2,$4,v1);
+                                                  else  $$=make_node("GT",-1,$2,$4,v1);
+                                                  insert_symbol(last_string,-1);
+                                                  lc++;}
+    |label instruction { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
+                         $$=make_node("LABEL",-1,$2,NULL,NULL);
+                         insert_symbol(last_string,lc); }
     ;
 ls_instruction
-    :LOAD { $$=1;}
-    |STORE
+    :LOAD { $$=1; }
+    |STORE  { $$=2; }
     ;
 ar_instruction
-    :ADD
-    |SUB
-    |MUL
+    :ADD  { $$=1; }
+    |SUB  { $$=2; }
+    |MUL  { $$=3; }
     ;
 cond_instruction
-    :EQ
-    |LT
-    |GT
+    :EQ   { $$=1; }
+    |LT   { $$=2; }
+    |GT   { $$=3; }
     ;
 rego_instruction
-    :CLEAR
-    |INCR
+    :CLEAR  { $$=1; }
+    |INCR   { $$=2; }
     ;
 seq
     :VALUE
@@ -99,8 +114,8 @@ label
     |ID
     ;
 exp
-    :REG
-    |VALUE
+    :REG    { $$=make_node("REGISTER", $1, NULL,NULL,NULL); }
+    |VALUE  { $$=make_node("VALUE", $1, NULL,NULL,NULL); }
     ;
 
 %%

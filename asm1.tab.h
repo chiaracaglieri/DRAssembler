@@ -1,13 +1,14 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
-/* Bison interface for Yacc-like parsers in C
+/* Skeleton interface for Bison's Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Free Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,7 +16,9 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -30,67 +33,76 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_ASM1_TAB_H_INCLUDED
-# define YY_YY_ASM1_TAB_H_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 1
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
-
-/* Token type.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    VALUE = 258,
-    SEMICOLON = 259,
-    COMMA = 260,
-    REG = 261,
-    ID = 262,
-    LOAD = 263,
-    STORE = 264,
-    ADD = 265,
-    SUB = 266,
-    MUL = 267,
-    EQ = 268,
-    GT = 269,
-    LT = 270,
-    CLEAR = 271,
-    INCR = 272,
-    MEMLOC = 273,
-    MEMLOCS = 274,
-    LOC = 275,
-    REGVAL = 276,
-    END = 277,
-    START = 278
-  };
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     VALUE = 258,
+     SEMICOLON = 259,
+     COMMA = 260,
+     REG = 261,
+     ID = 262,
+     LOAD = 263,
+     STORE = 264,
+     ADD = 265,
+     SUB = 266,
+     MUL = 267,
+     EQ = 268,
+     GT = 269,
+     LT = 270,
+     CLEAR = 271,
+     INCR = 272,
+     MEMLOC = 273,
+     MEMLOCS = 274,
+     LOC = 275,
+     REGVAL = 276,
+     END = 277,
+     START = 278
+   };
 #endif
+/* Tokens.  */
+#define VALUE 258
+#define SEMICOLON 259
+#define COMMA 260
+#define REG 261
+#define ID 262
+#define LOAD 263
+#define STORE 264
+#define ADD 265
+#define SUB 266
+#define MUL 267
+#define EQ 268
+#define GT 269
+#define LT 270
+#define CLEAR 271
+#define INCR 272
+#define MEMLOC 273
+#define MEMLOCS 274
+#define LOC 275
+#define REGVAL 276
+#define END 277
+#define START 278
 
-/* Value type.  */
+
+
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
+typedef union YYSTYPE
+#line 11 "asm1.y"
 {
-#line 13 "asm1.y" /* yacc.c:1909  */
-
   int intval;
   char* str;
   struct node* nd;
-
-#line 84 "asm1.tab.h" /* yacc.c:1909  */
-};
-
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
+}
+/* Line 1529 of yacc.c.  */
+#line 101 "asm1.tab.h"
+	YYSTYPE;
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
 #endif
-
 
 extern YYSTYPE yylval;
 
-int yyparse (void);
-
-#endif /* !YY_YY_ASM1_TAB_H_INCLUDED  */

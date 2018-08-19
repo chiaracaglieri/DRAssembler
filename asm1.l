@@ -29,9 +29,9 @@
 "if<" return LT;
 "start" return START;
 "end"   return END;
-[R][0-9]* { last_string=yytext;
-            last_string=last_string.substr(1);
-            yylval.intval=stoi(last_string);
+[R][0-9]* { tmp=yytext;
+            tmp=tmp.substr(1);
+            yylval.intval=stoi(tmp);
             return REG;
 }
 [a-zA-Z][_a-zA-Z0-9]*   {last_string=yytext;

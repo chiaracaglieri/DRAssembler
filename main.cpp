@@ -8,6 +8,7 @@
 
 using namespace std;
 
+void yyparse(); //fix for MacOs
 
 int main(int argc,  char** argv) {
     lc=0;

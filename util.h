@@ -1,9 +1,10 @@
 #include <unordered_map>
-#include <variant>
+//#include <variant>
 #include <string>
 using namespace std;
 
 extern std::string last_string;
+extern std::string tmp;
 extern int last_value;
 extern std::unordered_map<std::string, int> symTable;
 extern int lc;

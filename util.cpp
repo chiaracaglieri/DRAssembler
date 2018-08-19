@@ -5,6 +5,7 @@
 using namespace std;
 
 std::string last_string;
+std::string tmp;
 int last_value;
 std::unordered_map<std::string, int> symTable;
 int lc;
