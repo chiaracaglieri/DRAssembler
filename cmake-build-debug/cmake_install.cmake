@@ -1,4 +1,4 @@
-# Install script for directory: /cygdrive/c/Users/chiar/Desktop/Tesi_cpp
+# Install script for directory: /Users/chiaracaglieri/Desktop/g/DRAssembler
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

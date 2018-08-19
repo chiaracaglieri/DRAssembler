@@ -34,19 +34,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /cygdrive/c/Users/chiar/.CLion2018.1/system/cygwin_cmake/bin/cmake.exe
+CMAKE_COMMAND = /Applications/CLion.app/Contents/bin/cmake/bin/cmake
 
 # The command to remove a file.
-RM = /cygdrive/c/Users/chiar/.CLion2018.1/system/cygwin_cmake/bin/cmake.exe -E remove -f
+RM = /Applications/CLion.app/Contents/bin/cmake/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /cygdrive/c/Users/chiar/Desktop/Tesi_cpp
+CMAKE_SOURCE_DIR = /Users/chiaracaglieri/Desktop/g/DRAssembler
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/Tesi.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/Tesi.dir/flags.make
 
 CMakeFiles/Tesi.dir/main.cpp.o: CMakeFiles/Tesi.dir/flags.make
 CMakeFiles/Tesi.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Tesi.dir/main.cpp.o"
-	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Tesi.dir/main.cpp.o -c /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Tesi.dir/main.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Tesi.dir/main.cpp.o -c /Users/chiaracaglieri/Desktop/g/DRAssembler/main.cpp
 
 CMakeFiles/Tesi.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Tesi.dir/main.cpp.i"
-	/usr/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/main.cpp > CMakeFiles/Tesi.dir/main.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/chiaracaglieri/Desktop/g/DRAssembler/main.cpp > CMakeFiles/Tesi.dir/main.cpp.i
 
 CMakeFiles/Tesi.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Tesi.dir/main.cpp.s"
-	/usr/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/main.cpp -o CMakeFiles/Tesi.dir/main.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/chiaracaglieri/Desktop/g/DRAssembler/main.cpp -o CMakeFiles/Tesi.dir/main.cpp.s
 
 CMakeFiles/Tesi.dir/main.cpp.o.requires:
 
@@ -83,16 +83,16 @@ CMakeFiles/Tesi.dir/main.cpp.o.provides.build: CMakeFiles/Tesi.dir/main.cpp.o
 
 CMakeFiles/Tesi.dir/data_structures.cpp.o: CMakeFiles/Tesi.dir/flags.make
 CMakeFiles/Tesi.dir/data_structures.cpp.o: ../data_structures.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Tesi.dir/data_structures.cpp.o"
-	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Tesi.dir/data_structures.cpp.o -c /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/data_structures.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Tesi.dir/data_structures.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Tesi.dir/data_structures.cpp.o -c /Users/chiaracaglieri/Desktop/g/DRAssembler/data_structures.cpp
 
 CMakeFiles/Tesi.dir/data_structures.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Tesi.dir/data_structures.cpp.i"
-	/usr/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/data_structures.cpp > CMakeFiles/Tesi.dir/data_structures.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/chiaracaglieri/Desktop/g/DRAssembler/data_structures.cpp > CMakeFiles/Tesi.dir/data_structures.cpp.i
 
 CMakeFiles/Tesi.dir/data_structures.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Tesi.dir/data_structures.cpp.s"
-	/usr/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/data_structures.cpp -o CMakeFiles/Tesi.dir/data_structures.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/chiaracaglieri/Desktop/g/DRAssembler/data_structures.cpp -o CMakeFiles/Tesi.dir/data_structures.cpp.s
 
 CMakeFiles/Tesi.dir/data_structures.cpp.o.requires:
 
@@ -113,15 +113,15 @@ Tesi_OBJECTS = \
 # External object files for target Tesi
 Tesi_EXTERNAL_OBJECTS =
 
-Tesi.exe: CMakeFiles/Tesi.dir/main.cpp.o
-Tesi.exe: CMakeFiles/Tesi.dir/data_structures.cpp.o
-Tesi.exe: CMakeFiles/Tesi.dir/build.make
-Tesi.exe: CMakeFiles/Tesi.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable Tesi.exe"
+Tesi: CMakeFiles/Tesi.dir/main.cpp.o
+Tesi: CMakeFiles/Tesi.dir/data_structures.cpp.o
+Tesi: CMakeFiles/Tesi.dir/build.make
+Tesi: CMakeFiles/Tesi.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable Tesi"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Tesi.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-CMakeFiles/Tesi.dir/build: Tesi.exe
+CMakeFiles/Tesi.dir/build: Tesi
 
 .PHONY : CMakeFiles/Tesi.dir/build
 
@@ -135,6 +135,6 @@ CMakeFiles/Tesi.dir/clean:
 .PHONY : CMakeFiles/Tesi.dir/clean
 
 CMakeFiles/Tesi.dir/depend:
-	cd /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /cygdrive/c/Users/chiar/Desktop/Tesi_cpp /cygdrive/c/Users/chiar/Desktop/Tesi_cpp /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug /cygdrive/c/Users/chiar/Desktop/Tesi_cpp/cmake-build-debug/CMakeFiles/Tesi.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/chiaracaglieri/Desktop/g/DRAssembler /Users/chiaracaglieri/Desktop/g/DRAssembler /Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug /Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug /Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug/CMakeFiles/Tesi.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/Tesi.dir/depend
 

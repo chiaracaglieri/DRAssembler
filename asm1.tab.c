@@ -120,10 +120,12 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "util.h"
 int yylex(void);
 inline void yyerror(const char *s) { std::cout << s << std::endl; }
 
+std::vector<int> v;
 
 
 /* Enabling traces.  */
@@ -146,14 +148,14 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 11 "asm1.y"
+#line 13 "asm1.y"
 {
   int intval;
   char* str;
   struct node* nd;
 }
 /* Line 193 of yacc.c.  */
-#line 157 "asm1.tab.c"
+#line 159 "asm1.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -166,7 +168,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 170 "asm1.tab.c"
+#line 172 "asm1.tab.c"
 
 #ifdef short
 # undef short
@@ -460,10 +462,10 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    33,    40,    45,    46,    50,    55,    58,
-      62,    67,    71,    77,    83,    88,    89,    92,    93,    94,
-      97,    98,    99,   102,   103,   106,   107,   111,   112,   115,
-     116
+       0,    34,    34,    35,    42,    47,    50,    54,    59,    62,
+      66,    71,    75,    81,    87,    92,    93,    96,    97,    98,
+     101,   102,   103,   106,   107,   110,   113,   117,   118,   121,
+     122
 };
 #endif
 
@@ -1394,12 +1396,12 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 32 "asm1.y"
+#line 34 "asm1.y"
     { (yyval.nd)=make_node("INSTRUCTION",-1,(yyvsp[(1) - (1)].nd),NULL,NULL);;}
     break;
 
   case 3:
-#line 33 "asm1.y"
+#line 35 "asm1.y"
     { node* i=make_node("INSTRUCTION",-1,(yyvsp[(1) - (2)].nd),NULL,NULL);
                               node* p=make_node("PROGRAM",-1,(yyvsp[(2) - (2)].nd),NULL,NULL);
                               (yyval.nd)=make_node("PROGRAM",-1,i,p,NULL);
@@ -1407,7 +1409,7 @@ yyreduce:
     break;
 
   case 4:
-#line 40 "asm1.y"
+#line 42 "asm1.y"
     { node* v1=make_node("VALUE",(yyvsp[(2) - (3)].intval),NULL,NULL,NULL);
                           node* v2=make_node("VALUE",(yyvsp[(3) - (3)].intval),NULL,NULL,NULL);
                           (yyval.nd)=make_node("MEMLOC",-1,v1,v2,NULL);
@@ -1416,12 +1418,14 @@ yyreduce:
     break;
 
   case 5:
-#line 45 "asm1.y"
-    { lc++; ;}
+#line 47 "asm1.y"
+    { node* v1=make_node("VALUE",(yyvsp[(2) - (3)].intval),NULL,NULL,NULL);
+                          (yyval.nd)=make_node("MEMLOCS",-1,v1,(yyvsp[(3) - (3)].nd),NULL);
+                          lc++; ;}
     break;
 
   case 6:
-#line 46 "asm1.y"
+#line 50 "asm1.y"
     { node* v1=make_node("VALUE",(yyvsp[(2) - (2)].intval),NULL,NULL,NULL);
                   (yyval.nd)=make_node("LOC",-1,v1,NULL,NULL);
                   lc++;
@@ -1429,7 +1433,7 @@ yyreduce:
     break;
 
   case 7:
-#line 50 "asm1.y"
+#line 54 "asm1.y"
     { node* v1=make_node("VALUE",(yyvsp[(2) - (3)].intval),NULL,NULL,NULL);
                           node* v2=make_node("VALUE",(yyvsp[(3) - (3)].intval),NULL,NULL,NULL);
                           (yyval.nd)=make_node("REGVAL",-1,v1,v2,NULL);
@@ -1438,14 +1442,14 @@ yyreduce:
     break;
 
   case 8:
-#line 55 "asm1.y"
+#line 59 "asm1.y"
     { (yyval.nd)=make_node("END",-1,NULL,NULL,NULL);
               lc++;
             ;}
     break;
 
   case 9:
-#line 58 "asm1.y"
+#line 62 "asm1.y"
     { node* v1=make_node("VALUE",(yyvsp[(2) - (2)].intval),NULL,NULL,NULL);
                       (yyval.nd)=make_node("START",-1,v1,NULL,NULL);
                       lc=last_value;
@@ -1453,7 +1457,7 @@ yyreduce:
     break;
 
   case 10:
-#line 62 "asm1.y"
+#line 66 "asm1.y"
     {   node* v1=make_node("REGISTER", (yyvsp[(6) - (6)].intval), NULL,NULL,NULL);
                                                 if((yyvsp[(1) - (6)].intval)==1) (yyval.nd)=make_node("ADD",-1,(yyvsp[(2) - (6)].nd),(yyvsp[(4) - (6)].nd),v1);
                                                 else if((yyvsp[(1) - (6)].intval)==2) (yyval.nd)=make_node("SUB",-1,(yyvsp[(2) - (6)].nd),(yyvsp[(4) - (6)].nd),v1);
@@ -1462,7 +1466,7 @@ yyreduce:
     break;
 
   case 11:
-#line 67 "asm1.y"
+#line 71 "asm1.y"
     {  node* v1=make_node("REGISTER", (yyvsp[(2) - (2)].intval), NULL,NULL,NULL);
                                if((yyvsp[(1) - (2)].intval)==1) (yyval.nd)=make_node("CLEAR",-1,v1,NULL,NULL);
                                else (yyval.nd)=make_node("INCR",-1,v1,NULL,NULL);
@@ -1470,7 +1474,7 @@ yyreduce:
     break;
 
   case 12:
-#line 71 "asm1.y"
+#line 75 "asm1.y"
     { node* v1=make_node("REGISTER",(yyvsp[(2) - (6)].intval),NULL,NULL,NULL);
                                               node* v2=make_node("REGISTER",(yyvsp[(4) - (6)].intval),NULL,NULL,NULL);
                                               node* v3=make_node("REGISTER",(yyvsp[(6) - (6)].intval),NULL,NULL,NULL);
@@ -1480,7 +1484,7 @@ yyreduce:
     break;
 
   case 13:
-#line 77 "asm1.y"
+#line 81 "asm1.y"
     { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                                                   if((yyvsp[(1) - (6)].intval)==1) (yyval.nd)=make_node("EQ",-1,(yyvsp[(2) - (6)].nd),(yyvsp[(4) - (6)].nd),v1);
                                                   else if((yyvsp[(1) - (6)].intval)==2) (yyval.nd)=make_node("LT",-1,(yyvsp[(2) - (6)].nd),(yyvsp[(4) - (6)].nd),v1);
@@ -1490,75 +1494,87 @@ yyreduce:
     break;
 
   case 14:
-#line 83 "asm1.y"
+#line 87 "asm1.y"
     { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                          (yyval.nd)=make_node("LABEL",-1,(yyvsp[(2) - (2)].nd),NULL,NULL);
                          insert_symbol(last_string,lc); ;}
     break;
 
   case 15:
-#line 88 "asm1.y"
-    { (yyval.intval)=1; ;}
-    break;
-
-  case 16:
-#line 89 "asm1.y"
-    { (yyval.intval)=2; ;}
-    break;
-
-  case 17:
 #line 92 "asm1.y"
     { (yyval.intval)=1; ;}
     break;
 
-  case 18:
+  case 16:
 #line 93 "asm1.y"
     { (yyval.intval)=2; ;}
     break;
 
+  case 17:
+#line 96 "asm1.y"
+    { (yyval.intval)=1; ;}
+    break;
+
+  case 18:
+#line 97 "asm1.y"
+    { (yyval.intval)=2; ;}
+    break;
+
   case 19:
-#line 94 "asm1.y"
+#line 98 "asm1.y"
     { (yyval.intval)=3; ;}
     break;
 
   case 20:
-#line 97 "asm1.y"
+#line 101 "asm1.y"
     { (yyval.intval)=1; ;}
     break;
 
   case 21:
-#line 98 "asm1.y"
+#line 102 "asm1.y"
     { (yyval.intval)=2; ;}
     break;
 
   case 22:
-#line 99 "asm1.y"
+#line 103 "asm1.y"
     { (yyval.intval)=3; ;}
     break;
 
   case 23:
-#line 102 "asm1.y"
+#line 106 "asm1.y"
     { (yyval.intval)=1; ;}
     break;
 
   case 24:
-#line 103 "asm1.y"
+#line 107 "asm1.y"
     { (yyval.intval)=2; ;}
     break;
 
+  case 25:
+#line 110 "asm1.y"
+    { v.push_back((yyvsp[(1) - (1)].intval));
+              (yyval.nd)=make_seq_node(v);
+              ;}
+    break;
+
+  case 26:
+#line 113 "asm1.y"
+    { v.push_back((yyvsp[(1) - (2)].intval)); ;}
+    break;
+
   case 29:
-#line 115 "asm1.y"
+#line 121 "asm1.y"
     { (yyval.nd)=make_node("REGISTER", (yyvsp[(1) - (1)].intval), NULL,NULL,NULL); ;}
     break;
 
   case 30:
-#line 116 "asm1.y"
+#line 122 "asm1.y"
     { (yyval.nd)=make_node("VALUE", (yyvsp[(1) - (1)].intval), NULL,NULL,NULL); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1562 "asm1.tab.c"
+#line 1578 "asm1.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1772,7 +1788,7 @@ yyreturn:
 }
 
 
-#line 119 "asm1.y"
+#line 125 "asm1.y"
 
 extern int yyparse();
 

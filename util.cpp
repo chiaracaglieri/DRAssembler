@@ -39,6 +39,20 @@ tree make_node(std::string type, int value, node* p1, node* p2, node* p3){
     return new_node;
 }
 
+tree make_seq_node(std::vector<int> seq){
+    tree new_node= new node;
+
+    new_node->lc=lc;
+    new_node->value=-1;
+    new_node->seq=seq;
+    new_node->type="SEQ";
+    new_node->param1=NULL;
+    new_node->param2=NULL;
+    new_node->param3=NULL;
+
+    return new_node;
+}
+
 void appendTree(node* node) {
     SynTree = node;
 }

@@ -1,5 +1,6 @@
 #include <unordered_map>
 //#include <variant>
+#include <vector>
 #include <string>
 using namespace std;
 
@@ -16,6 +17,7 @@ void insert_symbol(std::string,int);
 struct node{
     std::string type;
     int value;
+    std::vector<int> seq;
     int lc;
     node* param1;
     node* param2;
@@ -26,5 +28,6 @@ typedef struct node* tree;
 extern tree SynTree;
 
 tree make_node(std::string type, int value, node* p1, node* p2, node* p3);
+tree make_seq_node(std::vector<int> seq);
 
 void appendTree(node* node);
