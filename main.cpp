@@ -11,6 +11,9 @@ using namespace std;
 void yyparse(); //fix for MacOs
 
 int main(int argc,  char** argv) {
+
+    /*Pass 1*/
+
     lc=0;
     printf("Starting Pass 1...\n");
     yyparse();
@@ -20,6 +23,12 @@ int main(int argc,  char** argv) {
             SynTree->param2->param1->param1->param1->value <<"\n";*/
 
     std::ofstream outfile ("assembled.txt");
+
+    /*Pass 2*/
+    loadOptable();
+    cout << opTable["LOAD"] << "\n";
+    //Navigo l'AST e per ogni istruzione recupero il codice operativo associato
+    //per ogni label controllo la tabella dei simboli e traduco ogni istruzione in binario
 
     //outfile << "my text here!" << std::endl;
 

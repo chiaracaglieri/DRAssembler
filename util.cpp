@@ -1,5 +1,6 @@
 #include <unordered_map>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "util.h"
 using namespace std;
@@ -8,6 +9,8 @@ std::string last_string;
 std::string tmp;
 int last_value;
 std::unordered_map<std::string, int> symTable;
+std::unordered_map<std::string, std::string > opTable;
+
 int lc;
 
 bool find_symbol(std::string sym){
@@ -55,4 +58,15 @@ tree make_seq_node(std::vector<int> seq){
 
 void appendTree(node* node) {
     SynTree = node;
+}
+
+void loadOptable(){
+    ifstream opcodes ("optable.txt");
+
+    std::string word;
+    while(opcodes >> word){
+        std::string op=word;
+        opcodes >> word;
+        opTable[op]=word;
+    }
 }
