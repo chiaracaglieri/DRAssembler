@@ -27,6 +27,7 @@
 "if=" return EQ;
 "if>" return GT;
 "if<" return LT;
+"goto" return GOTO;
 "start" return START;
 "end"   return END;
 [R][0-9]* { tmp=yytext;

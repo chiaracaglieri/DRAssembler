@@ -22,9 +22,6 @@ parser: asm1.tab.o lex.yy.o main.o util.o
 run: parser
 	./parser < samplecode.txt
 
-run2: parser
-	./parser < smallsmp.txt
-
 clean:
 	rm -f *.o
 	rm -f asm1.tab.c lex.yy.c asm1.tab.h y.output stack.hh parser.exe assembled.txt

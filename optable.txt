@@ -32,3 +32,4 @@ SUB_IIR     1E
 SUB_IRR     1F
 SUB_RIR     20
 SUB_RRR     21
+GOTO        22

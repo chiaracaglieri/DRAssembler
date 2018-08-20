@@ -6,7 +6,7 @@
 int yylex(void);
 inline void yyerror(const char *s) { std::cout << s << std::endl; }
 
-std::vector<int> v;
+
 %}
 
 
@@ -22,7 +22,7 @@ std::vector<int> v;
 %token ID LOAD STORE
 %token ADD SUB MUL
 %token EQ GT LT
-%token CLEAR INCR
+%token CLEAR INCR GOTO
 %token MEMLOC MEMLOCS LOC REGVAL
 %token END START
 %start program
@@ -84,8 +84,14 @@ instruction
                                                   else  $$=make_node("GT",-1,$2,$4,v1);
                                                   insert_symbol(last_string,-1);
                                                   lc++;}
-    |ID SEMICOLON instruction { $$=make_node(last_string,-1,$3,NULL,NULL);
+    |ID SEMICOLON instruction { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
+                                $$=make_node("LABEL",-1,v1,$3,NULL);
                                 insert_symbol(last_string,lc); }
+    |GOTO ID {  insert_symbol(last_string,lc);
+                node* v1=make_node(last_string,-1,NULL,NULL,NULL);
+                $$=make_node("GOTO",-1,v1,NULL,NULL);
+                lc++;
+             }
     ;
 ls_instruction
     :LOAD { $$=1; }
