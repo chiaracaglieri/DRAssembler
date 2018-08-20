@@ -11,6 +11,7 @@ extern int last_value;
 extern std::unordered_map<std::string, int> symTable;
 extern std::unordered_map<std::string,std::string> opTable;
 extern int lc;
+extern std::ofstream outfile;
 bool find_symbol(std::string);
 void insert_symbol(std::string,int);
 
@@ -34,5 +35,6 @@ tree make_seq_node(std::vector<int> seq);
 
 void appendTree(node* node);
 
+void VisitTree(node*);
 /*  Optable utilities */
 void loadOptable();

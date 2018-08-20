@@ -78,15 +78,14 @@ instruction
                                               if($1==1) $$=make_node("LOAD",-1,v1,v2,v3);
                                               else $$=make_node("STORE",-1,v1,v2,v3);
                                               lc++; }
-    |cond_instruction exp COMMA exp COMMA label { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
+    |cond_instruction exp COMMA exp COMMA ID {    node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                                                   if($1==1) $$=make_node("EQ",-1,$2,$4,v1);
                                                   else if($1==2) $$=make_node("LT",-1,$2,$4,v1);
                                                   else  $$=make_node("GT",-1,$2,$4,v1);
                                                   insert_symbol(last_string,-1);
                                                   lc++;}
-    |label instruction { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
-                         $$=make_node("LABEL",-1,$2,NULL,NULL);
-                         insert_symbol(last_string,lc); }
+    |ID SEMICOLON instruction { $$=make_node(last_string,-1,$3,NULL,NULL);
+                                insert_symbol(last_string,lc); }
     ;
 ls_instruction
     :LOAD { $$=1; }
@@ -113,10 +112,6 @@ seq
     |VALUE seq  { v.push_back($1); }
     ;
 
-label
-    :ID SEMICOLON
-    |ID
-    ;
 exp
     :REG    { $$=make_node("REGISTER", $1, NULL,NULL,NULL); }
     |VALUE  { $$=make_node("VALUE", $1, NULL,NULL,NULL); }
