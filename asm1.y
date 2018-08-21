@@ -3,10 +3,9 @@
 #include <string>
 #include <vector>
 #include "util.h"
+
 int yylex(void);
 inline void yyerror(const char *s) { std::cout << s << std::endl; }
-
-
 %}
 
 
@@ -35,7 +34,7 @@ program
     |instruction program    { node* i=make_node("INSTRUCTION",-1,$1,NULL,NULL);
                               node* p=make_node("PROGRAM",-1,$2,NULL,NULL);
                               $$=make_node("PROGRAM",-1,i,p,NULL);
-                              appendTree($$);}
+                              append_tree($$);}
     ;
 
 instruction
@@ -61,7 +60,7 @@ instruction
             }
     |START VALUE    { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
                       $$=make_node("START",-1,v1,NULL,NULL);
-                      lc=last_value;
+                      lc=$2;
                     }
     |ar_instruction exp COMMA exp COMMA REG {   node* v1=make_node("REGISTER", $6, NULL,NULL,NULL);
                                                 if($1==1) $$=make_node("ADD",-1,$2,$4,v1);
@@ -124,4 +123,3 @@ exp
     ;
 
 %%
-extern int yyparse();

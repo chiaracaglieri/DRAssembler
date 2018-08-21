@@ -5,38 +5,58 @@
 #include <sstream>
 #include <bitset>
 #include "util.h"
+
 using namespace std;
 
-std::string last_string;
-std::string tmp;
-std::vector<int> v;
-int last_value;
-std::unordered_map<std::string, int> symTable;
-std::unordered_map<std::string, std::string > opTable;
+string last_string;                     //Contains the last identifier found
+string tmp;                             //Used to manipulate register identifiers
+vector<int> v;                          //Contains the values for memlocs
+int lc;                                 //Location Counter
+ofstream outfile ("assembled.txt");     //Contains the resulting binary code
+unordered_map<string, string > opTable;
+unordered_map<string, int> symTable;
 
-int lc;
-std::ofstream outfile ("assembled.txt");
-
-int find_symbol(std::string sym){
+/*  Symbol Table functions  */
+/** \function find_symbol
+  * \brief Searches for symbol in Symbol Table.
+  * \param sym the symbol to be found
+  * \return symTable[sym] value of lc associated with sym
+  *         -1 if unsuccessful
+  */
+int find_symbol(string sym){
     if(symTable.find(sym)!=symTable.end())
         return symTable[sym];
     else return -1;
 }
 
-void insert_symbol(std::string sym, int lc){
+/** \function insert_symbol
+  * \brief Inserts symbol in Symbol Table.
+  * \param sym the symbol to be inserted
+  * \param lc the location counter associated with the symbol
+  *        (-1 if LC is not relevant)
+  */
 
-    if(find_symbol(sym)!=-1) cout << "Symbol already" << "\n";
-    else {symTable[sym]=lc; cout << "Symbol " << sym << " inserted at position " << lc << "\n";}
+void insert_symbol(string sym, int lc){
+
+    if(find_symbol(sym)!=-1) cout << "Symbol " << sym << " is already in Symbol Table" << endl;
+    else {symTable[sym]=lc; cout << "Symbol " << sym << " inserted at position " << lc << endl;}
 }
 
-/*AST Function Implementation*/
+/*Syntax Tree Functions    */
 
 tree SynTree=NULL;
 
-tree make_node(std::string type, int value, node* p1, node* p2, node* p3){
+/** \function make_node
+  * \brief Creates a new node
+  * \param type the type of node
+  * \param value the associated value
+  * \param p1 pointer to first child node
+  * \param p2 pointer to second child node
+  * \param p3 pointer to third child node
+  * \return new_node
+  */
+tree make_node(string type, int value, node* p1, node* p2, node* p3){
     tree new_node= new node;
-
-    new_node->lc=lc;
     new_node->value=value;
     new_node->type=type;
     new_node->param1=p1;
@@ -46,10 +66,13 @@ tree make_node(std::string type, int value, node* p1, node* p2, node* p3){
     return new_node;
 }
 
-tree make_seq_node(std::vector<int> seq){
+/** \function make_seq_node
+  * \brief Creates a new node of type SEQ
+  * \param seq the vector to be inserted into the node
+  * \return new_node
+  */
+tree make_seq_node(vector<int> seq){
     tree new_node= new node;
-
-    new_node->lc=lc;
     new_node->value=-1;
     new_node->seq=seq;
     new_node->type="SEQ";
@@ -60,11 +83,20 @@ tree make_seq_node(std::vector<int> seq){
     return new_node;
 }
 
-void appendTree(node* node) {
+/** \function append_tree
+  * \brief Istantiates the root of the tree
+  * \param node the node to be set as the root
+  */
+void append_tree(node* node) {
     SynTree = node;
 }
 
-bitset<8> getOpcodeBinary(std::string s){
+/** \function get_opcode_binary
+  * \brief Generates binary value for hex opcode
+  * \param s the type of instruction
+  * \return b the binary opcode
+  */
+bitset<8> get_opcode_binary(string s){
     stringstream ss;
     ss << hex << opTable[s];
     unsigned n;
@@ -73,223 +105,233 @@ bitset<8> getOpcodeBinary(std::string s){
     return b;
 }
 
-std::string getParamBinary(int v){
+/** \function get_param_binary
+  * \brief Generates binary value for int value
+  * \param v the int value
+  * \return b.toString() the binary equivalent for v
+  */
+string get_param_binary(int v){
     bitset<16> b(v);
     return b.to_string();
 }
 
-void VisitTree(node* tmp){
+/** \function visit_tree
+  * \brief Recursively visits the syntax tree and generates binary values
+  * \param tmp the current node to visit
+  */
+void visit_tree(node* tmp){
 
     if(tmp==NULL) return;
-    if(tmp->type!="INSTRUCTION" && tmp->type!="PROGRAM"){cout << "Im visiting the node: " << tmp->type << "\n";}
     if(tmp->type=="PROGRAM" || tmp->type=="INSTRUCTION"){
-        VisitTree(tmp->param1);
-        VisitTree(tmp->param2);
-        VisitTree(tmp->param3);
+        visit_tree(tmp->param1);
+        visit_tree(tmp->param2);
+        visit_tree(tmp->param3);
     }
     else if(tmp->type=="ADD" || tmp->type=="SUB" || tmp->type=="MUL"){   //Expected 3 parameters
         if(tmp->type=="ADD"){
             if(tmp->param1->type=="REGISTER" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("ADD_RRR");
+                bitset<8> bin=get_opcode_binary("ADD_RRR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("ADD_IRR");
+                bitset<8> bin=get_opcode_binary("ADD_IRR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="REGISTER" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("ADD_RIR");
+                bitset<8> bin=get_opcode_binary("ADD_RIR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("ADD_IIR");
+                bitset<8> bin=get_opcode_binary("ADD_IIR");
                 outfile << bin.to_string() << " ";
             }
         }
 
         if(tmp->type=="SUB"){
             if(tmp->param1->type=="REGISTER" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("SUB_RRR");
+                bitset<8> bin=get_opcode_binary("SUB_RRR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("SUB_IRR");
+                bitset<8> bin=get_opcode_binary("SUB_IRR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="REGISTER" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("SUB_RIR");
+                bitset<8> bin=get_opcode_binary("SUB_RIR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("SUB_IIR");
+                bitset<8> bin=get_opcode_binary("SUB_IIR");
                 outfile << bin.to_string() << " ";
             }
         }
 
         if(tmp->type=="MUL"){
             if(tmp->param1->type=="REGISTER" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("MUL_RRR");
+                bitset<8> bin=get_opcode_binary("MUL_RRR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("MUL_IRR");
+                bitset<8> bin=get_opcode_binary("MUL_IRR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="REGISTER" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("MUL_RIR");
+                bitset<8> bin=get_opcode_binary("MUL_RIR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("MUL_IIR");
+                bitset<8> bin=get_opcode_binary("MUL_IIR");
                 outfile << bin.to_string() << " ";
             }
         }
 
-        std::string val=getParamBinary(tmp->param1->value);
+        string val=get_param_binary(tmp->param1->value);
         outfile << val << " ";
-        val=getParamBinary(tmp->param2->value);
+        val=get_param_binary(tmp->param2->value);
         outfile << val << " ";
-        val=getParamBinary(tmp->param3->value);
-        outfile << val<< std::endl;
+        val=get_param_binary(tmp->param3->value);
+        outfile << val<< endl;
         return;
     }
     else if(tmp->type=="EQ" || tmp->type=="LT" || tmp->type=="GT"){   //Expected 3 parameters, last one is a label
         if(tmp->type=="EQ"){
             if(tmp->param1->type=="REGISTER" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("EQ_RR");
+                bitset<8> bin=get_opcode_binary("EQ_RR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("EQ_IR");
+                bitset<8> bin=get_opcode_binary("EQ_IR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="REGISTER" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("EQ_RI");
+                bitset<8> bin=get_opcode_binary("EQ_RI");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("EQ_II");
+                bitset<8> bin=get_opcode_binary("EQ_II");
                 outfile << bin.to_string() << " ";
             }
         }
 
         if(tmp->type=="LT"){
             if(tmp->param1->type=="REGISTER" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("LT_RR");
+                bitset<8> bin=get_opcode_binary("LT_RR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("LT_IR");
+                bitset<8> bin=get_opcode_binary("LT_IR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="REGISTER" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("LT_RI");
+                bitset<8> bin=get_opcode_binary("LT_RI");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("LT_II");
+                bitset<8> bin=get_opcode_binary("LT_II");
                 outfile << bin.to_string() << " ";
             }
         }
 
         if(tmp->type=="GT"){
             if(tmp->param1->type=="REGISTER" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("GT_RR");
+                bitset<8> bin=get_opcode_binary("GT_RR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="REGISTER" ){
-                bitset<8> bin=getOpcodeBinary("GT_IR");
+                bitset<8> bin=get_opcode_binary("GT_IR");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="REGISTER" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("GT_RI");
+                bitset<8> bin=get_opcode_binary("GT_RI");
                 outfile << bin.to_string() << " ";
             }
             else if(tmp->param1->type=="VALUE" && tmp->param2->type=="VALUE" ){
-                bitset<8> bin=getOpcodeBinary("GT_II");
+                bitset<8> bin=get_opcode_binary("GT_II");
                 outfile << bin.to_string() << " ";
             }
         }
 
-        std::string val=getParamBinary(tmp->param1->value);
+        string val=get_param_binary(tmp->param1->value);
         outfile << val << " ";
-        val=getParamBinary(tmp->param2->value);
+        val=get_param_binary(tmp->param2->value);
         outfile << val << " ";
         int addr=find_symbol(tmp->param3->type);
-        if(addr==-1) cout << "Error, symbol not in Symbol Table!" <<"\n";
+        if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
-            val = getParamBinary(addr);
-            outfile << val << std::endl;
+            val = get_param_binary(addr);
+            outfile << val << endl;
         }
         return;
     }
     else if(tmp->type=="LABEL"){
         int addr=find_symbol(tmp->param1->type);
-        if(addr==-1) cout << "Error, symbol not in Symbol Table!" <<"\n";
-        else VisitTree(tmp->param2);
+        if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
+        else visit_tree(tmp->param2);
     }
     else{
-            bitset<8> bin=getOpcodeBinary(tmp->type);
+            bitset<8> bin=get_opcode_binary(tmp->type);
             outfile << bin.to_string() << " ";
         }
 
 
     if(tmp->type=="MEMLOC" || tmp->type=="REGVAL"){ //Expected two integer values
 
-        std::string val=getParamBinary(tmp->param1->value);
+        string val=get_param_binary(tmp->param1->value);
         outfile << val << " ";
-        val=getParamBinary(tmp->param2->value);
-        outfile << val<< std::endl;
+        val=get_param_binary(tmp->param2->value);
+        outfile << val<< endl;
         return;
 
     }
 
     if(tmp->type=="LOC" || tmp->type=="START" || tmp->type=="CLEAR" || tmp->type=="INCR"){ //Expected one integer value
-        std::string val=getParamBinary(tmp->param1->value);
-        outfile << val << std::endl;
+        string val=get_param_binary(tmp->param1->value);
+        outfile << val << endl;
         return;
     }
 
     if(tmp->type=="LOAD" || tmp->type=="STORE"){ //Expected three values
-        std::string val=getParamBinary(tmp->param1->value);
+        string val=get_param_binary(tmp->param1->value);
         outfile << val << " ";
-        val=getParamBinary(tmp->param2->value);
+        val=get_param_binary(tmp->param2->value);
         outfile << val << " ";
-        val=getParamBinary(tmp->param3->value);
-        outfile << val<< std::endl;
+        val=get_param_binary(tmp->param3->value);
+        outfile << val<< endl;
         return;
     }
     if(tmp->type=="MEMLOCS"){   //Multiple parameters
-        std::string val=getParamBinary(tmp->param1->value);
+        string val=get_param_binary(tmp->param1->value);
         outfile << val << " ";
 
-
         for(int i=0; i<v.size(); i++){
-            val=getParamBinary(v[i]);
+            val=get_param_binary(v[i]);
             outfile << val << " ";
         }
 
-        outfile << std::endl;
+        outfile << endl;
     }
 
     if(tmp->type=="GOTO"){
         int addr=find_symbol(tmp->param1->type);
-        if(addr==-1) cout << "Error, symbol not in Symbol Table!" <<"\n";
+        if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
-            std::string val = getParamBinary(addr);
-            outfile << val << std::endl;
+            string val = get_param_binary(addr);
+            outfile << val << endl;
         }
         return;
     }
 
 }
-
-void loadOptable(){
+/** \function load_optable
+  * \brief Reads opcodes from text file and insertes them into a
+  *        map structure
+  */
+void load_optable(){
     ifstream opcodes ("optable.txt");
 
-    std::string word;
+    string word;
     while(opcodes >> word){
-        std::string op=word;
+        string op=word;
         opcodes >> word;
         opTable[op]=word;
     }

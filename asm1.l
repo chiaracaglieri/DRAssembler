@@ -1,12 +1,7 @@
 %{
-
-#include <cstdlib>
 #include <string>
-#include <iostream>
 #include "util.h"
 #include "asm1.tab.h"
-
-
 %}
 
 %option noyywrap
@@ -38,7 +33,7 @@
 [a-zA-Z][_a-zA-Z0-9]*   {last_string=yytext;
                          return ID;
                         }
-[0-9]* {last_value=atoi(yytext); yylval.intval=atoi(yytext); return VALUE;}
+[0-9]* {yylval.intval=atoi(yytext); return VALUE;}
 [:] return SEMICOLON;
 [,] return COMMA;
 [$^ \t\n]+ ;
