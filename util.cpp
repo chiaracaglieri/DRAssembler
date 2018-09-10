@@ -10,7 +10,7 @@ using namespace std;
 
 string last_string;                     //Contains the last identifier found
 string tmp;                             //Used to manipulate register identifiers
-vector<int> v;                          //Contains the values for memlocs
+deque<int> v;                           //Contains the values for memlocs
 int lc;                                 //Location Counter
 ofstream outfile ("assembled.txt");     //Contains the resulting binary code
 unordered_map<string, string > opTable;
@@ -71,7 +71,7 @@ tree make_node(string type, int value, node* p1, node* p2, node* p3){
   * \param seq the vector to be inserted into the node
   * \return new_node
   */
-tree make_seq_node(vector<int> seq){
+tree make_seq_node(deque<int> seq){
     tree new_node= new node;
     new_node->value=-1;
     new_node->seq=seq;
@@ -79,7 +79,7 @@ tree make_seq_node(vector<int> seq){
     new_node->param1=NULL;
     new_node->param2=NULL;
     new_node->param3=NULL;
-
+    v.clear();
     return new_node;
 }
 
@@ -191,6 +191,7 @@ void visit_tree(node* tmp){
         outfile << val << " ";
         val=get_param_binary(tmp->param3->value);
         outfile << val<< endl;
+
         return;
     }
     else if(tmp->type=="EQ" || tmp->type=="LT" || tmp->type=="GT"){   //Expected 3 parameters, last one is a label
@@ -302,12 +303,10 @@ void visit_tree(node* tmp){
     if(tmp->type=="MEMLOCS"){   //Multiple parameters
         string val=get_param_binary(tmp->param1->value);
         outfile << val << " ";
-
-        for(int i=0; i<v.size(); i++){
-            val=get_param_binary(v[i]);
+        for(int i=0; i<tmp->param2->seq.size(); i++){
+            val=get_param_binary(tmp->param2->seq[i]);
             outfile << val << " ";
         }
-
         outfile << endl;
     }
 

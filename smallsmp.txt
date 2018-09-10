@@ -1,3 +1,0 @@
-memloc  1024    7
-clear   R5
-end

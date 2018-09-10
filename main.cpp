@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void yyparse(); //eliminates compile error
+/*void yyparse();*/ //eliminates compile error
 
 int main(int argc,  char** argv) {
 

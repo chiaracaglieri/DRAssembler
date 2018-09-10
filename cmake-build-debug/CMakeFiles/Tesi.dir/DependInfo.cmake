@@ -4,10 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/chiaracaglieri/Desktop/g/DRAssembler/data_structures.cpp" "/Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug/CMakeFiles/Tesi.dir/data_structures.cpp.o"
-  "/Users/chiaracaglieri/Desktop/g/DRAssembler/main.cpp" "/Users/chiaracaglieri/Desktop/g/DRAssembler/cmake-build-debug/CMakeFiles/Tesi.dir/main.cpp.o"
+  "/home/chiara/Scrivania/DRAssembler/data_structures.cpp" "/home/chiara/Scrivania/DRAssembler/cmake-build-debug/CMakeFiles/Tesi.dir/data_structures.cpp.o"
+  "/home/chiara/Scrivania/DRAssembler/main.cpp" "/home/chiara/Scrivania/DRAssembler/cmake-build-debug/CMakeFiles/Tesi.dir/main.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "AppleClang")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

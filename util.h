@@ -1,5 +1,5 @@
 #include <unordered_map>
-#include <vector>
+#include <deque>
 #include <string>
 #include <fstream>
 
@@ -7,7 +7,7 @@ using namespace std;
 
 extern string last_string;                      //Contains the last identifier found
 extern string tmp;                              //Used to manipulate register identifiers
-extern vector<int> v;                           //Contains the values for memlocs
+extern deque<int> v;                            //Contains the values for memlocs
 extern int lc;                                  //Location Counter
 extern ofstream outfile;                        //Contains the resulting binary code
 
@@ -23,7 +23,7 @@ void insert_symbol(string,int);
 struct node{
     string type;        //Indicates type of node(ADD,MUL,LOAD,LABEL...)
     int value;          //For VALUE type nodes, it stores the associated numerical value
-    vector<int> seq;    //Used only for MEMLOCS type nodes, contains parameter values
+    deque<int> seq;     //Used only for MEMLOCS type nodes, contains parameter values
     node* param1;       //Pointer to first child node
     node* param2;       //Pointer to second child node
     node* param3;       //Pointer to third child node
@@ -33,7 +33,7 @@ typedef struct node* tree;
 extern tree SynTree;
 
 tree make_node(string type, int value, node* p1, node* p2, node* p3);
-tree make_seq_node(vector<int> seq);
+tree make_seq_node(deque<int> seq);
 void append_tree(node* node);
 void visit_tree(node*);
 

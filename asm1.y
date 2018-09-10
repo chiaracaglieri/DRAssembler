@@ -1,7 +1,7 @@
 %{
 #include <iostream>
 #include <string>
-#include <vector>
+#include <deque>
 #include "util.h"
 
 int yylex(void);
@@ -44,7 +44,8 @@ instruction
                           lc++;
                         }
     |MEMLOCS VALUE seq  { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
-                          $$=make_node("MEMLOCS",-1,v1,$3,NULL);
+                          node* v2=make_seq_node(v);
+                          $$=make_node("MEMLOCS",-1,v1,v2,NULL);
                           lc++; }
     |LOC VALUE  { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
                   $$=make_node("LOC",-1,v1,NULL,NULL);
@@ -111,10 +112,8 @@ rego_instruction
     |INCR   { $$=2; }
     ;
 seq
-    :VALUE  { v.push_back($1);
-              $$=make_seq_node(v);
-              }
-    |VALUE seq  { v.push_back($1); }
+    :VALUE  { v.push_front($1); }
+    |VALUE seq  { v.push_front($1); }
     ;
 
 exp
