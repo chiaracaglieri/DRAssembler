@@ -14,7 +14,7 @@ regval  3 	4096
 regval  4       3
 start   1024
 loc     1024
-	add R0,R0,R9
+	add R0,800,R9
 	clear R10
 loop:   load R1,R9,R20
 	load R2,R9,R30

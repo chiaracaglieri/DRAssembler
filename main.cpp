@@ -24,6 +24,8 @@ int main(int argc,  char** argv) {
     visit_tree(tmp); //Recursively visits the tree
 
     outfile.close();
+    reg_out.close();
+    mem_out.close();
 
     cout << "Pass 2 terminated, binary file created" << std::endl;
 

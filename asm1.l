@@ -13,6 +13,7 @@
 "memlocs" return MEMLOCS;
 "regval" return REGVAL;
 "clear" return CLEAR;
+"decr"  return DECR;
 "incr" return INCR;
 "add" return ADD;
 "sub" return SUB;

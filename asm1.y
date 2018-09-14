@@ -21,7 +21,7 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token ID LOAD STORE
 %token ADD SUB MUL
 %token EQ GT LT
-%token CLEAR INCR GOTO
+%token CLEAR INCR DECR GOTO
 %token MEMLOC MEMLOCS LOC REGVAL
 %token END START
 %start program
@@ -31,38 +31,30 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 
 program
     :instruction    { $$=make_node("INSTRUCTION",-1,$1,NULL,NULL);}
+    |state program  {}
     |instruction program    { node* i=make_node("INSTRUCTION",-1,$1,NULL,NULL);
                               node* p=make_node("PROGRAM",-1,$2,NULL,NULL);
                               $$=make_node("PROGRAM",-1,i,p,NULL);
                               append_tree($$);}
     ;
 
-instruction
-    :MEMLOC VALUE VALUE { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
-                          node* v2=make_node("VALUE",$3,NULL,NULL,NULL);
-                          $$=make_node("MEMLOC",-1,v1,v2,NULL);
-                          lc++;
-                        }
-    |MEMLOCS VALUE seq  { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
-                          node* v2=make_seq_node(v);
-                          $$=make_node("MEMLOCS",-1,v1,v2,NULL);
-                          lc++; }
-    |LOC VALUE  { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
-                  $$=make_node("LOC",-1,v1,NULL,NULL);
-                  lc++;
+state
+    :MEMLOC VALUE VALUE { initMemloc($2,$3); }
+    |MEMLOCS VALUE seq  { initMemlocs($2,v); }
+    |LOC VALUE  {   mem_out<< "l"<<"\t"<<$2<<endl;
                 }
-    |REGVAL VALUE VALUE { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
-                          node* v2=make_node("VALUE",$3,NULL,NULL,NULL);
-                          $$=make_node("REGVAL",-1,v1,v2,NULL);
-                          lc++;
-                        }
-    |END    { $$=make_node("END",-1,NULL,NULL,NULL);
-              lc++;
+    |REGVAL VALUE VALUE { initRegister($2,$3); }
+    |START VALUE    { mem_out<< "s"<<"\t"<<$2<<endl;
+                      lc=$2-1; }
+    ;
+
+
+instruction
+
+    :END    { $$=make_node("END",-1,NULL,NULL,NULL);
+
             }
-    |START VALUE    { node* v1=make_node("VALUE",$2,NULL,NULL,NULL);
-                      $$=make_node("START",-1,v1,NULL,NULL);
-                      lc=$2;
-                    }
+
     |ar_instruction exp COMMA exp COMMA REG {   node* v1=make_node("REGISTER", $6, NULL,NULL,NULL);
                                                 if($1==1) $$=make_node("ADD",-1,$2,$4,v1);
                                                 else if($1==2) $$=make_node("SUB",-1,$2,$4,v1);
@@ -70,7 +62,8 @@ instruction
                                                 lc++; }
     |rego_instruction REG   {  node* v1=make_node("REGISTER", $2, NULL,NULL,NULL);
                                if($1==1) $$=make_node("CLEAR",-1,v1,NULL,NULL);
-                               else $$=make_node("INCR",-1,v1,NULL,NULL);
+                               else if($1==2) $$=make_node("INCR",-1,v1,NULL,NULL);
+                               else if($1==3) $$=make_node("DECR",-1,v1,NULL,NULL);
                                lc++; }
     |ls_instruction REG COMMA REG COMMA REG { node* v1=make_node("REGISTER",$2,NULL,NULL,NULL);
                                               node* v2=make_node("REGISTER",$4,NULL,NULL,NULL);
@@ -86,7 +79,7 @@ instruction
                                                   lc++;}
     |ID SEMICOLON instruction { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                                 $$=make_node("LABEL",-1,v1,$3,NULL);
-                                insert_symbol(last_string,lc); }
+                                insert_symbol(last_string,lc); lc++; }
     |GOTO ID {  insert_symbol(last_string,lc);
                 node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                 $$=make_node("GOTO",-1,v1,NULL,NULL);
@@ -110,6 +103,7 @@ cond_instruction
 rego_instruction
     :CLEAR  { $$=1; }
     |INCR   { $$=2; }
+    |DECR   { $$=3; }
     ;
 seq
     :VALUE  { v.push_front($1); }

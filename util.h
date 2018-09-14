@@ -10,6 +10,12 @@ extern string tmp;                              //Used to manipulate register id
 extern deque<int> v;                            //Contains the values for memlocs
 extern int lc;                                  //Location Counter
 extern ofstream outfile;                        //Contains the resulting binary code
+extern ofstream reg_out;
+extern ofstream mem_out;
+
+void initRegister(int r, int v);
+void initMemloc(int l, int v);
+void initMemlocs(int l, deque<int> v);
 
 
 /*  Symbol Table    */
@@ -23,7 +29,7 @@ void insert_symbol(string,int);
 struct node{
     string type;        //Indicates type of node(ADD,MUL,LOAD,LABEL...)
     int value;          //For VALUE type nodes, it stores the associated numerical value
-    deque<int> seq;     //Used only for MEMLOCS type nodes, contains parameter values
+    int lc;             //Location counter
     node* param1;       //Pointer to first child node
     node* param2;       //Pointer to second child node
     node* param3;       //Pointer to third child node
@@ -33,7 +39,6 @@ typedef struct node* tree;
 extern tree SynTree;
 
 tree make_node(string type, int value, node* p1, node* p2, node* p3);
-tree make_seq_node(deque<int> seq);
 void append_tree(node* node);
 void visit_tree(node*);
 

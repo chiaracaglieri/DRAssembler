@@ -27,5 +27,5 @@ valgrind: parser
 
 clean:
 	rm -f *.o
-	rm -f asm1.tab.c lex.yy.c asm1.tab.h y.output stack.hh parser.exe assembled.txt
+	rm -f asm1.tab.c lex.yy.c asm1.tab.h y.output stack.hh parser.exe assembled.txt memory.txt registers.txt
 
