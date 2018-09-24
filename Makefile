@@ -19,13 +19,25 @@ main.o: main.cpp
 parser: asm1.tab.o lex.yy.o main.o util.o
 	g++ -g -o parser asm1.tab.o lex.yy.o main.o util.o
 
-run: parser
+parse: parser
 	./parser < samplecode.txt
+
+state.o: state.cpp
+	g++ -c state.cpp
+
+interpreter.o: interpreter.cpp
+	g++ -c interpreter.cpp
+
+interpreter: interpreter.o state.o
+	g++ -g -o interpreter interpreter.o state.o
+
+run: interpreter
+	./interpreter
 
 valgrind: parser
 	valgrind --leak-check=full ./parser < samplecode.txt
 
 clean:
 	rm -f *.o
-	rm -f asm1.tab.c lex.yy.c asm1.tab.h y.output stack.hh parser.exe assembled.txt memory.txt registers.txt
+	rm -f asm1.tab.c lex.yy.c asm1.tab.h y.output stack.hh assembled.txt memory.txt registers.txt
 
