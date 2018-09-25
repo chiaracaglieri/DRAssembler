@@ -250,10 +250,8 @@ void visit_tree(node* tmp){
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
             int relative=addr-tmp->lc;
-            cout << relative << endl;
             if(relative<=63){ //representable on 6 bits two-complement
                     val=get_param_binary(relative);
-                    cout << val << endl;
                     outfile << val << endl;
                 }
             else if(relative<=2047){   //representable on 12 bits two-complement

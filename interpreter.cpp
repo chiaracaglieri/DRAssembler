@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <SFML/Graphics.hpp>
 #include "state.h"
 
 using namespace std;
@@ -19,6 +20,10 @@ int get_int(string s, int nbits){
     }
     if(nbits==12){
         bitset<12> b(s);
+        if(b[11]==1){
+            b.flip();
+            return (int)(b.to_ulong()+1)*(-1);
+        }
         return (int)(b.to_ulong());
     }
     else{
@@ -35,9 +40,9 @@ void execute(string op, string a, string b, string c, bool p4){
     if(!c.empty()) p3=get_int(c,6);
     if(op=="ADD"){
         regTable[p3]=regTable[p1]+regTable[p2];
-        cout << regTable[p3] << endl;
+        //cout << regTable[p3] << endl;
     }
-    if(op=="ADD_I"){
+    else if(op=="ADD_I"){
         int value=0;
         if(regTable.count(p1)!=0){
             value=regTable[p1]+p2;
@@ -50,25 +55,97 @@ void execute(string op, string a, string b, string c, bool p4){
     else if(op=="CLEAR"){
         regTable[p1]=0;
     }
+    else if(op=="DECR"){
+        regTable[p1]--;
+    }
+    else if(op=="EQ"){
+        if(regTable[p1]==regTable[p2]){
+            i+=p3-1;
+            //cout << i  << endl;
+        }
+    }
+    else if(op=="EQ_0"){
+        if(regTable[p1]==0){
+            i+=p3-1;
+            //cout << i  << endl;
+        }
+    }
+    else if(op=="GT"){
+        if(regTable[p1]>regTable[p2]){
+            i+=p3-1;
+            //cout << i  << endl;
+        }
+    }
+    else if(op=="GT_0"){
+        if(regTable[p1]>0){
+            i+=p3-1;
+            //cout << i  << endl;
+        }
+    }
+
     else if(op=="INCR"){
         regTable[p1]++;
-        cout << regTable[p1] << endl;
+        //cout << regTable[p1] << endl;
     }
     else if(op=="LOAD"){
         int addr=regTable[p1]+regTable[p2];
         regTable[p3]=memTable[addr];
-        cout << regTable[p3] << endl;
+        //cout << regTable[p3] << endl;
+    }
+    else if(op=="LOAD_I"){
+        int addr=regTable[p1]+p2;
+        regTable[p3]=memTable[addr];
+        //cout << regTable[p3] << endl;
     }
     else if(op=="LT"){
         if(regTable[p1]<regTable[p2]){
             i+=p3-1;
-            cout << i  << endl;
+            //cout << i  << endl;
+        }
+    }
+    else if(op=="LT_0"){
+        if(regTable[p1]<0){
+            i+=p3-1;
+            //cout << i  << endl;
         }
     }
     else if(op=="MUL"){
         regTable[p3]=regTable[p1]*regTable[p2];
-        cout << regTable[p3] << endl;
+        //cout << regTable[p3] << endl;
     }
+    else if(op=="MUL_I"){
+        regTable[p3]=regTable[p1]*p2;
+        //cout << regTable[p3] << endl;
+    }
+    else if(op=="STORE"){
+        int addr=regTable[p1]+regTable[p2];
+        memTable[addr]=regTable[p3];
+        //cout << memTable[addr] << endl;
+    }
+    else if(op=="STORE_I"){
+        int addr=regTable[p1]+p2;
+        memTable[addr]=regTable[p3];
+        //cout << memTable[addr] << endl;
+    }
+    else if(op=="SUB"){
+        regTable[p3]=regTable[p1]-regTable[p2];
+        //cout << regTable[p3] << endl;
+    }
+    else if(op=="SUB_I"){
+        int value=0;
+        if(regTable.count(p1)!=0){
+            value=regTable[p1]-p2;
+        }
+        else if(p2!=0){
+            value=p2;
+        }
+        regTable[p3]=value;
+    }
+    else if(op=="GOTO"){
+        i+=p3-1;
+        //cout << i  << endl;
+    }
+
 }
 
 int main(int argc,  char** argv) {
@@ -91,16 +168,18 @@ int main(int argc,  char** argv) {
     while (true) {
         istringstream iss(memCode[i]);
         iss >> op;
-        cout << op << " " << opTable[op] << endl;
+        cout << opTable[op] << endl;
         if(opTable[op]=="END") break;
-        else if(opTable[op]=="ADD"){
+        else if(opTable[op]=="ADD" || opTable[op]=="SUB" || opTable[op]=="MUL" || opTable[op]=="LOAD" \
+                || opTable[op]=="STORE" || opTable[op]=="LT" || opTable[op]=="GT" || opTable[op]=="EQ" \
+                || opTable[op]=="LT_0" || opTable[op]=="GT_0" || opTable[op]=="EQ_0"){
             //Retrieve parameters
             iss >> p1;
             iss >> p2;
             iss >> p3;
             execute(opTable[op],p1,p2,p3,false);
         }
-        else if(opTable[op]=="ADD_I"){
+        else if(opTable[op]=="ADD_I" || opTable[op]=="SUB_I" || opTable[op]=="MUL_I" || opTable[op]=="LOAD_I" || opTable[op]=="STORE_I"){
             //Retrieve parameters
             iss >> p1;
             iss >> p2;
@@ -114,38 +193,24 @@ int main(int argc,  char** argv) {
             }
             else execute(opTable[op],p1,p2,p3,false);
         }
-        else if(opTable[op]=="CLEAR"){
+        else if(opTable[op]=="CLEAR" || opTable[op]=="INCR" || opTable[op]=="DECR" || opTable[op]=="GOTO"){
             //Retrieve parameter
             iss >> p1;
             execute(opTable[op],p1,"","",false);
-        }
-        else if(opTable[op]=="INCR"){
-            //Retrieve parameter
-            iss >> p1;
-            execute(opTable[op],p1,"","",false);
-        }
-        else if(opTable[op]=="LOAD"){
-            //Retrieve parameters
-            iss >> p1;
-            iss >> p2;
-            iss >> p3;
-            execute(opTable[op],p1,p2,p3,false);
-        }
-        else if(opTable[op]=="LT"){
-            //Retrieve parameters
-            iss >> p1;
-            iss >> p2;
-            iss >> p3;
-            execute(opTable[op],p1,p2,p3,false);
-        }
-        else if(opTable[op]=="MUL"){
-            //Retrieve parameters
-            iss >> p1;
-            iss >> p2;
-            iss >> p3;
-            execute(opTable[op],p1,p2,p3,false);
         }
         i++;
     }
+    cout << endl;
+    for (map<int,int>::iterator it=regTable.begin(); it!=regTable.end(); ++it){
+        cout << "R" << it->first << " => " << it->second << endl;
+    }
+    cout << endl;
+    for (map<int,int>::iterator it=memTable.begin(); it!=memTable.end(); ++it){
+        cout << "LOC " << it->first << " => " << it->second << endl;
+    }
+
+    //sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+
+
     return 0;
 }

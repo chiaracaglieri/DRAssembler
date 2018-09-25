@@ -29,7 +29,7 @@ interpreter.o: interpreter.cpp
 	g++ -c interpreter.cpp
 
 interpreter: interpreter.o state.o
-	g++ -g -o interpreter interpreter.o state.o
+	g++ -g -o interpreter interpreter.o state.o -lsfml-graphics -lsfml-window -lsfml-system
 
 run: interpreter
 	./interpreter
