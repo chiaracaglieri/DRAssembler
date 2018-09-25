@@ -1,28 +1,74 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
 #include "state.h"
 
-void execute(string op, string a, string b, string c, bool p4){
-    unsigned long p1,p2,p3;
-    bitset<6> tmp1(a);
-    p1=tmp1.to_ulong();
-    if(p4==true){   //b is 12 bits
-        bitset<12> tmp(b);
-        p2=tmp.to_ulong();
+using namespace std;
+
+int i;
+
+int get_int(string s, int nbits){
+    if(nbits==6){
+        bitset<6> b(s);
+        if(b[5]==1){
+            b.flip();
+            return (int)(b.to_ulong()+1)*(-1);
+        }
+        return (int)(b.to_ulong());
+    }
+    if(nbits==12){
+        bitset<12> b(s);
+        return (int)(b.to_ulong());
     }
     else{
-        bitset<6> tmp2(b);
-        p2=tmp2.to_ulong();
+        cout << "Error" << endl;
+        exit(EXIT_FAILURE);
     }
-    bitset<6> tmp3(c);
-    p3=tmp3.to_ulong();
+}
 
+void execute(string op, string a, string b, string c, bool p4){
+    int p1,p2,p3;
+    p1=get_int(a,6);
+    if(p4==true) p2=get_int(b,12);
+    else if(!b.empty()) p2=get_int(b,6);
+    if(!c.empty()) p3=get_int(c,6);
+    if(op=="ADD"){
+        regTable[p3]=regTable[p1]+regTable[p2];
+        cout << regTable[p3] << endl;
+    }
     if(op=="ADD_I"){
-            regTable[p3]=regTable[p1]+p2;
-            cout << regTable[p3] << endl;
+        int value=0;
+        if(regTable.count(p1)!=0){
+            value=regTable[p1]+p2;
+        }
+        else if(p2!=0){
+            value=p2;
+        }
+        regTable[p3]=value;
     }
-
+    else if(op=="CLEAR"){
+        regTable[p1]=0;
+    }
+    else if(op=="INCR"){
+        regTable[p1]++;
+        cout << regTable[p1] << endl;
+    }
+    else if(op=="LOAD"){
+        int addr=regTable[p1]+regTable[p2];
+        regTable[p3]=memTable[addr];
+        cout << regTable[p3] << endl;
+    }
+    else if(op=="LT"){
+        if(regTable[p1]<regTable[p2]){
+            i+=p3-1;
+            cout << i  << endl;
+        }
+    }
+    else if(op=="MUL"){
+        regTable[p3]=regTable[p1]*regTable[p2];
+        cout << regTable[p3] << endl;
+    }
 }
 
 int main(int argc,  char** argv) {
@@ -35,33 +81,70 @@ int main(int argc,  char** argv) {
     loadProgram();
 
     int terminate=0;
-    int i=loc;
+    i=loc;
     string op;
     string p1;
     string p2;
     string p3;
     string p4;
-    bool flag;
 
     while (true) {
-        istringstream iss(memTable[i]);
+        istringstream iss(memCode[i]);
         iss >> op;
         cout << op << " " << opTable[op] << endl;
         if(opTable[op]=="END") break;
+        else if(opTable[op]=="ADD"){
+            //Retrieve parameters
+            iss >> p1;
+            iss >> p2;
+            iss >> p3;
+            execute(opTable[op],p1,p2,p3,false);
+        }
         else if(opTable[op]=="ADD_I"){
             //Retrieve parameters
             iss >> p1;
             iss >> p2;
             iss >> p3;
-            if(memTable[i].length()>29){ //Param p4 exists
+            if(memCode[i].length()>29){ //Param p4 exists
                 iss >> p4;
                 stringstream ss;
                 ss << p2 << p4;
                 p2 = ss.str();
-                flag=true;
+                execute(opTable[op],p1,p2,p3,true);
             }
+            else execute(opTable[op],p1,p2,p3,false);
         }
-        execute(opTable[op],p1,p2,p3,flag);
+        else if(opTable[op]=="CLEAR"){
+            //Retrieve parameter
+            iss >> p1;
+            execute(opTable[op],p1,"","",false);
+        }
+        else if(opTable[op]=="INCR"){
+            //Retrieve parameter
+            iss >> p1;
+            execute(opTable[op],p1,"","",false);
+        }
+        else if(opTable[op]=="LOAD"){
+            //Retrieve parameters
+            iss >> p1;
+            iss >> p2;
+            iss >> p3;
+            execute(opTable[op],p1,p2,p3,false);
+        }
+        else if(opTable[op]=="LT"){
+            //Retrieve parameters
+            iss >> p1;
+            iss >> p2;
+            iss >> p3;
+            execute(opTable[op],p1,p2,p3,false);
+        }
+        else if(opTable[op]=="MUL"){
+            //Retrieve parameters
+            iss >> p1;
+            iss >> p2;
+            iss >> p3;
+            execute(opTable[op],p1,p2,p3,false);
+        }
         i++;
     }
     return 0;

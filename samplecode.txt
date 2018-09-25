@@ -7,14 +7,13 @@ memloc  2050    6
 memloc  4096	0
 memloc  4097	0
 memloc  4098	0
-memlocs 20 30 4050 60 70
 regval  1	1024
 regval  2	2048
 regval  3 	4096
 regval  4       3
 start   1024
 loc     1024
-	add R0,800,R9
+	add R0,0,R9
 	clear R10
 loop:   load R1,R9,R20
 	load R2,R9,R30

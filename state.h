@@ -11,7 +11,8 @@
 using namespace std;
 
 extern map<int,int> regTable;
-extern map<int,string> memTable;
+extern map<int,int> memTable;
+extern map<int,string> memCode;
 extern int start;
 extern int loc;
 

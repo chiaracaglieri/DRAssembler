@@ -18,7 +18,8 @@ ifstream codeFile("assembled.txt");
 
 
 map<int,int> regTable;
-map<int,string> memTable;
+map<int,int> memTable;
+map<int,string> memCode;
 unordered_map<string, string > opTable;
 int start=-1;
 int loc=-1;
@@ -58,6 +59,7 @@ void loadRegisters(){
     }
     regFile.close();
 }
+
 void loadMemory(){
     string value;
     string tmp;
@@ -73,7 +75,7 @@ void loadMemory(){
         else {
             tmp = value;
             memFile >> value;
-            memTable[stoi(tmp)] = value;
+            memTable[stoi(tmp)] = stoi(value);
         }
     }
     memFile.close();
@@ -83,7 +85,7 @@ void loadProgram(){
     string instruction;
     int memptr=loc;
     while (getline(codeFile, instruction)) {
-        memTable[memptr]=instruction;
+        memCode[memptr]=instruction;
         memptr++;
     }
     codeFile.close();

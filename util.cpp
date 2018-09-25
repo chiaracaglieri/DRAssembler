@@ -188,6 +188,8 @@ void visit_tree(node* tmp){
             if(tmp->param2->value<=63){ //representable on 6 bits two-complement
                 val=get_param_binary(tmp->param2->value);
                 outfile << val << " ";
+                val=get_param_binary(tmp->param3->value);
+                outfile << val<< endl;
             }
             else if(tmp->param2->value<=2047){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(tmp->param2->value);
@@ -248,8 +250,10 @@ void visit_tree(node* tmp){
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
             int relative=addr-tmp->lc;
+            cout << relative << endl;
             if(relative<=63){ //representable on 6 bits two-complement
                     val=get_param_binary(relative);
+                    cout << val << endl;
                     outfile << val << endl;
                 }
             else if(relative<=2047){   //representable on 12 bits two-complement
