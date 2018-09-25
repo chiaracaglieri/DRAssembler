@@ -92,7 +92,6 @@ tree make_node(string type, int value, node* p1, node* p2, node* p3){
     new_node->param1=p1;
     new_node->param2=p2;
     new_node->param3=p3;
-
     return new_node;
 }
 
@@ -210,36 +209,19 @@ void visit_tree(node* tmp){
     }
     else if(tmp->type=="EQ" || tmp->type=="LT" || tmp->type=="GT"){   //Expected 3 parameters, last one is a label
         if(tmp->type=="EQ"){
-            if(tmp->param2->type=="VALUE"){
-                bitset<8> bin=get_opcode_binary("EQ_0");
-                outfile << bin.to_string() << " ";
-            }
-            else{
                 bitset<8> bin=get_opcode_binary("EQ");
                 outfile << bin.to_string() << " ";
             }
-        }
 
         if(tmp->type=="LT"){
-            if(tmp->param2->type=="VALUE"){
-                bitset<8> bin=get_opcode_binary("LT_0");
-                outfile << bin.to_string() << " ";
-            }
-            else{
-                bitset<8> bin=get_opcode_binary("LT");
-                outfile << bin.to_string() << " ";
-            }
+            bitset<8> bin=get_opcode_binary("LT");
+            outfile << bin.to_string() << " ";
         }
 
         if(tmp->type=="GT"){
-            if(tmp->param2->type=="VALUE"){
-                bitset<8> bin=get_opcode_binary("GT_0");
-                outfile << bin.to_string() << " ";
-            }
-            else{
-                bitset<8> bin=get_opcode_binary("GT");
-                outfile << bin.to_string() << " ";
-            }
+            bitset<8> bin=get_opcode_binary("GT");
+            outfile << bin.to_string() << " ";
+
         }
 
         string val=get_param_binary(tmp->param1->value);
@@ -262,7 +244,39 @@ void visit_tree(node* tmp){
         }
         return;
     }
+    else if(tmp->type=="GT_0" || tmp->type=="EQ_0" || tmp->type=="LT_0"){ //2 parameters. 2nd is a label
+        if(tmp->type=="EQ_0") {
+            bitset<8> bin = get_opcode_binary("EQ_0");
+            outfile << bin.to_string() << " ";
+        }
 
+        if(tmp->type=="LT_0"){
+            bitset<8> bin=get_opcode_binary("LT_0");
+            outfile << bin.to_string() << " ";
+        }
+
+        if(tmp->type=="GT_0"){
+            bitset<8> bin=get_opcode_binary("GT_0");
+            outfile << bin.to_string() << " ";
+        }
+        string val=get_param_binary(tmp->param1->value);
+        outfile << val << " ";
+        int addr=find_symbol(tmp->param2->type);
+        if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
+        else {
+            int relative=addr-tmp->lc;
+            if(relative<=63){ //representable on 6 bits two-complement
+                val=get_param_binary(relative);
+                outfile << val << endl;
+            }
+            else if(relative<=2047){   //representable on 12 bits two-complement
+                string val_long=get_constant_binary(relative);
+                outfile << val_long.substr(0, 6) << " ";
+                outfile << val_long.substr(6, 12) << endl;
+            }
+        }
+        return;
+    }
     else if(tmp->type=="LABEL"){
         int addr=find_symbol(tmp->param1->type);
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;

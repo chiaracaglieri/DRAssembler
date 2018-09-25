@@ -20,13 +20,13 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token <intval> REG
 %token ID LOAD STORE
 %token ADD SUB MUL
-%token EQ GT LT
+%token EQ GT LT EQ_0 LT_0 GT_0
 %token CLEAR INCR DECR GOTO
 %token MEMLOC MEMLOCS LOC REGVAL
 %token END START
 %start program
 %type <nd> instruction program exp seq
-%type <intval> ls_instruction ar_instruction rego_instruction cond_instruction
+%type <intval> ls_instruction ar_instruction rego_instruction cond_instruction cond_instruction_0
 %%
 
 program
@@ -77,6 +77,14 @@ instruction
                                                   else  $$=make_node("GT",-1,$2,$4,v1);
                                                   insert_symbol(last_string,-1);
                                                   lc++;}
+    |cond_instruction_0 exp COMMA ID { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
+                                 if($1==1) $$=make_node("EQ_0",-1,$2,v1,NULL);
+                                 else if($1==2) $$=make_node("LT_0",-1,$2,v1,NULL);
+                                 else  $$=make_node("GT_0",-1,$2,v1,NULL);
+                                 insert_symbol(last_string,-1);
+                                 lc++;
+
+                                }
     |ID SEMICOLON instruction { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                                 $$=make_node("LABEL",-1,v1,$3,NULL);
                                 insert_symbol(last_string,lc); lc++; }
@@ -99,6 +107,11 @@ cond_instruction
     :EQ   { $$=1; }
     |LT   { $$=2; }
     |GT   { $$=3; }
+    ;
+cond_instruction_0
+    :EQ_0   { $$=1; }
+    |LT_0   { $$=2; }
+    |GT_0   { $$=3; }
     ;
 rego_instruction
     :CLEAR  { $$=1; }

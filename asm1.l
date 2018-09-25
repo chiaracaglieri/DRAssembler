@@ -20,6 +20,9 @@
 "mul" return MUL;
 "load" return LOAD;
 "store" return STORE;
+"if=0" return EQ_0;
+"if>0" return GT_0;
+"if<0" return LT_0;
 "if=" return EQ;
 "if>" return GT;
 "if<" return LT;

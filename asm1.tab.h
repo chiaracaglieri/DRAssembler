@@ -58,16 +58,19 @@ extern int yydebug;
     EQ = 268,
     GT = 269,
     LT = 270,
-    CLEAR = 271,
-    INCR = 272,
-    DECR = 273,
-    GOTO = 274,
-    MEMLOC = 275,
-    MEMLOCS = 276,
-    LOC = 277,
-    REGVAL = 278,
-    END = 279,
-    START = 280
+    EQ_0 = 271,
+    LT_0 = 272,
+    GT_0 = 273,
+    CLEAR = 274,
+    INCR = 275,
+    DECR = 276,
+    GOTO = 277,
+    MEMLOC = 278,
+    MEMLOCS = 279,
+    LOC = 280,
+    REGVAL = 281,
+    END = 282,
+    START = 283
   };
 #endif
 
@@ -82,7 +85,7 @@ union YYSTYPE
   char* str;
   struct node* nd;
 
-#line 86 "asm1.tab.h" /* yacc.c:1909  */
+#line 89 "asm1.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
