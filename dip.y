@@ -39,11 +39,11 @@ program
     ;
 
 state
-    :MEMLOC VALUE VALUE {  }
-    |MEMLOCS VALUE seq  {  }
-    |LOC VALUE  {   }
-    |REGVAL VALUE VALUE { saveRegister($2,$3); }
-    |START VALUE    {  }
+    :MEMLOC VALUE VALUE { }
+    |MEMLOCS VALUE seq  { }
+    |LOC VALUE  { }
+    |REGVAL VALUE VALUE {  }
+    |START VALUE    { }
     ;
 
 
@@ -105,7 +105,7 @@ instruction
                 insert_symbol(last_string,-1);
                 node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                 $$=make_node("GOTO",-1,v1,NULL,NULL);
-              
+
              }
     ;
 ls_instruction

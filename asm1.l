@@ -1,5 +1,6 @@
 %{
 #include <string>
+#include <iostream>
 #include "util.h"
 #include "asm1.tab.h"
 %}
@@ -20,12 +21,18 @@
 "mul" return MUL;
 "load" return LOAD;
 "store" return STORE;
+"move" return MOVE;
+"nop" return NOP;
 "if=0" return EQ_0;
 "if>0" return GT_0;
 "if<0" return LT_0;
+"if>=0" return GTE_0;
+"if<=0" return LTE_0;
 "if=" return EQ;
 "if>" return GT;
 "if<" return LT;
+"if>=" return GTE;
+"if<=" return LTE;
 "goto" return GOTO;
 "start" return START;
 "end"   return END;
@@ -40,6 +47,7 @@
 [0-9]* {yylval.intval=atoi(yytext); return VALUE;}
 [:] return SEMICOLON;
 [,] return COMMA;
+"#define R"[a-zA-Z]*" R"[0-9]* ;
 [$^ \t\n]+ ;
 
 %%

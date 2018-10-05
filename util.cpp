@@ -12,10 +12,10 @@ string last_string;                     //Contains the last identifier found
 string tmp;                             //Used to manipulate register identifiers
 deque<int> v;                           //Contains the values for memlocs
 int lc;                                 //Location Counter
-ofstream outfile ("assembled.txt");     //Contains the resulting binary code
+ofstream outfile ("assembled.o");     //Contains the resulting binary code
 
-ofstream reg_out ("registers.txt");
-ofstream mem_out ("memory.txt");
+ofstream reg_out ("registers.o");
+ofstream mem_out ("memory.o");
 
 unordered_map<string, string > opTable;
 unordered_map<string, int> symTable;
@@ -36,6 +36,7 @@ void initMemlocs(int l, deque<int> v){
         l++;
     }
 }
+
 /*  Symbol Table functions  */
 /** \function find_symbol
   * \brief Searches for symbol in Symbol Table.
@@ -207,22 +208,11 @@ void visit_tree(node* tmp){
 
         return;
     }
-    else if(tmp->type=="EQ" || tmp->type=="LT" || tmp->type=="GT"){   //Expected 3 parameters, last one is a label
-        if(tmp->type=="EQ"){
-                bitset<8> bin=get_opcode_binary("EQ");
-                outfile << bin.to_string() << " ";
-            }
+    else if(tmp->type=="IF=" || tmp->type=="IF<" || tmp->type=="IF>" \
+            || tmp->type=="IF<=" || tmp->type=="IF>="){   //Expected 3 parameters, last one is a label
 
-        if(tmp->type=="LT"){
-            bitset<8> bin=get_opcode_binary("LT");
-            outfile << bin.to_string() << " ";
-        }
-
-        if(tmp->type=="GT"){
-            bitset<8> bin=get_opcode_binary("GT");
-            outfile << bin.to_string() << " ";
-
-        }
+        bitset<8> bin=get_opcode_binary(tmp->type);
+        outfile << bin.to_string() << " ";
 
         string val=get_param_binary(tmp->param1->value);
         outfile << val << " ";
@@ -244,21 +234,42 @@ void visit_tree(node* tmp){
         }
         return;
     }
-    else if(tmp->type=="GT_0" || tmp->type=="EQ_0" || tmp->type=="LT_0"){ //2 parameters. 2nd is a label
-        if(tmp->type=="EQ_0") {
-            bitset<8> bin = get_opcode_binary("EQ_0");
-            outfile << bin.to_string() << " ";
+    else if(tmp->type=="MOVE"){  //expected 2 parameters
+        bitset<8> bin;
+        if(tmp->param1->type=="VALUE") bin= get_opcode_binary("MOVE_I");
+        else  bin = get_opcode_binary("MOVE");
+        outfile << bin.to_string() << " ";
+
+        if(tmp->param1->type=="VALUE"){
+            string val=get_param_binary(tmp->param1->value);
+            if(tmp->param1->value<=63){ //representable on 6 bits two-complement
+                val=get_param_binary(tmp->param1->value);
+                outfile << val << " "<< endl;
+            }
+            else if(tmp->param1->value<=2047){   //representable on 12 bits two-complement
+                string val_long=get_constant_binary(tmp->param1->value);
+                outfile << val_long.substr(0, 6) << " ";
+                val=get_param_binary(tmp->param2->value);
+                outfile << val<< " ";
+                outfile << val_long.substr(6, 12) << endl;
+                return;
+            }
+        }
+        else{
+            string val=get_param_binary(tmp->param1->value);
+            outfile << val << " ";
         }
 
-        if(tmp->type=="LT_0"){
-            bitset<8> bin=get_opcode_binary("LT_0");
-            outfile << bin.to_string() << " ";
-        }
+        string val=get_param_binary(tmp->param2->value);
+        outfile << val << endl;
 
-        if(tmp->type=="GT_0"){
-            bitset<8> bin=get_opcode_binary("GT_0");
-            outfile << bin.to_string() << " ";
-        }
+        return;
+    }
+    else if(tmp->type=="IF>0" || tmp->type=="IF=0" || tmp->type=="IF<0" || tmp->type=="IF<=0" \
+            || tmp->type=="IF>=0"){ //2 parameters. 2nd is a label
+        bitset<8> bin = get_opcode_binary(tmp->type);
+        outfile << bin.to_string() << " ";
+
         string val=get_param_binary(tmp->param1->value);
         outfile << val << " ";
         int addr=find_symbol(tmp->param2->type);
@@ -348,6 +359,7 @@ void visit_tree(node* tmp){
             outfile << val << " ";
             val=get_param_binary(tmp->param3->value);
             outfile << val<< endl;
+            return;
         }
         val=get_param_binary(tmp->param3->value);
         outfile << val<< endl;
@@ -363,17 +375,22 @@ void visit_tree(node* tmp){
         outfile << val << endl;
         return;
     }
-
+    if(tmp->type=="NOP"){
+        bitset<8> bin=get_opcode_binary(tmp->type);
+        outfile << bin.to_string() << endl;
+        return;
+    }
     if(tmp->type=="GOTO"){
         int addr=find_symbol(tmp->param1->type);
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
-            if(addr<=63){   //Representable on 6 bits two complement
-                string val = get_param_binary(addr);
+            int relative=addr-tmp->lc;
+            if(relative<=63){   //Representable on 6 bits two complement
+                string val = get_param_binary(relative);
                 outfile << val << endl;
             }
-            else if(addr<=2047){
-                string val = get_constant_binary(addr);
+            else if(relative<=2047){
+                string val = get_constant_binary(relative);
                 outfile << val.substr(0, 6) << " ";
                 outfile << val.substr(6, 12) << endl;
             }
@@ -383,6 +400,21 @@ void visit_tree(node* tmp){
     }
 
 }
+
+void substitute(string f, string p1, string p2){
+    ifstream file(f);
+    string contents;
+    for (char ch; file.get(ch); contents.push_back(ch)) {}
+    auto pos = contents.find(p1);
+    pos = contents.find(p1,pos+1);  //avoid #define line
+    while (pos != std::string::npos) {
+        contents.replace(pos, p1.length(), p2);
+        pos = contents.find(p1, pos);
+    }
+    ofstream ofile(f);
+    ofile << contents;
+}
+
 /** \function load_optable
   * \brief Reads opcodes from text file and insertes them into a
   *        map structure

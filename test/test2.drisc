@@ -1,0 +1,28 @@
+start 1024
+memloc 0 123
+memloc 1 256
+memloc 2 172
+memloc 3 190
+memloc 10 0
+memloc 11 0
+memloc 12 0
+memloc 13 0
+regval 1 0
+regval 8 10
+regval 2 0
+regval 5 150
+regval 6 200
+regval 7 4
+loc 1024
+loop: load R1,R2,R3
+      if>= R3,R6,then2
+      if<= R3,R5,then1
+      move R3,R4
+      goto continua
+then1: move R5,R4
+       goto continua
+then2: move R6,R4
+continua: store R8,R2,R4
+          incr R2
+          if< R2,R7,loop
+          end

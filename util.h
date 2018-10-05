@@ -13,6 +13,7 @@ extern ofstream outfile;                        //Contains the resulting binary 
 extern ofstream reg_out;
 extern ofstream mem_out;
 
+
 void initRegister(int r, int v);
 void initMemloc(int l, int v);
 void initMemlocs(int l, deque<int> v);
@@ -45,4 +46,6 @@ void visit_tree(node*);
 /*  OpCode Table    */
 
 extern unordered_map<string,string> opTable;
+void substitute(string f, string p1, string p2);
 void load_optable();
+

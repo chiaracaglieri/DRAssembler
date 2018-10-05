@@ -1,4 +1,4 @@
-memloc	1024	3 
+memloc	1024	3
 memloc	1025	2
 memloc  1026	1
 memloc  2048	4
@@ -20,6 +20,5 @@ loop:   load R1,R9,R20
 	mul  R20,R30,R20
         add  R20,R10,R10
         incr R9
-        if<0 R9,loop
         if< R9,R4,loop
         end

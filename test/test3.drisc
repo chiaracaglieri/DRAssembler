@@ -1,0 +1,13 @@
+#define Ri R4
+start 1024
+regval 1 2048
+regval 2 8
+memlocs 2048 1 2 3 4 5 6 7 8
+loc 1024
+clear R3
+clear Ri
+loop: load R1,Ri,R5
+      add R5,R3,R3
+      incr Ri
+      if< Ri,R2,loop
+      end

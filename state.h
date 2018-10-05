@@ -20,7 +20,7 @@ extern int loc;
 
 void loadRegisters();
 void loadMemory();
-void loadProgram();
+void loadProgram(string filename);
 
 extern unordered_map<string,string> opTable;
 void loadOptable();

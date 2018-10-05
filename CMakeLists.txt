@@ -3,4 +3,4 @@ project(Tesi)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Tesi main.cpp data_structures.cpp state.cpp state.h interpreter.cpp state.h state.cpp)
+add_executable(Tesi parser.cpp data_structures.cpp state.cpp state.h interpreter.cpp state.h state.cpp analyzer.cpp analyzer.cpp analyzer.h)

@@ -1,43 +1,32 @@
-asm1.tab.c: asm1.y
+DIR?= "/usr/local/bin"
+all:
 	bison -d -t asm1.y
-
-asm1.tab.o: asm1.tab.c
 	g++ -c asm1.tab.c
-
-lex.yy.c: asm1.l asm1.tab.c
 	flex asm1.l
-
-lex.yy.o: lex.yy.c
 	g++ -c lex.yy.c
-
-util.o: util.cpp
 	g++ -c util.cpp
-
-main.o: main.cpp
-	g++ -c main.cpp
-
-parser: asm1.tab.o lex.yy.o main.o util.o
-	g++ -g -o parser asm1.tab.o lex.yy.o main.o util.o
-
-parse: parser
-	./parser < samplecode.txt
-
-state.o: state.cpp
+	g++ -c parser.cpp
+	g++ -g -o pars asm1.tab.o lex.yy.o parser.o util.o
 	g++ -c state.cpp
-
-interpreter.o: interpreter.cpp
 	g++ -c interpreter.cpp
+	g++ -g -o int interpreter.o state.o
+	bison -d -t dip.y
+	g++ -c dip.tab.c
+	g++ -c analyzer.cpp
+	g++ -g -o dep analyzer.o util.o lex.yy.o dip.tab.o
 
-interpreter: interpreter.o state.o
-	g++ -g -o interpreter interpreter.o state.o -lsfml-graphics -lsfml-window -lsfml-system
+install:
+	mkdir -p $(DIR)
+	cp pars $(DIR)
+	cp int $(DIR)
+	cp assembler $(DIR)
+	cp interpreter $(DIR)
+	chmod +x $(DIR)/assembler
+	chmod +x $(DIR)/interpreter
 
-run: interpreter
+test1: all
+	./assembler test/test1.txt < test/test1.txt
 	./interpreter
-
-valgrind: parser
-	valgrind --leak-check=full ./parser < samplecode.txt
-
 clean:
-	rm -f *.o
-	rm -f asm1.tab.c lex.yy.c asm1.tab.h y.output stack.hh assembled.txt memory.txt registers.txt
-
+	rm -f *.o *.tab.c *.yy.c *.tab.h
+	rm -f asm1.output stack.hh int pars
