@@ -39,11 +39,13 @@ program
     ;
 
 state
-    :MEMLOC VALUE VALUE {  }
-    |MEMLOCS VALUE seq  {  }
-    |LOC VALUE  {   }
-    |REGVAL VALUE VALUE { saveRegister($2,$3); }
-    |START VALUE    {  }
+    :MEMLOC VALUE VALUE { initMemloc($2,$3); }
+    |MEMLOCS VALUE seq  { initMemlocs($2,v); }
+    |LOC VALUE  { mem_out<< "l\t" <<$2<<endl;  }
+    |REGVAL VALUE VALUE { initRegister($2,$3); }
+    |START VALUE    { mem_out << "s\t" << $2 << endl;
+                      lc=$2-1;
+                      }
     ;
 
 

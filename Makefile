@@ -10,10 +10,11 @@ all:
 	g++ -c state.cpp
 	g++ -c interpreter.cpp
 	g++ -g -o int interpreter.o state.o
+	g++ -c util_dip.cpp
 	bison -d -t dip.y
 	g++ -c dip.tab.c
 	g++ -c analyzer.cpp
-	g++ -g -o dep analyzer.o util.o lex.yy.o dip.tab.o
+	g++ -g -o dep analyzer.o util.o lex.yy.o dip.tab.o util_dip.o
 
 install:
 	mkdir -p $(DIR)
@@ -29,4 +30,4 @@ test1: all
 	./interpreter
 clean:
 	rm -f *.o *.tab.c *.yy.c *.tab.h
-	rm -f asm1.output stack.hh int pars
+	rm -f asm1.output stack.hh int pars dep

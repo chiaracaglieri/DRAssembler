@@ -1,4 +1,4 @@
-/home/chiara/Scaricati/clion-2018.2.3/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/chiara/Scrivania/DRAssembler
+/home/osboxes/Desktop/clion-2018.2.4/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/osboxes/Desktop/DRAssembler
 -- Configuring done
 CMake Error at CMakeLists.txt:6 (add_executable):
   Cannot find source file:
@@ -13,4 +13,4 @@ CMake Error at CMakeLists.txt:6 (add_executable):
   No SOURCES given to target: Tesi
 
 
--- Build files have been written to: /home/chiara/Scrivania/DRAssembler/cmake-build-debug
+-- Build files have been written to: /home/osboxes/Desktop/DRAssembler/cmake-build-debug
