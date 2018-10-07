@@ -59,7 +59,7 @@
     <session id="291650162">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="12" />
+          <entry key="project.closed" value="13" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.3" value="4" />
           <entry key="project.open.time.4" value="12" />
@@ -463,9 +463,13 @@
       <workItem from="1538413776617" duration="7777000" />
       <workItem from="1538465432670" duration="11680000" />
       <workItem from="1538688170144" duration="3248000" />
+<<<<<<< Updated upstream
       <workItem from="1538732673659" duration="11165000" />
       <workItem from="1538848664916" duration="3608000" />
       <workItem from="1538904691072" duration="15343000" />
+=======
+      <workItem from="1538732673659" duration="11299000" />
+>>>>>>> Stashed changes
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1532253466867</created>
@@ -478,10 +482,17 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< Updated upstream
     <option name="totallyTimeSpent" value="215679000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1213" height="775" extended-state="6" />
+=======
+    <option name="totallyTimeSpent" value="196862000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="97" y="353" width="2229" height="1334" extended-state="0" />
+>>>>>>> Stashed changes
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17309341" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
