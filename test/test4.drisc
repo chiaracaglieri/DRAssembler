@@ -1,0 +1,28 @@
+#define RB R1
+#define Ri R2
+#define Rbi R3
+#define RC R4
+#define Rci R5
+#define RA R6
+#define Rai R7
+#define Rconst R8
+#define Rj R9
+#define RD R10
+#define Rdj R11
+#define RN R12
+loop: load RB, Ri, Rbi
+      load RC, Ri, Rci
+      mul Rbi, Rci, R1
+      load RA, Ri, Rai
+      add Rai, R1, R2
+      store RA, Ri, R2
+      add Rbi, Rci, R3
+      add R3, Rconst, R4
+      store RB, Ri, R4
+      add R4, 127, Rj
+      load RD, Rj, Rdj
+      add Rdj, Rconst, R5
+      store RD, Rj, R5
+      incr Ri
+      if< Ri, RN, loop
+      end

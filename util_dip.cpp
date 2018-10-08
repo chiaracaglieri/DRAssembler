@@ -53,6 +53,39 @@ void addReg(int r1, int r2, int r3){
     }
 
 }
+
+void printInstruction(instruction i){
+    cout << i.number << ": ";
+    if(i.type=="LOAD_I") cout <<"LOAD ";
+    else if(i.type=="STORE_I") cout <<"STORE ";
+    else if(i.type=="ADD_I") cout <<"ADD ";
+    else if(i.type=="SUB_I") cout <<"SUB ";
+    else if(i.type=="MUL_I") cout <<"MUL ";
+    else if(i.type=="MOVE_I"){
+        cout <<"MOVE "<<"#"<<i.imm<<" R"<<i.regs[0]<<endl;
+        return;
+    }
+    else{
+        if(i.type=="EQ") cout << "IF= ";
+        else if(i.type=="LT") cout << "IF< ";
+        else if(i.type=="GT") cout << "IF> ";
+        else if(i.type=="LTE") cout << "IF<= ";
+        else if(i.type=="GTE") cout << "IF>= ";
+        else if(i.type=="EQ_0") cout << "IF=0 ";
+        else if(i.type=="LT_0") cout << "IF<0 ";
+        else if(i.type=="GT_0") cout << "IF>0 ";
+        else if(i.type=="LTE_0") cout << "IF<=0 ";
+        else if(i.type=="GTE_0") cout << "IF>=0 ";
+        else cout<<i.type<<" ";
+        for(int x:i.regs){
+            cout<<"R"<<x<<" ";
+        }
+        cout << endl;
+        return;
+    }
+    cout<<"R"<<i.regs[0]<<" #"<<i.imm<<" R"<<i.regs[1]<<endl;
+}
+
 void addInstruction(int n,string t, int imm, vector<int> r){
     instruction i;
     i.number=n;
@@ -62,10 +95,5 @@ void addInstruction(int n,string t, int imm, vector<int> r){
     if(t=="ADD_I" || t=="SUB_I" || t=="MUL_I" || t=="LOAD_I" || t=="STORE_I" || t=="MOVE_I")
         i.imm=imm;
     code.push_back(i);
-
-    cout<<"I added:\t"<<i.number<<". "<<i.type<<"That operates on\t";
-    for(int x: i.regs){
-        cout<<x<<" ";
-    }
-    cout<< endl;
+    printInstruction(i);
 }

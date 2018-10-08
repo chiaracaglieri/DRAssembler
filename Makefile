@@ -13,21 +13,21 @@ all:
 	g++ -c util_dip.cpp
 	bison -d -t dip.y
 	g++ -c dip.tab.c
-	g++ -c analyzer.cpp
-	g++ -g -o dep analyzer.o util.o lex.yy.o dip.tab.o util_dip.o
+	g++ -c dependencies.cpp
+	g++ -g -o dep dependencies.o util.o lex.yy.o dip.tab.o util_dip.o
 
 install:
 	mkdir -p $(DIR)
 	cp pars $(DIR)
 	cp int $(DIR)
+	cp dep $(DIR)
 	cp assembler $(DIR)
 	cp interpreter $(DIR)
+	cp analyzer $(DIR)
 	chmod +x $(DIR)/assembler
 	chmod +x $(DIR)/interpreter
+	chmod +x $(DIR)/analyzer
 
-test1: all
-	./assembler test/test1.txt < test/test1.txt
-	./interpreter
 clean:
 	rm -f *.o *.tab.c *.yy.c *.tab.h
 	rm -f asm1.output stack.hh int pars dep
