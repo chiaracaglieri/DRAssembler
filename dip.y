@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "util.h"
+#include <deque>
 #include "util_dip.h"
 
 int yylex(void);
@@ -38,60 +38,71 @@ program
     ;
 
 state
-    :MEMLOC VALUE VALUE { }
-    |MEMLOCS VALUE seq  { }
-    |LOC VALUE  { }
-    |REGVAL VALUE VALUE {  }
-    |START VALUE    {  }
+    :MEMLOC VALUE VALUE { memMap[$2]=$3; }
+    |MEMLOCS VALUE seq  { initMemlocs1($2,v1); }
+    |LOC VALUE  {  }
+    |REGVAL VALUE VALUE { initReg($2,$3); }
+    |START VALUE    { }
     ;
 
 
 instruction
 
     :END    { counter++;
-              addInstruction(counter,"END",vector<int>());
+              addInstruction(counter,"END",-1,vector<int>());
             }
     |NOP { counter++;
-           addInstruction(lc,"NOP",vector<int>());
+           addInstruction(counter,"NOP",-1,vector<int>());
            }
-    |ar_instruction REG COMMA exp COMMA REG {   counter++;
+    |ar_instruction REG COMMA REG COMMA REG {   counter++;
                                                 vector<int> tmp;
-                                                if($4!=-1){
-                                                    tmp={$2,$4,$6};
-                                                    addReg($2,$4,$6);
+
+                                                tmp={$2,$4,$6};
+                                                addReg($2,$4,$6);
+
+                                                if($1==1) addInstruction(counter,"ADD",-1,tmp);
+                                                else if($1==2) addInstruction(counter,"SUB",-1,tmp);
+                                                else addInstruction(counter,"MUL",-1,tmp);
                                                 }
-                                                else{
-                                                    tmp={$2,$6};
-                                                    addReg($2,$6,-1);
-                                                }
-                                                if($1==1) addInstruction(counter,"ADD",tmp);
-                                                else if($1==2) addInstruction(counter,"SUB",tmp);
-                                                else addInstruction(counter,"MUL",tmp);
+    |ar_instruction REG COMMA VALUE COMMA REG {   counter++;
+                                                vector<int> tmp;
+
+                                                 tmp={$2,$6};
+                                                 addReg($2,$6,-1);
+
+                                                 if($1==1) addInstruction(counter,"ADD_I",$4,tmp);
+                                                 else if($1==2) addInstruction(counter,"SUB_I",$4,tmp);
+                                                 else addInstruction(counter,"MUL_I",$4,tmp);
                                                 }
     |rego_instruction REG   {  counter++;
                                vector<int> tmp={$2};
                                addReg($2,-1,-1);
-                               if($1==1) addInstruction(counter,"CLEAR",tmp);
-                               else if($1==2) addInstruction(counter,"INCR",tmp);
-                               else if($1==3) addInstruction(counter,"DECR",tmp);
+                               if($1==1) addInstruction(counter,"CLEAR",-1,tmp);
+                               else if($1==2) addInstruction(counter,"INCR",-1,tmp);
+                               else if($1==3) addInstruction(counter,"DECR",-1,tmp);
                             }
     |ls_instruction REG COMMA REG COMMA REG { counter++;
                                               vector<int> tmp={$2,$4,$6};
                                               addReg($2,$4,$6);
-                                              if($1==1) addInstruction(counter,"LOAD",tmp);
-                                              else addInstruction(counter,"STORE",tmp);
+                                              if($1==1) addInstruction(counter,"LOAD",-1,tmp);
+                                              else addInstruction(counter,"STORE",-1,tmp);
                                               }
-    |cond_instruction REG COMMA exp COMMA ID {    counter++;
+    |ls_instruction REG COMMA VALUE COMMA REG { counter++;
+                                                vector<int> tmp={$2,$6};
+                                                addReg($2,$6,-1);
+                                                if($1==1) addInstruction(counter,"LOAD_I",$4,tmp);
+                                                else addInstruction(counter,"STORE_I",$4,tmp);
+                                              }
+    |cond_instruction REG COMMA REG COMMA ID {    counter++;
                                                   vector<int> tmp;
-                                                  if($4!=-1){
-                                                    tmp={$2,$4};
-                                                    addReg($2,$4,-1);
-                                                  }
-                                                  else{
-                                                    tmp={$2};
-                                                    addReg($2,-1,-1);
-                                                  }
-                                                  addInstruction(counter,"IF",tmp);
+                                                  tmp={$2,$4};
+                                                  addReg($2,$4,-1);
+
+                                                  if($1==1) addInstruction(counter,"EQ",-1,tmp);
+                                                  else if($1==2) addInstruction(counter,"LT",-1,tmp);
+                                                  else if($1==3) addInstruction(counter,"GT",-1,tmp);
+                                                  else if($1==4) addInstruction(counter,"GTE",-1,tmp);
+                                                  else if($1==5) addInstruction(counter,"LTE",-1,tmp);
                                              }
     |cond_instruction_0 exp COMMA ID { counter++;
                                        vector<int> tmp;
@@ -100,24 +111,30 @@ instruction
                                             addReg($2,-1,-1);
                                        }
                                        else tmp={};
-                                       addInstruction(counter,"IF0",tmp);
+                                       if($1==1) addInstruction(counter,"EQ_0",-1,tmp);
+                                       else if($1==2) addInstruction(counter,"LT_0",-1,tmp);
+                                       else if($1==3) addInstruction(counter,"GT_0",-1,tmp);
+                                       else if($1==4) addInstruction(counter,"GTE_0",-1,tmp);
+                                       else if($1==5) addInstruction(counter,"LTE_0",-1,tmp);
                                      }
-    |MOVE exp COMMA REG {  counter++;
+    |MOVE REG COMMA REG {  counter++;
                            vector<int> tmp;
-                           if($2!=-1){
-                                tmp={$2,$4};
-                                addReg($2,$4,-1);
-                           }
-                           else{
-                                tmp={$4};
-                                addReg($4,-1,-1);
-                           }
-                           addInstruction(counter,"MOVE",tmp);
 
+                           tmp={$2,$4};
+                           addReg($2,$4,-1);
+                           addInstruction(counter,"MOVE",-1,tmp);
+
+                        }
+    |MOVE VALUE COMMA REG {  counter++;
+                             vector<int> tmp;
+
+                             tmp={$4};
+                             addReg($4,-1,-1);
+                             addInstruction(counter,"MOVE_I",$2,tmp);
                         }
     |ID SEMICOLON instruction {  }
     |GOTO ID {  counter++;
-                addInstruction(counter,"GOTO",vector<int>());
+                addInstruction(counter,"GOTO",-1,vector<int>());
              }
     ;
 ls_instruction
@@ -149,8 +166,8 @@ rego_instruction
     |DECR   { $$=3; }
     ;
 seq
-    :VALUE  {  }
-    |VALUE seq  { }
+    :VALUE  { v1.push_front($1); }
+    |VALUE seq  { v1.push_front($1); }
     ;
 
 exp

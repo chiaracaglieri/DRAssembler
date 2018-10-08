@@ -42,189 +42,95 @@ int main(int argc, char** argv){
     yyin=fopen("tmp.drisc","r");
     cout << "Start parsing..." << endl;
     yyparse();
+    remove("tmp.drisc");
     cout << "Start analyzing..." << endl;
-    int nstages=0;
+
     for(int i=0; i<code.size(); i++){
         if(i>0) code[i].fetch=code[i-1].fetch+1;
-        if(code[i].type!="NOP" && code[i].type!="END" && code[i].type!="GOTO"){
-            if(code[i].type=="CLEAR" || code[i].type=="INCR" || code[i].type=="DECR"){
-                nstages=3;
-                /*One register to check*/
-                if(regs[code[i].regs[0]].inst==-1 || \
-                    regs[code[i].regs[0]].inst+regs[code[i].regs[0]].until<=code[i].number+1){
-                    /*No dependency*/
-                    regs[code[i].regs[0]].inst=code[i].number;
-                    regs[code[i].regs[0]].until=nstages;
-                }
-                else{   /*Dependency*/
 
-                    regs[code[i].regs[0]].inst=code[i].number;
-                    regs[code[i].regs[0]].until=code[regs[code[i].regs[0]].inst].fetch+regs[code[i].regs[0]].until;
-                    code[regs[code[i].regs[0]].inst].fetch=regs[code[i].regs[0]].until;
-                }
+        string type=code[i].type;
+        int n=code[i].number;
+
+        if(code[i].regs.size()==0){
+            /*No registers to check*/
+            if(type=="GOTO") cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
+        }
+        else if(code[i].regs.size()==1){
+            /*One register to check*/
+            if(regMap[code[i].regs[0]].inst!=-1 && code[regMap[code[i].regs[0]].inst].fetch+regMap[code[i].regs[0]].until>code[i].fetch+1){
+                /*Dependency*/
+                cout << "Dip. IU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
+                cout << " Bolla da  " << code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until - code[i].fetch << "t" <<endl;
+                code[i].fetch=code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until;
             }
-            else if(code[i].type=="ADD" || code[i].type=="SUB" || code[i].type=="LOAD" || code[i].type=="STORE" ){
-                if(code[i].type=="LOAD") nstages=4;
-                else if(code[i].type=="STORE") nstages=2;
-                else nstages=3;
-                if(code[i].regs.size()==2){
-                    /*2 registers to check*/
-                    if( (regs[code[i].regs[0]].inst==-1 && regs[code[i].regs[1]].inst==-1) \
-                        || (code[regs[code[i].regs[0]].inst-1].fetch + regs[code[i].regs[0]].until<code[i].fetch && \
-                        code[regs[code[i].regs[1]].inst-1].fetch + regs[code[i].regs[1]].until<code[i].fetch) ){
-                        /*No dependencies*/
-                            regs[code[i].regs[1]].inst=code[i].number;
-                            regs[code[i].regs[1]].until=nstages;
-                    }
-                    else{   /*Dependency*/
-                       if(regs[code[i].regs[0]].inst!=-1 && \
-                       (code[regs[code[i].regs[0]].inst-1].fetch + regs[code[i].regs[0]].until)>=code[i].fetch){
-                           cout << "Dip. IU-EU: " << regs[code[i].regs[0]].inst<<" => "<<code[i].number<<" Bolla da "<< code[regs[code[i].regs[0]].inst-1].fetch + regs[code[i].regs[0]].until-code[i].fetch-1 <<"t"<<endl;
-                       }
-                       if(regs[code[i].regs[1]].inst!=-1 && \
-                          (code[regs[code[i].regs[1]].inst-1].fetch+regs[code[i].regs[1]].until)>=code[i].fetch){
-                           cout << "Dip. IU-EU: " << regs[code[i].regs[1]].inst<<" => "<<code[i].number<<" Bolla da "<< code[regs[code[i].regs[1]].inst-1].fetch + regs[code[i].regs[1]].until-code[i].fetch-1 <<"t"<<endl;
-
-                       }
-                       if(code[regs[code[i].regs[0]].inst-1].fetch+regs[code[i].regs[0]].until >= \
-                          code[regs[code[i].regs[1]].inst-1].fetch+regs[code[i].regs[1]].until){
-
-                               regs[code[i].regs[1]].inst=code[i].number;
-                               regs[code[i].regs[1]].until=code[regs[code[i].regs[0]].inst-1].fetch+regs[code[i].regs[0]].until;
-                               code[i].fetch=code[regs[code[i].regs[0]].inst-1].fetch + regs[code[i].regs[0]].until;
-                       }
-                       else{
-                           regs[code[i].regs[0]].inst=code[i].number;
-                           regs[code[i].regs[0]].until=code[regs[code[i].regs[1]].inst-1].fetch+regs[code[i].regs[1]].until;
-                           code[i].fetch=code[regs[code[i].regs[1]].inst-1].fetch + regs[code[i].regs[1]].until;
-                       }
-                    }
-                }
-                else if(code[i].regs.size()==3){
-                    /*3 registers to check*/
-                    if( (regs[code[i].regs[0]].inst==-1 && regs[code[i].regs[1]].inst==-1 && \
-                        regs[code[i].regs[2]].inst==-1) || \
-                        (code[regs[code[i].regs[0]].inst-1].fetch+regs[code[i].regs[0]].until<=code[i].fetch && \
-                        code[regs[code[i].regs[1]].inst-1].fetch+regs[code[i].regs[1]].until<=code[i].fetch && \
-                        code[regs[code[i].regs[2]].inst-1].fetch+regs[code[i].regs[2]].until<=code[i].fetch) ){
-                        /*No dependencies*/
-                        regs[code[i].regs[2]].inst=code[i].number;
-                        regs[code[i].regs[2]].until=nstages;
-                    }
-                    else{   /*Dependency*/
-                        if(regs[code[i].regs[0]].inst!=-1 && \
-                       (code[regs[code[i].regs[0]].inst-1].fetch+regs[code[i].regs[0]].until)>code[i].fetch){
-                            cout << "Dip. IU-EU: " << regs[code[i].regs[0]].inst<<" => "<<code[i].number<<" Bolla da "<< code[regs[code[i].regs[0]].inst-1].fetch + regs[code[i].regs[0]].until-code[i].fetch-1 <<"t"<<endl;;
-                        }
-                        if(regs[code[i].regs[1]].inst!=-1 && \
-                          (code[regs[code[i].regs[1]].inst-1].fetch+regs[code[i].regs[1]].until)>code[i].fetch){
-                            cout << "Dip. IU-EU: " << regs[code[i].regs[1]].inst<<" => "<<code[i].number<<" Bolla da "<< code[regs[code[i].regs[1]].inst-1].fetch + regs[code[i].regs[1]].until-code[i].fetch-1 <<"t"<<endl;;
-                        }
-                        if(regs[code[i].regs[2]].inst!=-1 && \
-                          (code[regs[code[i].regs[2]].inst-1].fetch+regs[code[i].regs[2]].until)>code[i].fetch){
-                            cout << "Dip. IU-EU: " << regs[code[i].regs[2]].inst<<" => "<<code[i].number<<" Bolla da "<< code[regs[code[i].regs[2]].inst-1].fetch + regs[code[i].regs[2]].until-code[i].fetch-1 <<"t"<<endl;;
-                        }
-                        if(code[regs[code[i].regs[0]].inst].fetch+regs[code[i].regs[0]].until >= \
-                          code[regs[code[i].regs[1]].inst].fetch+regs[code[i].regs[1]].until && \
-                          code[regs[code[i].regs[0]].inst].fetch+regs[code[i].regs[0]].until >= \
-                          code[regs[code[i].regs[2]].inst].fetch+regs[code[i].regs[2]].until){
-
-                            regs[code[i].regs[2]].inst=code[i].number;
-                            regs[code[i].regs[2]].until=code[regs[code[i].regs[0]].inst-1].fetch+regs[code[i].regs[0]].until;
-                            code[i].fetch=code[regs[code[i].regs[0]].inst-1].fetch + regs[code[i].regs[0]].until;
-                        }
-                        else if(code[regs[code[i].regs[1]].inst-1].fetch+regs[code[i].regs[1]].until >= \
-                          code[regs[code[i].regs[0]].inst].fetch+regs[code[i].regs[0]].until && \
-                          code[regs[code[i].regs[1]].inst].fetch+regs[code[i].regs[1]].until >= \
-                          code[regs[code[i].regs[2]].inst].fetch+regs[code[i].regs[2]].until){
-
-                            regs[code[i].regs[2]].inst = code[i].number;
-                            regs[code[i].regs[2]].until = code[regs[code[i].regs[1]].inst-1].fetch+ regs[code[i].regs[1]].until;
-                            code[i].fetch=code[regs[code[i].regs[1]].inst-1].fetch + regs[code[i].regs[1]].until;
-                        }
-                        else{
-                            regs[code[i].regs[2]].inst=code[i].number;
-                            regs[code[i].regs[2]].until=code[regs[code[i].regs[2]].inst-1].fetch+regs[code[i].regs[2]].until;
-                            code[i].fetch=code[regs[code[i].regs[2]].inst-1].fetch + regs[code[i].regs[2]].until;
-                        }
-                    }
-                }
-
+            if(type=="EQ_0" || type=="LT_0" || type=="GT_0" || type=="GTE_0" || type=="LTE_0"){
+                /*Apply operation*/
+                if(type=="EQ_0" && regMap[code[i].regs[0]].value==0) cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
+                else if(type=="LT_0" && regMap[code[i].regs[0]].value<0) cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
+                else if(type=="GT_0" && regMap[code[i].regs[0]].value>0) cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
+                else if(type=="GTE_0" && regMap[code[i].regs[0]].value>=0) cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
+                else if(type=="LTE_0" && regMap[code[i].regs[0]].value<=0) cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
             }
-            else if(code[i].type=="IF"){
-                if(code[i].regs.size()==1){
-                    /*One register to check*/
-                    if(regs[code[i].regs[0]].inst!=-1 && \
-                    code[(regs[code[i].regs[0]].inst)-1].fetch+regs[code[i].regs[0]].until>=code[i].fetch){
-                        /*Dependency*/
-                        cout << "Dip. IU-EU: " << regs[code[i].regs[0]].inst<<" => "<<code[i].number << endl;
-                    }
-                }
-                else{
-                    /*2 registers to check*/
-                    if(regs[code[i].regs[0]].inst!=-1 && code[(regs[code[i].regs[0]].inst)-1].fetch+regs[code[i].regs[0]].until>=code[i].fetch) {
-                        cout << "Dip. IU-EU: " << regs[code[i].regs[0]].inst << " => " << code[i].number << " Bolla da " << code[(regs[code[i].regs[0]].inst)-1].fetch+regs[code[i].regs[0]].until-code[i].fetch-1<< "t" <<  endl;
-                        code[i].fetch=code[(regs[code[i].regs[0]].inst)-1].fetch+regs[code[i].regs[0]].until;
+            else{   /* CLEAR, INCR, DECR, MOVE_I */
+                /*Claim register*/
+                regMap[code[i].regs[0]].inst=n;
+                regMap[code[i].regs[0]].until=2;
 
-                    }
-                    if(regs[code[i].regs[1]].inst!=-1 && code[(regs[code[i].regs[0]].inst)-1].fetch+regs[code[i].regs[1]].until>=code[i].fetch)
-                        cout << "Dip. IU-EU: " << regs[code[i].regs[1]].inst<<" => "<<code[i].number << endl;
-                }
-
+                /*Apply operation*/
+                if(type=="MOVE")  regMap[code[i].regs[0]].value=code[i].imm;
+                else if(type=="CLEAR") regMap[code[i].regs[0]].value=0;
+                else if(type=="INCR") regMap[code[i].regs[0]].value++;
+                else regMap[code[i].regs[0]].value--;
             }
-            else if(code[i].type=="MOVE"){
-                if(code[i].regs.size()==1){
-                    /*One register to check*/
-                    if(regs[code[i].regs[0]].inst==-1 || \
-                    regs[code[i].regs[0]].inst+regs[code[i].regs[0]].until<=code[i].number+1){
-                        /* No dependency, update*/
-                        regs[code[i].regs[0]].inst=code[i].number;
-                        regs[code[i].regs[0]].until=3;
-                    }
-                    else{
-                        /*Dependency*/
-                        cout << "Dip. IU-EU: " << regs[code[i].regs[0]].inst<<" => "<<code[i].number<< endl;
-                        regs[code[i].regs[0]].inst=code[i].number;
-                        regs[code[i].regs[0]].until=code[regs[code[i].regs[0]].inst].fetch+regs[code[i].regs[0]].until;
-                        code[regs[code[i].regs[0]].inst].fetch=regs[code[i].regs[0]].until;
-                    }
-                }
-                else{
-                    /*2 registers to check*/
-                    if( (regs[code[i].regs[0]].inst==-1 && regs[code[i].regs[1]].inst==-1) || \
-                    (regs[code[i].regs[0]].inst+regs[code[i].regs[0]].until<=code[i].number+1 && \
-                    regs[code[i].regs[1]].inst+regs[code[i].regs[1]].until<=code[i].number+1) ){
-                        /* No dependency, update*/
-                        regs[code[i].regs[1]].inst=code[i].number;
-                        regs[code[i].regs[1]].until=3;
-                    }
-                    else{
-                        if(regs[code[i].regs[0]].inst!=-1 && \
-                       (regs[code[i].regs[0]].inst+regs[code[i].regs[0]].until)>=code[i].number+1){
-                            cout << "Dip. IU-EU: " << regs[code[i].regs[0]].inst<<" => "<<code[i].number<<endl;
-                        }
-                        if(regs[code[i].regs[1]].inst!=-1 && \
-                          (regs[code[i].regs[1]].inst+regs[code[i].regs[1]].until)>=code[i].number+1){
-                            cout << "Dip. IU-EU: " << regs[code[i].regs[1]].inst<<" => "<<code[i].number<<endl;
-                        }
-                        if(regs[code[i].regs[0]].inst+regs[code[i].regs[0]].until >= \
-                          regs[code[i].regs[1]].inst+regs[code[i].regs[1]].until){
-                            //for(int k=0; k<2; k++){
-                            regs[code[i].regs[1]].inst=code[i].number;
-                            regs[code[i].regs[1]].until=code[regs[code[i].regs[0]].inst].fetch+regs[code[i].regs[0]].until;
-                            code[regs[code[i].regs[0]].inst].fetch=regs[code[i].regs[1]].until;
-                            //}
-                        }
-                        else{
-                            regs[code[i].regs[1]].inst=code[i].number;
-                            regs[code[i].regs[1]].until=code[regs[code[i].regs[1]].inst].fetch+regs[code[i].regs[1]].until;
-                            code[regs[code[i].regs[1]].inst].fetch=regs[code[i].regs[1]].until;
-                        }
 
-                    }
+        }
+        else if(code[i].regs.size()==2){
+            /*Two registers to check*/
+            if( (regMap[code[i].regs[0]].inst!=-1 && code[regMap[code[i].regs[0]].inst].fetch+regMap[code[i].regs[0]].until>code[i].fetch+1) || \
+                (regMap[code[i].regs[1]].inst!=-1 && code[regMap[code[i].regs[1]].inst].fetch+regMap[code[i].regs[1]].until>code[i].fetch+1) ){
+                /*Dependency*/
+                if((regMap[code[i].regs[0]].inst!=-1 && code[regMap[code[i].regs[0]].inst].fetch+regMap[code[i].regs[0]].until>code[i].fetch+1) && \
+                (regMap[code[i].regs[1]].inst!=-1 && code[regMap[code[i].regs[1]].inst].fetch+regMap[code[i].regs[1]].until>code[i].fetch+1)) {
+                    /*Both registers cause dependency, consider the one that'll be available for last*/
+                    cout << "Dip. IU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
+                    cout << " Bolla da  " << code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until - code[i].fetch << "t" <<endl;
+                    cout << "Dip. IU-EU: " << regMap[code[i].regs[1]].inst << " => " << code[i].number;
+                    cout << " Bolla da  " << code[regMap[code[i].regs[1]].inst-1].fetch + regMap[code[i].regs[1]].until - code[i].fetch << "t" <<endl;
+
+                    code[i].fetch=max(code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until,code[regMap[code[i].regs[1]].inst].fetch+regMap[code[i].regs[1]].until);
+
+                }
+                else if(regMap[code[i].regs[0]].inst!=-1 && code[regMap[code[i].regs[0]].inst].fetch+regMap[code[i].regs[0]].until>code[i].fetch+1){
+                    /*First register's fault*/
+                    cout << "Dip. IU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
+                    cout << " Bolla da  " << code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until - code[i].fetch << "t" <<endl;
+                    code[i].fetch=code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until;
+                }
+                else if(regMap[code[i].regs[1]].inst!=-1 && code[regMap[code[i].regs[1]].inst].fetch+regMap[code[i].regs[1]].until>code[i].fetch+1){
+                    /*Second register's fault*/
+                    cout << "Dip. IU-EU: " << regMap[code[i].regs[1]].inst << " => " << code[i].number;
+                    cout << " Bolla da  " << code[regMap[code[i].regs[1]].inst-1].fetch + regMap[code[i].regs[1]].until - code[i].fetch << "t" <<endl;
+                    code[i].fetch=code[regMap[code[i].regs[1]].inst-1].fetch + regMap[code[i].regs[1]].until;
                 }
             }
 
+            if(type=="ADD_I" || type=="SUB_I" || type=="LOAD_I" || type=="STORE_I"){
+                /*Claim register*/
+                if(type!="STORE_I") regMap[code[i].regs[1]].inst=n;
+                if(type=="LOAD_I") regMap[code[i].regs[1]].until=3;
+                else if(type=="STORE_I") regMap[code[i].regs[1]].until=1;
+                else regMap[code[i].regs[1]].until=2;
+
+                /*Apply operation*/
+                if(type=="ADD_I") regMap[code[i].regs[1]].value=regMap[code[i].regs[0]].value+code[i].imm;
+                else if(type=="SUB_I") regMap[code[i].regs[1]].value=regMap[code[i].regs[0]].value-code[i].imm;
+                else if(type=="LOAD_I") regMap[code[i].regs[1]].value=memMap[regMap[code[i].regs[0]].value]+memMap[code[i].imm];
+                else if(type=="STORE_I") memMap[regMap[code[i].regs[0]].value+code[i].imm]=regMap[code[i].regs[1]].value;
+            }
+
+        }
+        else if(code[i].regs.size()==3){
+            /*Three registers to check*/
         }
     }
     return 0;

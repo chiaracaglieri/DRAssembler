@@ -68,7 +68,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "util.h"
+#include <deque>
 #include "util_dip.h"
 
 int yylex(void);
@@ -412,18 +412,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  47
+#define YYFINAL  46
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   92
+#define YYLAST   102
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  35
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  11
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  41
+#define YYNRULES  44
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  77
+#define YYNSTATES  86
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -473,10 +473,10 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    35,    35,    36,    37,    41,    42,    43,    44,    45,
-      51,    54,    57,    71,    78,    84,    96,   105,   118,   119,
-     124,   125,   128,   129,   130,   133,   134,   135,   136,   137,
-     140,   141,   142,   143,   144,   147,   148,   149,   152,   153,
-     157,   158
+      51,    54,    57,    67,    77,    84,    90,    96,   107,   120,
+     128,   135,   136,   141,   142,   145,   146,   147,   150,   151,
+     152,   153,   154,   157,   158,   159,   160,   161,   164,   165,
+     166,   169,   170,   174,   175
 };
 #endif
 
@@ -507,10 +507,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -45
+#define YYPACT_NINF -8
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-45)))
+  (!!((Yystate) == (-8)))
 
 #define YYTABLE_NINF -1
 
@@ -521,14 +521,15 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      22,     1,   -45,   -45,    -2,   -45,   -45,   -45,   -45,   -45,
-     -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,
-     -45,    -1,   -45,     4,     5,     6,     7,   -45,     8,    12,
-      22,    22,     9,    10,    11,    -2,    13,    50,   -45,   -45,
-      15,   -45,    18,    19,   -45,    20,   -45,   -45,   -45,   -45,
-      21,    74,    75,    76,   -45,   -45,    78,   -45,    19,   -45,
-     -45,    79,    -2,    -2,    17,   -45,   -45,    77,    81,    82,
-     -45,    83,    84,    85,   -45,   -45,   -45
+      -7,    59,    -8,    -8,    47,    -8,    -8,    -8,    -8,    -8,
+      -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,    -8,
+      -8,    44,    -8,    55,    61,    62,    63,    -8,    64,    68,
+      -7,    -7,    65,    66,    67,    49,    69,    21,    71,    72,
+      -8,    75,    76,    -8,    77,    -8,    -8,    -8,    -8,    78,
+      79,    80,    -8,    -8,    81,    -8,    -8,    82,    83,    -8,
+      76,    -8,    -8,    53,    54,    84,    74,    -8,    -8,    -8,
+      86,    87,    88,    89,    90,    -8,    91,    92,    93,    94,
+      95,    -8,    -8,    -8,    -8,    -8
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -536,28 +537,29 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,    20,    21,     0,    22,    23,    24,    25,    27,
-      26,    30,    31,    32,    28,    29,    33,    34,    35,    36,
-      37,     0,    11,     0,     0,     0,     0,    10,     0,     0,
-       0,     2,     0,     0,     0,     0,     0,     0,    41,    40,
-       0,    19,     0,     0,     7,     0,     9,     1,     3,     4,
-       0,     0,     0,     0,    13,    18,     0,     5,    38,     6,
-       8,     0,     0,     0,     0,    17,    39,     0,     0,     0,
-      16,     0,     0,     0,    14,    12,    15
+       0,     0,    23,    24,     0,    25,    26,    27,    28,    30,
+      29,    33,    34,    35,    31,    32,    36,    37,    38,    39,
+      40,     0,    11,     0,     0,     0,     0,    10,     0,     0,
+       0,     2,     0,     0,     0,     0,     0,     0,     0,     0,
+      22,     0,     0,     7,     0,     9,     1,     3,     4,     0,
+       0,     0,    44,    43,     0,    14,    21,     0,     0,     5,
+      41,     6,     8,     0,     0,     0,     0,    20,    19,    42,
+       0,     0,     0,     0,     0,    18,     0,     0,     0,     0,
+       0,    16,    15,    13,    12,    17
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -45,   -28,   -45,   -24,   -45,   -45,   -45,   -45,   -45,   -44,
-     -35
+      -8,    31,    -8,    32,    -8,    -8,    -8,    -8,    -8,    10,
+      -8
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,    29,    30,    31,    32,    33,    34,    35,    36,    59,
-      40
+      -1,    29,    30,    31,    32,    33,    34,    35,    36,    61,
+      54
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -565,29 +567,31 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      53,    38,    48,    49,    39,    37,    41,    42,    43,    44,
-      45,    46,    47,    55,    66,    50,    51,    52,     0,    54,
-      56,    57,    58,    60,    70,     0,    61,    68,    69,     1,
-       2,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,     1,     2,     3,
-       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    62,
-      63,    64,    71,    27,    65,    67,    72,    73,     0,    74,
-      75,     0,    76
+       1,     2,     3,     4,     5,     6,     7,     8,     9,    10,
+      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,     1,     2,
+       3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
+      38,    40,    52,    39,    27,    53,    70,    72,    41,    71,
+      73,    47,    48,    37,    42,    43,    44,    45,    46,    56,
+      69,    49,    50,    51,     0,    55,    57,    58,    59,    60,
+      62,    75,     0,    63,    64,    65,    66,     0,    67,    68,
+      74,    76,    77,    78,    79,    80,     0,    81,    82,    83,
+      84,     0,    85
 };
 
 static const yytype_int8 yycheck[] =
 {
-      35,     3,    30,    31,     6,     4,     7,     3,     3,     3,
-       3,     3,     0,    37,    58,     6,     6,     6,    -1,     6,
-       5,     3,     3,     3,     7,    -1,     5,    62,    63,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    29,    30,    31,    32,    33,    34,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    28,     5,
-       5,     5,     5,    33,     6,     6,     5,     5,    -1,     6,
+       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+      27,    28,    29,    30,    31,    32,    33,    34,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+       3,     7,     3,     6,    33,     6,     3,     3,     3,     6,
+       6,    30,    31,     4,     3,     3,     3,     3,     0,    37,
+      60,     6,     6,     6,    -1,     6,     5,     5,     3,     3,
+       3,     7,    -1,     5,     5,     5,     5,    -1,     6,     6,
+       6,     5,     5,     5,     5,     5,    -1,     6,     6,     6,
        6,    -1,     7
 };
 
@@ -599,10 +603,11 @@ static const yytype_uint8 yystos[] =
       16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
       26,    27,    28,    29,    30,    31,    32,    33,    34,    36,
       37,    38,    39,    40,    41,    42,    43,     4,     3,     6,
-      45,     7,     3,     3,     3,     3,     3,     0,    36,    36,
-       6,     6,     6,    45,     6,    38,     5,     3,     3,    44,
-       3,     5,     5,     5,     5,     6,    44,     6,    45,    45,
-       7,     5,     5,     5,     6,     6,     7
+       7,     3,     3,     3,     3,     3,     0,    36,    36,     6,
+       6,     6,     3,     6,    45,     6,    38,     5,     5,     3,
+       3,    44,     3,     5,     5,     5,     5,     6,     6,    44,
+       3,     6,     3,     6,     6,     7,     5,     5,     5,     5,
+       5,     6,     6,     6,     6,     7
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -610,19 +615,19 @@ static const yytype_uint8 yyr1[] =
 {
        0,    35,    36,    36,    36,    37,    37,    37,    37,    37,
       38,    38,    38,    38,    38,    38,    38,    38,    38,    38,
-      39,    39,    40,    40,    40,    41,    41,    41,    41,    41,
-      42,    42,    42,    42,    42,    43,    43,    43,    44,    44,
-      45,    45
+      38,    38,    38,    39,    39,    40,    40,    40,    41,    41,
+      41,    41,    41,    42,    42,    42,    42,    42,    43,    43,
+      43,    44,    44,    45,    45
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     2,     2,     3,     3,     2,     3,     2,
-       1,     1,     6,     2,     6,     6,     4,     4,     3,     2,
+       1,     1,     6,     6,     2,     6,     6,     6,     4,     4,
+       4,     3,     2,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     2,
-       1,     1
+       1,     1,     2,     1,     1
 };
 
 
@@ -1301,128 +1306,149 @@ yyreduce:
         case 2:
 #line 35 "dip.y" /* yacc.c:1646  */
     { }
-#line 1305 "dip.tab.c" /* yacc.c:1646  */
+#line 1310 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
 #line 36 "dip.y" /* yacc.c:1646  */
     { }
-#line 1311 "dip.tab.c" /* yacc.c:1646  */
+#line 1316 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
 #line 37 "dip.y" /* yacc.c:1646  */
     { }
-#line 1317 "dip.tab.c" /* yacc.c:1646  */
+#line 1322 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
 #line 41 "dip.y" /* yacc.c:1646  */
-    { }
-#line 1323 "dip.tab.c" /* yacc.c:1646  */
+    { memMap[(yyvsp[-1].intval)]=(yyvsp[0].intval); }
+#line 1328 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
 #line 42 "dip.y" /* yacc.c:1646  */
-    { }
-#line 1329 "dip.tab.c" /* yacc.c:1646  */
+    { initMemlocs1((yyvsp[-1].intval),v1); }
+#line 1334 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
 #line 43 "dip.y" /* yacc.c:1646  */
-    { }
-#line 1335 "dip.tab.c" /* yacc.c:1646  */
+    {  }
+#line 1340 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
 #line 44 "dip.y" /* yacc.c:1646  */
-    {  }
-#line 1341 "dip.tab.c" /* yacc.c:1646  */
+    { initReg((yyvsp[-1].intval),(yyvsp[0].intval)); }
+#line 1346 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
 #line 45 "dip.y" /* yacc.c:1646  */
-    {  }
-#line 1347 "dip.tab.c" /* yacc.c:1646  */
+    { }
+#line 1352 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
 #line 51 "dip.y" /* yacc.c:1646  */
     { counter++;
-              addInstruction(counter,"END",vector<int>());
+              addInstruction(counter,"END",-1,vector<int>());
             }
-#line 1355 "dip.tab.c" /* yacc.c:1646  */
+#line 1360 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
 #line 54 "dip.y" /* yacc.c:1646  */
     { counter++;
-           addInstruction(lc,"NOP",vector<int>());
+           addInstruction(counter,"NOP",-1,vector<int>());
            }
-#line 1363 "dip.tab.c" /* yacc.c:1646  */
+#line 1368 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
 #line 57 "dip.y" /* yacc.c:1646  */
     {   counter++;
                                                 vector<int> tmp;
-                                                if((yyvsp[-2].intval)!=-1){
-                                                    tmp={(yyvsp[-4].intval),(yyvsp[-2].intval),(yyvsp[0].intval)};
-                                                    addReg((yyvsp[-4].intval),(yyvsp[-2].intval),(yyvsp[0].intval));
+
+                                                tmp={(yyvsp[-4].intval),(yyvsp[-2].intval),(yyvsp[0].intval)};
+                                                addReg((yyvsp[-4].intval),(yyvsp[-2].intval),(yyvsp[0].intval));
+
+                                                if((yyvsp[-5].intval)==1) addInstruction(counter,"ADD",-1,tmp);
+                                                else if((yyvsp[-5].intval)==2) addInstruction(counter,"SUB",-1,tmp);
+                                                else addInstruction(counter,"MUL",-1,tmp);
                                                 }
-                                                else{
-                                                    tmp={(yyvsp[-4].intval),(yyvsp[0].intval)};
-                                                    addReg((yyvsp[-4].intval),(yyvsp[0].intval),-1);
-                                                }
-                                                if((yyvsp[-5].intval)==1) addInstruction(counter,"ADD",tmp);
-                                                else if((yyvsp[-5].intval)==2) addInstruction(counter,"SUB",tmp);
-                                                else addInstruction(counter,"MUL",tmp);
-                                                }
-#line 1382 "dip.tab.c" /* yacc.c:1646  */
+#line 1383 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 71 "dip.y" /* yacc.c:1646  */
-    {  counter++;
-                               vector<int> tmp={(yyvsp[0].intval)};
-                               addReg((yyvsp[0].intval),-1,-1);
-                               if((yyvsp[-1].intval)==1) addInstruction(counter,"CLEAR",tmp);
-                               else if((yyvsp[-1].intval)==2) addInstruction(counter,"INCR",tmp);
-                               else if((yyvsp[-1].intval)==3) addInstruction(counter,"DECR",tmp);
-                            }
-#line 1394 "dip.tab.c" /* yacc.c:1646  */
+#line 67 "dip.y" /* yacc.c:1646  */
+    {   counter++;
+                                                vector<int> tmp;
+
+                                                 tmp={(yyvsp[-4].intval),(yyvsp[0].intval)};
+                                                 addReg((yyvsp[-4].intval),(yyvsp[0].intval),-1);
+
+                                                 if((yyvsp[-5].intval)==1) addInstruction(counter,"ADD_I",(yyvsp[-2].intval),tmp);
+                                                 else if((yyvsp[-5].intval)==2) addInstruction(counter,"SUB_I",(yyvsp[-2].intval),tmp);
+                                                 else addInstruction(counter,"MUL_I",(yyvsp[-2].intval),tmp);
+                                                }
+#line 1398 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 78 "dip.y" /* yacc.c:1646  */
-    { counter++;
-                                              vector<int> tmp={(yyvsp[-4].intval),(yyvsp[-2].intval),(yyvsp[0].intval)};
-                                              addReg((yyvsp[-4].intval),(yyvsp[-2].intval),(yyvsp[0].intval));
-                                              if((yyvsp[-5].intval)==1) addInstruction(counter,"LOAD",tmp);
-                                              else addInstruction(counter,"STORE",tmp);
-                                              }
-#line 1405 "dip.tab.c" /* yacc.c:1646  */
+#line 77 "dip.y" /* yacc.c:1646  */
+    {  counter++;
+                               vector<int> tmp={(yyvsp[0].intval)};
+                               addReg((yyvsp[0].intval),-1,-1);
+                               if((yyvsp[-1].intval)==1) addInstruction(counter,"CLEAR",-1,tmp);
+                               else if((yyvsp[-1].intval)==2) addInstruction(counter,"INCR",-1,tmp);
+                               else if((yyvsp[-1].intval)==3) addInstruction(counter,"DECR",-1,tmp);
+                            }
+#line 1410 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
 #line 84 "dip.y" /* yacc.c:1646  */
-    {    counter++;
-                                                  vector<int> tmp;
-                                                  if((yyvsp[-2].intval)!=-1){
-                                                    tmp={(yyvsp[-4].intval),(yyvsp[-2].intval)};
-                                                    addReg((yyvsp[-4].intval),(yyvsp[-2].intval),-1);
-                                                  }
-                                                  else{
-                                                    tmp={(yyvsp[-4].intval)};
-                                                    addReg((yyvsp[-4].intval),-1,-1);
-                                                  }
-                                                  addInstruction(counter,"IF",tmp);
-                                             }
-#line 1422 "dip.tab.c" /* yacc.c:1646  */
+    { counter++;
+                                              vector<int> tmp={(yyvsp[-4].intval),(yyvsp[-2].intval),(yyvsp[0].intval)};
+                                              addReg((yyvsp[-4].intval),(yyvsp[-2].intval),(yyvsp[0].intval));
+                                              if((yyvsp[-5].intval)==1) addInstruction(counter,"LOAD",-1,tmp);
+                                              else addInstruction(counter,"STORE",-1,tmp);
+                                              }
+#line 1421 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
+#line 90 "dip.y" /* yacc.c:1646  */
+    { counter++;
+                                                vector<int> tmp={(yyvsp[-4].intval),(yyvsp[0].intval)};
+                                                addReg((yyvsp[-4].intval),(yyvsp[0].intval),-1);
+                                                if((yyvsp[-5].intval)==1) addInstruction(counter,"LOAD_I",(yyvsp[-2].intval),tmp);
+                                                else addInstruction(counter,"STORE_I",(yyvsp[-2].intval),tmp);
+                                              }
+#line 1432 "dip.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 17:
 #line 96 "dip.y" /* yacc.c:1646  */
+    {    counter++;
+                                                  vector<int> tmp;
+                                                  tmp={(yyvsp[-4].intval),(yyvsp[-2].intval)};
+                                                  addReg((yyvsp[-4].intval),(yyvsp[-2].intval),-1);
+
+                                                  if((yyvsp[-5].intval)==1) addInstruction(counter,"EQ",-1,tmp);
+                                                  else if((yyvsp[-5].intval)==2) addInstruction(counter,"LT",-1,tmp);
+                                                  else if((yyvsp[-5].intval)==3) addInstruction(counter,"GT",-1,tmp);
+                                                  else if((yyvsp[-5].intval)==4) addInstruction(counter,"GTE",-1,tmp);
+                                                  else if((yyvsp[-5].intval)==5) addInstruction(counter,"LTE",-1,tmp);
+                                             }
+#line 1448 "dip.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 18:
+#line 107 "dip.y" /* yacc.c:1646  */
     { counter++;
                                        vector<int> tmp;
                                        if((yyvsp[-2].intval)!=-1){
@@ -1430,177 +1456,188 @@ yyreduce:
                                             addReg((yyvsp[-2].intval),-1,-1);
                                        }
                                        else tmp={};
-                                       addInstruction(counter,"IF0",tmp);
+                                       if((yyvsp[-3].intval)==1) addInstruction(counter,"EQ_0",-1,tmp);
+                                       else if((yyvsp[-3].intval)==2) addInstruction(counter,"LT_0",-1,tmp);
+                                       else if((yyvsp[-3].intval)==3) addInstruction(counter,"GT_0",-1,tmp);
+                                       else if((yyvsp[-3].intval)==4) addInstruction(counter,"GTE_0",-1,tmp);
+                                       else if((yyvsp[-3].intval)==5) addInstruction(counter,"LTE_0",-1,tmp);
                                      }
-#line 1436 "dip.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 17:
-#line 105 "dip.y" /* yacc.c:1646  */
-    {  counter++;
-                           vector<int> tmp;
-                           if((yyvsp[-2].intval)!=-1){
-                                tmp={(yyvsp[-2].intval),(yyvsp[0].intval)};
-                                addReg((yyvsp[-2].intval),(yyvsp[0].intval),-1);
-                           }
-                           else{
-                                tmp={(yyvsp[0].intval)};
-                                addReg((yyvsp[0].intval),-1,-1);
-                           }
-                           addInstruction(counter,"MOVE",tmp);
-
-                        }
-#line 1454 "dip.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 18:
-#line 118 "dip.y" /* yacc.c:1646  */
-    {  }
-#line 1460 "dip.tab.c" /* yacc.c:1646  */
+#line 1466 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 119 "dip.y" /* yacc.c:1646  */
+#line 120 "dip.y" /* yacc.c:1646  */
     {  counter++;
-                addInstruction(counter,"GOTO",vector<int>());
-             }
-#line 1468 "dip.tab.c" /* yacc.c:1646  */
+                           vector<int> tmp;
+
+                           tmp={(yyvsp[-2].intval),(yyvsp[0].intval)};
+                           addReg((yyvsp[-2].intval),(yyvsp[0].intval),-1);
+                           addInstruction(counter,"MOVE",-1,tmp);
+
+                        }
+#line 1479 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 124 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=1; }
-#line 1474 "dip.tab.c" /* yacc.c:1646  */
+#line 128 "dip.y" /* yacc.c:1646  */
+    {  counter++;
+                             vector<int> tmp;
+
+                             tmp={(yyvsp[0].intval)};
+                             addReg((yyvsp[0].intval),-1,-1);
+                             addInstruction(counter,"MOVE_I",(yyvsp[-2].intval),tmp);
+                        }
+#line 1491 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 125 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=2; }
-#line 1480 "dip.tab.c" /* yacc.c:1646  */
+#line 135 "dip.y" /* yacc.c:1646  */
+    {  }
+#line 1497 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 128 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=1; }
-#line 1486 "dip.tab.c" /* yacc.c:1646  */
+#line 136 "dip.y" /* yacc.c:1646  */
+    {  counter++;
+                addInstruction(counter,"GOTO",-1,vector<int>());
+             }
+#line 1505 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 129 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=2; }
-#line 1492 "dip.tab.c" /* yacc.c:1646  */
+#line 141 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=1; }
+#line 1511 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 130 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=3; }
-#line 1498 "dip.tab.c" /* yacc.c:1646  */
+#line 142 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=2; }
+#line 1517 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 133 "dip.y" /* yacc.c:1646  */
+#line 145 "dip.y" /* yacc.c:1646  */
     { (yyval.intval)=1; }
-#line 1504 "dip.tab.c" /* yacc.c:1646  */
+#line 1523 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 134 "dip.y" /* yacc.c:1646  */
+#line 146 "dip.y" /* yacc.c:1646  */
     { (yyval.intval)=2; }
-#line 1510 "dip.tab.c" /* yacc.c:1646  */
+#line 1529 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 135 "dip.y" /* yacc.c:1646  */
+#line 147 "dip.y" /* yacc.c:1646  */
     { (yyval.intval)=3; }
-#line 1516 "dip.tab.c" /* yacc.c:1646  */
+#line 1535 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 136 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=4; }
-#line 1522 "dip.tab.c" /* yacc.c:1646  */
+#line 150 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=1; }
+#line 1541 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 137 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=5; }
-#line 1528 "dip.tab.c" /* yacc.c:1646  */
+#line 151 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=2; }
+#line 1547 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 140 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=1; }
-#line 1534 "dip.tab.c" /* yacc.c:1646  */
+#line 152 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=3; }
+#line 1553 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 141 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=2; }
-#line 1540 "dip.tab.c" /* yacc.c:1646  */
+#line 153 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=4; }
+#line 1559 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 142 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=3; }
-#line 1546 "dip.tab.c" /* yacc.c:1646  */
+#line 154 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=5; }
+#line 1565 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 143 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=4; }
-#line 1552 "dip.tab.c" /* yacc.c:1646  */
+#line 157 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=1; }
+#line 1571 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 144 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=5; }
-#line 1558 "dip.tab.c" /* yacc.c:1646  */
+#line 158 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=2; }
+#line 1577 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 147 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=1; }
-#line 1564 "dip.tab.c" /* yacc.c:1646  */
+#line 159 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=3; }
+#line 1583 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 148 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=2; }
-#line 1570 "dip.tab.c" /* yacc.c:1646  */
+#line 160 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=4; }
+#line 1589 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 149 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=3; }
-#line 1576 "dip.tab.c" /* yacc.c:1646  */
+#line 161 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=5; }
+#line 1595 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 152 "dip.y" /* yacc.c:1646  */
-    {  }
-#line 1582 "dip.tab.c" /* yacc.c:1646  */
+#line 164 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=1; }
+#line 1601 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 153 "dip.y" /* yacc.c:1646  */
-    { }
-#line 1588 "dip.tab.c" /* yacc.c:1646  */
+#line 165 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=2; }
+#line 1607 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 157 "dip.y" /* yacc.c:1646  */
-    { (yyval.intval)=(yyvsp[0].intval); }
-#line 1594 "dip.tab.c" /* yacc.c:1646  */
+#line 166 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=3; }
+#line 1613 "dip.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 158 "dip.y" /* yacc.c:1646  */
+#line 169 "dip.y" /* yacc.c:1646  */
+    { v1.push_front((yyvsp[0].intval)); }
+#line 1619 "dip.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 42:
+#line 170 "dip.y" /* yacc.c:1646  */
+    { v1.push_front((yyvsp[-1].intval)); }
+#line 1625 "dip.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 43:
+#line 174 "dip.y" /* yacc.c:1646  */
+    { (yyval.intval)=(yyvsp[0].intval); }
+#line 1631 "dip.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 44:
+#line 175 "dip.y" /* yacc.c:1646  */
     { (yyval.intval)=-1; }
-#line 1600 "dip.tab.c" /* yacc.c:1646  */
+#line 1637 "dip.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1604 "dip.tab.c" /* yacc.c:1646  */
+#line 1641 "dip.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1828,4 +1865,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 161 "dip.y" /* yacc.c:1906  */
+#line 178 "dip.y" /* yacc.c:1906  */
