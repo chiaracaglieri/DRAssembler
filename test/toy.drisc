@@ -2,7 +2,8 @@ incr R9
 clear R9
 if=0 R9,loop
 loop: incr R9
-      add R9,2,R40
+      add R9,R2,R40
       load R40,1,R94
       store R94,1,R3
+      move R94,R9
       end
