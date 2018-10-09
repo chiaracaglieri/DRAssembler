@@ -91,9 +91,15 @@ void addInstruction(int n,string t, int imm, vector<int> r){
     i.number=n;
     i.type=t;
     i.regs=r;
-    i.fetch=n;
+    i.decode=n;
     if(t=="ADD_I" || t=="SUB_I" || t=="MUL_I" || t=="LOAD_I" || t=="STORE_I" || t=="MOVE_I")
         i.imm=imm;
     code.push_back(i);
     printInstruction(i);
+}
+
+bool isAritm(string i){
+    if(i=="ADD" || i=="SUB" || i=="ADD_I" || i=="SUB_I" || i=="MUL" || i=="MUL_I" || i=="INCR" \
+        || i=="DECR" || i=="CLEAR" || i=="MOVE" || i=="MOVE_I") return true;
+    else return false;
 }

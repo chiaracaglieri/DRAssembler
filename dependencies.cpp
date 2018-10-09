@@ -10,6 +10,43 @@
 
 extern FILE* yyin;
 
+int check(int r){
+    if(regMap[r].inst==-1) return -1;
+    else return regMap[r].until;
+}
+
+bool isConditional(string t){
+    if(t=="EQ"      || \
+       t=="LT"      || \
+       t=="GT"      || \
+       t=="LTE"     || \
+       t=="GTE"     || \
+       t=="EQ_0"    || \
+       t=="LT_0"    || \
+       t=="GT_0"    || \
+       t=="LTE_0"   || \
+       t=="GTE_0"   )
+        return true;
+    return false;
+}
+bool isMul(int i){
+    if(code[i-1].type=="MUL" || \
+       code[i-1].type=="MUL_I"  )
+        return true;
+    return false;
+}
+
+void printIUEU(int i1, int i2, int b){
+    cout <<"Dip. IU-EU: "<<i1<<" => "<<i2<<"    Bolla da "<<b<<"t"<<endl;
+}
+
+void printEUEU(int i1, int i2, int b){
+    cout <<"Dip. EU-EU: "<<i1<<" => "<<i2<<"    Bolla da "<<b<<"t"<<endl;
+}
+
+void printJump(int i){
+    cout << "Salto preso: "<<i<<" Bolla da 1t"<<endl;
+}
 
 int main(int argc, char** argv){
 
@@ -47,202 +84,186 @@ int main(int argc, char** argv){
     remove("tmp.drisc");
     cout << "Start analyzing..." << endl;
 
-    for(int i=0; i<code.size(); i++){
-        if(i>0) code[i].fetch=code[i-1].fetch+1;
-        string type=code[i].type;
-        int n=code[i].number;
+    int EU_until=0;
+    int EUs_until=0;
+
+    for(int i=0; i<code.size(); i++) {
+        if(i==0) code[i].decode=1;
+        int nregs = code[i].regs.size();
+        string type = code[i].type;
+        int num = code[i].number;
+        int dec = code[i].decode;
+
+        /**************************/
 
         if(code[i].regs.size()==0){
-            /*No registers to check*/
-            if(type=="GOTO") cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
+            /*END,NOP,GOTO*/
+            if(type=="GOTO"){
+                printJump(num);
+                /*Aggiorno decode time dell'istr successiva*/
+                if(i<code.size()-1) code[i+1].decode+=2;
+            }
+            else if(i<code.size()-1) code[i+1].decode=dec+1;
         }
-        else if(code[i].regs.size()==1){
+
+        /**************************/
+
+        if(code[i].regs.size()==1){
             /*One register to check*/
-            if(regMap[code[i].regs[0]].inst!=-1 && code[regMap[code[i].regs[0]].inst-1].fetch+regMap[code[i].regs[0]].until>=code[i].fetch+1){
-                /*Dependency*/
-                if(code[regMap[code[i].regs[0]].inst-1].type=="MUL_I" || code[regMap[code[i].regs[0]].inst-1].type=="MUL")
-                    cout << "Dip. EU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
-                else cout << "Dip. IU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
+            int r0=code[i].regs[0];
+            int blockingInst=regMap[r0].inst;
+            int unt=check(r0);
 
-                cout << " Bolla da  " << code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until - code[i].fetch << "t" <<endl;
+            if(isConditional(type)){    /*IF*0*/
+                if(unt!=-1 && unt>=dec){    /*Until indica l'ultimo stadio di occupazione della risorsa*/
+                    /*Dipendenza IU-EU*/
+                    printIUEU(blockingInst,num,unt+1-dec);
+                    /*Aggiorno decode time dell'istr successiva*/
+                    if(i<code.size()-1) code[i+1].decode=unt+1;
+                }
+                else if(i<code.size()-1) code[i+1].decode=dec+1;
 
-                code[i].fetch=code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until;
+                /*Eseguo Operazione*/
             }
-            if(type=="EQ_0" || type=="LT_0" || type=="GT_0" || type=="GTE_0" || type=="LTE_0"){
-                /*Apply operation*/
-                if(type=="EQ_0" && regMap[code[i].regs[0]].value==0){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                    code[i].fetch++;
+            else{   /*MOVE_I,INCR,DECR,CLEAR*/
+                if(unt!=-1 && unt>=dec+1 && isMul(blockingInst)){
+                    printEUEU(blockingInst,num,unt-dec);
+                    /*Aggiorno until e prenoto registro*/
+                    regMap[r0].inst=num;
+                    regMap[r0].until=unt+1;
+                    /*La prox istruzione avrà cmomunque il decode allo stadio successivo ma dovrà tenere conto che la EU è occupata*/
+                    EU_until=EUs_until+1;
                 }
-                else if(type=="LT_0" && regMap[code[i].regs[0]].value<0){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                }
-                else if(type=="GT_0" && regMap[code[i].regs[0]].value>0){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                }
-                else if(type=="GTE_0" && regMap[code[i].regs[0]].value>=0){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                }
-                else if(type=="LTE_0" && regMap[code[i].regs[0]].value<=0){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                }
-            }
-            else{   /* CLEAR, INCR, DECR, MOVE_I */
-                /*Claim register*/
-                regMap[code[i].regs[0]].inst=n;
-                regMap[code[i].regs[0]].until=2;
+                else if(unt!=-1 && unt>=dec+1 && !isMul(blockingInst)){
+                    /*Basta eseguire l'istruzione appena la EU è libera*/
+                    regMap[r0].inst=num;
+                    if(EU_until+1>=dec+1) EU_until++;
+                    else EU_until=dec+1;
+                    regMap[r0].until=EU_until;
 
-                /*Apply operation*/
-                if(type=="MOVE_I")  regMap[code[i].regs[0]].value=code[i].imm;
-                else if(type=="CLEAR") regMap[code[i].regs[0]].value=0;
-                else if(type=="INCR") regMap[code[i].regs[0]].value++;
-                else regMap[code[i].regs[0]].value--;
-            }
+                }
+                else if(unt==-1 || unt<dec+1){
+                    regMap[r0].inst=num;
+                    if(EU_until+1>=dec+1) EU_until++;
+                    else EU_until=dec+1;
+                    regMap[r0].until=EU_until;
+                }
+                if(i<code.size()-1) code[i+1].decode=dec+1;
 
+                /*Eseguo Operazione*/
+            }
         }
-        else if(code[i].regs.size()==2){
 
+        /**************************/
+
+        if(code[i].regs.size()==2){
             /*Two registers to check*/
-            if( (regMap[code[i].regs[0]].inst!=-1 && code[regMap[code[i].regs[0]].inst-1].fetch+regMap[code[i].regs[0]].until>=code[i].fetch+1) || \
-                (regMap[code[i].regs[1]].inst!=-1 && code[regMap[code[i].regs[1]].inst-1].fetch+regMap[code[i].regs[1]].until>=code[i].fetch+1) ){
-                /*Dependency*/
-                int sum0;
-                if(regMap[code[i].regs[0]].inst==-1)
-                    sum0=-1;
-                else sum0=code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until;
-                int sum1;
-                if(regMap[code[i].regs[1]].inst==-1)
-                    sum1=-1;
-                else sum1=code[regMap[code[i].regs[1]].inst-1].fetch + regMap[code[i].regs[1]].until;
-
-                if(sum0>=sum1){
-                    /*First register prevails*/
-                    if(code[regMap[code[i].regs[0]].inst-1].type=="MUL_I" || code[regMap[code[i].regs[0]].inst-1].type=="MUL")
-                        cout << "Dip. EU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
-                    else
-                        cout << "Dip. IU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
-
-                    cout << " Bolla da  " << sum0 - code[i].fetch << "t" <<endl;
-                    code[i].fetch=sum0;
-                }
-                else{
-                    /*Second register prevails*/
-                    if(code[regMap[code[i].regs[1]].inst-1].type=="MUL_I" || code[regMap[code[i].regs[1]].inst-1].type=="MUL")
-                        cout << "Dip. EU-EU: " << regMap[code[i].regs[1]].inst << " => " << code[i].number;
-                    else
-                        cout << "Dip. IU-EU: " << regMap[code[i].regs[1]].inst << " => " << code[i].number;
-
-                    cout << " Bolla da  " << sum1 - code[i].fetch << "t" <<endl;
-                    code[i].fetch=sum1;
-                }
-            }
-
-            if(type=="ADD_I" || type=="SUB_I" || type=="LOAD_I" || type=="STORE_I" || type=="MUL_I" || type=="MOVE"){
-                /*Claim register*/
-                if(type!="STORE_I") regMap[code[i].regs[1]].inst=n;
-                if(type=="LOAD_I") regMap[code[i].regs[1]].until=3;
-                else if(type=="MUL_I") regMap[code[i].regs[1]].until=2+nstages;
-                else regMap[code[i].regs[1]].until=2;
-
-                /*Apply operation*/
-                if(type=="ADD_I") regMap[code[i].regs[1]].value=regMap[code[i].regs[0]].value+code[i].imm;
-                else if(type=="SUB_I") regMap[code[i].regs[1]].value=regMap[code[i].regs[0]].value-code[i].imm;
-                else if(type=="LOAD_I") regMap[code[i].regs[1]].value=memMap[regMap[code[i].regs[0]].value]+memMap[code[i].imm];
-                else if(type=="STORE_I") memMap[regMap[code[i].regs[0]].value+code[i].imm]=regMap[code[i].regs[1]].value;
-                else if(type=="MUL_I") regMap[code[i].regs[1]].value=regMap[code[i].regs[0]].value*code[i].imm;
-                else if(type=="MOVE") regMap[code[i].regs[1]].value=regMap[code[i].regs[0]].value;
-            }
-            if(type=="EQ" || type=="GT" || type=="LT" || type=="GTE" || type=="LTE"){
-                /*Apply operation*/
-                if(type=="EQ" && regMap[code[i].regs[0]].value==regMap[code[i].regs[1]].value){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                    code[i].fetch++;
-                }
-                else if(type=="LT" && regMap[code[i].regs[0]].value<regMap[code[i].regs[1]].value){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                }
-                else if(type=="GT" && regMap[code[i].regs[0]].value>regMap[code[i].regs[1]].value){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                }
-                else if(type=="GTE" && regMap[code[i].regs[0]].value>=regMap[code[i].regs[1]].value){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                }
-                else if(type=="LTE" && regMap[code[i].regs[0]].value<=regMap[code[i].regs[1]].value){
-                    cout << "Salto preso: "<< code[i].number << "     Bolla da 1t" << endl;
-                }
-            }
-
-        }
-        else if(code[i].regs.size()==3){
-            /*Three registers to check*/
-            if( (regMap[code[i].regs[0]].inst!=-1 && code[regMap[code[i].regs[0]].inst-1].fetch+regMap[code[i].regs[0]].until>=code[i].fetch+1) || \
-                (regMap[code[i].regs[1]].inst!=-1 && code[regMap[code[i].regs[1]].inst-1].fetch+regMap[code[i].regs[1]].until>=code[i].fetch+1) || \
-                (regMap[code[i].regs[2]].inst!=-1 && code[regMap[code[i].regs[2]].inst-1].fetch+regMap[code[i].regs[2]].until>=code[i].fetch+1)){
-
-                int sum0;
-                if(regMap[code[i].regs[0]].inst==-1)
-                    sum0=-1;
-                else sum0=code[regMap[code[i].regs[0]].inst-1].fetch + regMap[code[i].regs[0]].until;
-                int sum1;
-                if(regMap[code[i].regs[1]].inst==-1)
-                    sum1=-1;
-                else sum1=code[regMap[code[i].regs[1]].inst-1].fetch + regMap[code[i].regs[1]].until;
-                int sum2;
-                if(regMap[code[i].regs[2]].inst==-1)
-                    sum2=-1;
-                else sum2=code[regMap[code[i].regs[2]].inst-1].fetch + regMap[code[i].regs[2]].until;
-                /*Dependency*/
-
-                    if(sum0>=sum1){
-                        if(sum0>=sum2){
-                            /*First register prevails*/
-
-                            if(code[regMap[code[i].regs[0]].inst-1].type=="MUL_I" || code[regMap[code[i].regs[0]].inst-1].type=="MUL")
-                                cout << "Dip. EU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
-                            else
-                                cout << "Dip. IU-EU: " << regMap[code[i].regs[0]].inst << " => " << code[i].number;
-
-                            cout << " Bolla da  " << sum0 - code[i].fetch << "t" <<endl;
-                            code[i].fetch=sum0;
-                        }
-                        else{
-                            /*Third register prevails*/
-
-                            if(code[regMap[code[i].regs[2]].inst-1].type=="MUL_I" || code[regMap[code[i].regs[2]].inst-1].type=="MUL")
-                                cout << "Dip. EU-EU: " << regMap[code[i].regs[2]].inst << " => " << code[i].number;
-                            else
-                                cout << "Dip. IU-EU: " << regMap[code[i].regs[2]].inst << " => " << code[i].number;
-
-                            cout << " Bolla da  " << sum2 - code[i].fetch << "t" <<endl;
-                            code[i].fetch=sum2;
-                        }
+            int r0=code[i].regs[0];
+            int r1=code[i].regs[1];
+            int unt0=check(r0);
+            int unt1=check(r1);
+            int busyReg=-1;
+            if(unt0==-1 && unt1==-1){
+                /*No dependencies*/
+                if(isAritm(type)){
+                    /*Prenoto registro*/
+                    regMap[r1].inst=num;
+                    if(isMul(num)){
+                        if(EU_until+1>=dec+1) EU_until++;
+                        else EU_until=dec+1;
+                        EUs_until=EU_until+nstages;
+                        regMap[r1].until=EUs_until;
                     }
                     else{
-                        /*Second register prevails*/
-
-                        if(code[regMap[code[i].regs[1]].inst-1].type=="MUL_I" || code[regMap[code[i].regs[1]].inst-1].type=="MUL")
-                            cout << "Dip. EU-EU: " << regMap[code[i].regs[1]].inst << " => " << code[i].number;
-                        else
-                            cout << "Dip. IU-EU: " << regMap[code[i].regs[1]].inst << " => " << code[i].number;
-
-                        cout << " Bolla da  " << sum1 - code[i].fetch << "t" <<endl;
-                        code[i].fetch=sum1;
+                        if(EU_until+1>=dec+1) EU_until++;
+                        else EU_until=dec+1;
+                        regMap[r1].until=EU_until;
                     }
+                }
+                else if(type=="LOAD_I"){
+                    /*Prenoto registro*/
+                    regMap[r1].inst=num;
+                    if(EU_until+1>=dec+2) EU_until++;
+                    else EU_until=dec+2;
+                    regMap[r1].until=EU_until;
+                }
             }
-            if(type=="ADD" || type=="SUB" || type=="MUL" || type=="STORE" || type=="LOAD"){
-                /*Claim register*/
-                if(type!="STORE") regMap[code[i].regs[2]].inst=n;
-                if(type=="LOAD") regMap[code[i].regs[2]].until=3;
-                else if(type=="MUL") regMap[code[i].regs[2]].until=2+nstages;
-                else regMap[code[i].regs[2]].until=2;
-                /*Apply operation*/
-                if(type=="ADD") regMap[code[i].regs[2]].value=regMap[code[i].regs[0]].value+regMap[code[i].regs[1]].value;
-                else if(type=="SUB") regMap[code[i].regs[2]].value=regMap[code[i].regs[0]].value-regMap[code[i].regs[1]].value;
-                else if(type=="MUL") regMap[code[i].regs[2]].value=regMap[code[i].regs[0]].value*regMap[code[i].regs[1]].value;
-                else if(type=="LOAD") regMap[code[i].regs[2]].value=memMap[regMap[code[i].regs[0]].value]+memMap[regMap[code[i].regs[1]].value];
-                else if(type=="STORE") memMap[regMap[code[i].regs[0]].value+regMap[code[i].regs[1]].value]=regMap[code[i].regs[2]].value;
+            else if (unt0==-1) busyReg=r1;
+            else if(unt1==-1) busyReg=r0;
+            else{
+                /*Both possibly cause dependency, choose worse*/
+                if(unt0>=unt1) busyReg=r0;
+                else busyReg=r1;
             }
+
+            if(busyReg>0) { /*Esegue solo se c'è almeno una dipendenza*/
+                int u=regMap[busyReg].until;
+                int i=regMap[busyReg].inst;
+
+                if (isConditional(type)) {    /*IF*/
+                    if (u >= dec) {    /*Until indica l'ultimo stadio di occupazione della risorsa*/
+                        /*Dipendenza IU-EU*/
+                        printIUEU(i, num, u + 1 - dec);
+                        /*Aggiorno decode time dell'istr successiva*/
+                        if (i < code.size() - 1) code[i + 1].decode = u + 2;
+                    } else if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+
+                    /*Eseguo Operazione*/
+                } else if (isAritm(type)) {   /*MOVE,ADD_I,SUB_I,MUL_I*/
+                    if ( u >= dec + 1 && isMul(i)) {
+                        printEUEU(i, num, u - EU_until);
+                        /*Aggiorno until e prenoto registro*/
+                        regMap[r1].inst = num;
+                        if(isMul(num)){
+                            EU_until=EUs_until+1;
+                            EUs_until=EUs_until+nstages+1;
+                            regMap[r1].until = EUs_until;
+                        }
+                        else{
+                            if (EU_until + 1 >= u + 1) EU_until++;
+                            else EU_until = u + 1;
+                            regMap[r1].until=EU_until;
+                        }
+                    } else if (u >= dec + 1 && !isMul(i)) {
+                        /*Basta eseguire l'istruzione appena la EU è libera*/
+                        regMap[r1].inst = num;
+                        if (EU_until + 1 >= dec + 1) EU_until++;
+                        else EU_until = dec + 1;
+                        if (isMul(num)) {
+                            EUs_until = EUs_until + nstages;
+                            regMap[r1].until = EUs_until;
+                        } else
+                            regMap[r1].until = EU_until;
+                    } else if ( u < dec + 1) {
+                        regMap[r1].inst = num;
+                        if (EU_until + 1 >= dec + 1) EU_until++;
+                        else EU_until = dec + 1;
+                        if (isMul(num)) {
+                            EUs_until = EUs_until + nstages;
+                            regMap[r1].until = EUs_until;
+                        } else
+                            regMap[r1].until = EU_until;
+                    }
+
+                }
+                else if(type=="STORE_I"){
+                    /*Dipendenza IU-EU*/
+                    printIUEU(i, num, u + 1 - dec);
+                    /*Aggiorno decode time dell'istr successiva*/
+                    if (i < code.size() - 1) code[i + 1].decode = u + 2;
+                }
+                else if(type=="LOAD_I"){
+
+                }
+            }
+            /*Eseguo operazione*/
+            if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+
+        }
+        if(code[i].regs.size()==3){
+
         }
     }
+
     return 0;
 }

@@ -12,7 +12,7 @@ extern deque<int> v1;                            //Contains the values for memlo
 struct instruction{
     int number;
     string type;
-    int fetch;
+    int decode;
     vector<int> regs;
     int imm;
 };
@@ -30,3 +30,4 @@ void initMemlocs1(int,deque<int>);
 void initReg(int,int);
 void addReg(int,int,int);
 void addInstruction(int n,string t,int i,vector<int> r);
+bool isAritm(string i);
