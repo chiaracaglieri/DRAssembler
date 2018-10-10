@@ -93,7 +93,7 @@ int main(int argc, char** argv){
         string type = code[i].type;
         int num = code[i].number;
         int dec = code[i].decode;
-
+        //cout<<num<<" decoded at "<<dec<<endl;
         /**************************/
 
         if(code[i].regs.size()==0){
@@ -174,7 +174,7 @@ int main(int argc, char** argv){
                         EUs_until=EU_until+nstages;
                         regMap[r1].until=EUs_until;
                     }
-                    else{
+                    else if(!isConditional(type)){
                         if(EU_until+1>=dec+1) EU_until++;
                         else EU_until=dec+1;
                         regMap[r1].until=EU_until;
@@ -187,6 +187,7 @@ int main(int argc, char** argv){
                     else EU_until=dec+2;
                     regMap[r1].until=EU_until;
                 }
+                if (i < code.size() - 1) code[i + 1].decode = dec + 1;
             }
             else if (unt0==-1) busyReg=r1;
             else if(unt1==-1) busyReg=r0;
@@ -198,20 +199,20 @@ int main(int argc, char** argv){
 
             if(busyReg>0) { /*Esegue solo se c'è almeno una dipendenza*/
                 int u=regMap[busyReg].until;
-                int i=regMap[busyReg].inst;
+                int blockingInst=regMap[busyReg].inst;
 
                 if (isConditional(type)) {    /*IF*/
                     if (u >= dec) {    /*Until indica l'ultimo stadio di occupazione della risorsa*/
                         /*Dipendenza IU-EU*/
-                        printIUEU(i, num, u + 1 - dec);
+                        printIUEU(blockingInst, num, u+1 -dec);
                         /*Aggiorno decode time dell'istr successiva*/
                         if (i < code.size() - 1) code[i + 1].decode = u + 2;
                     } else if (i < code.size() - 1) code[i + 1].decode = dec + 1;
 
                     /*Eseguo Operazione*/
                 } else if (isAritm(type)) {   /*MOVE,ADD_I,SUB_I,MUL_I*/
-                    if ( u >= dec + 1 && isMul(i)) {
-                        printEUEU(i, num, u - EU_until);
+                    if ( u >= dec + 1 && isMul(blockingInst)) {
+                        printEUEU(blockingInst, num, u - EU_until);
                         /*Aggiorno until e prenoto registro*/
                         regMap[r1].inst = num;
                         if(isMul(num)){
@@ -224,7 +225,7 @@ int main(int argc, char** argv){
                             else EU_until = u + 1;
                             regMap[r1].until=EU_until;
                         }
-                    } else if (u >= dec + 1 && !isMul(i)) {
+                    } else if (u >= dec + 1 && !isMul(blockingInst)) {
                         /*Basta eseguire l'istruzione appena la EU è libera*/
                         regMap[r1].inst = num;
                         if (EU_until + 1 >= dec + 1) EU_until++;
@@ -244,23 +245,201 @@ int main(int argc, char** argv){
                         } else
                             regMap[r1].until = EU_until;
                     }
+                    if (i < code.size() - 1) code[i + 1].decode = dec + 1;
 
                 }
                 else if(type=="STORE_I"){
                     /*Dipendenza IU-EU*/
-                    printIUEU(i, num, u + 1 - dec);
+                    printIUEU(blockingInst, num, u + 1 - dec);
                     /*Aggiorno decode time dell'istr successiva*/
                     if (i < code.size() - 1) code[i + 1].decode = u + 2;
                 }
                 else if(type=="LOAD_I"){
-
+                    if(busyReg==r0){    /*Dip IU-EU*/
+                        if(u>=dec){
+                            /*Dipendenza*/
+                            printIUEU(blockingInst, num, u - dec+1);
+                            regMap[r1].inst = num;
+                            EU_until=u+3;
+                            regMap[r1].until=EU_until;
+                            /*Aggiorno decode propssima ist*/
+                            if (i < code.size() - 1) code[i + 1].decode = u + 2;
+                        }
+                        else{
+                            /*No dependency*/
+                            regMap[r1].inst = num;
+                            EU_until=dec+2;
+                            regMap[r1].until=EU_until;
+                            if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+                        }
+                    }
+                    else{   /*Dip EU-EU*/
+                        if(u>=dec+2 && isMul(i)){
+                            /*Dipendenza*/
+                            printEUEU(blockingInst, num, u -(EUs_until-1));
+                            regMap[r1].inst = num;
+                            EU_until=u+1;
+                            regMap[r1].until=EU_until;
+                        }
+                        else{
+                            /*No dependency*/
+                            regMap[r1].inst = num;
+                            EU_until=dec+2;
+                            regMap[r1].until=EU_until;
+                        }
+                        if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+                    }
                 }
             }
             /*Eseguo operazione*/
-            if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+
 
         }
         if(code[i].regs.size()==3){
+
+            /*Three registers to check*/
+            int r0=code[i].regs[0];
+            int r1=code[i].regs[1];
+            int r2=code[i].regs[2];
+            int unt0=check(r0);
+            int unt1=check(r1);
+            int unt2=check(r2);
+            int busyReg=-1;
+            if(unt0==-1 && unt1==-1 && unt2==-1){
+                /*No dependencies*/
+                if(isAritm(type)){
+                    /*Prenoto registro*/
+                    regMap[r1].inst=num;
+                    if(isMul(num)){
+                        if(EU_until+1>=dec+1) EU_until++;
+                        else EU_until=dec+1;
+                        EUs_until=EU_until+nstages;
+                        regMap[r2].until=EUs_until;
+                    }
+                    else{
+                        if(EU_until+1>=dec+1) EU_until++;
+                        else EU_until=dec+1;
+                        regMap[r2].until=EU_until;
+                    }
+                }
+                else if(type=="LOAD"){
+                    /*Prenoto registro*/
+                    regMap[r2].inst=num;
+                    if(EU_until+1>=dec+2) EU_until++;
+                    else EU_until=dec+2;
+                    regMap[r2].until=EU_until;
+                }
+                if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+            }
+            else if(unt0!=-1 && unt1==-1 && unt2==-1) busyReg=r0;
+            else if(unt0==-1 && unt1!=-1 && unt2==-1) busyReg=r1;
+            else if(unt0==-1 && unt1==-1) busyReg=r2;
+            else if(unt0!=-1 && unt1!=-1 && unt2==-1){
+                if(unt0>=unt1) busyReg=r0;
+                else busyReg=r1;
+            }
+            else if(unt0==-1 && unt1!=-1 && unt2!=-1){
+                if(unt1>=unt2) busyReg=r1;
+                else busyReg=r2;
+            }
+            else if(unt0!=-1 && unt1==-1 && unt2!=-1){
+                if(unt0>=unt2) busyReg=r1;
+                else busyReg=r2;
+            }
+            else {
+                /*All possibly cause dependency, choose worse*/
+                if (unt0 >= unt1 && unt0 >= unt2) busyReg = r0;
+                else if (unt1 >= unt2) busyReg = r1;
+                else busyReg = r2;
+            }
+
+            if(busyReg>0) { /*Esegue solo se c'è almeno una dipendenza*/
+                int u=regMap[busyReg].until;
+                int blockingIns=regMap[busyReg].inst;
+
+                if (isAritm(type)) {   /*ADD,SUB,MUL*/
+                    if ( u >= dec + 1 && isMul(blockingIns)) {
+                        printEUEU(blockingIns, num, u - EU_until);
+                        /*Aggiorno until e prenoto registro*/
+                        regMap[r2].inst = num;
+                        if(isMul(num)){
+                            EU_until=EUs_until+1;
+                            EUs_until=EUs_until+nstages+1;
+                            regMap[r2].until = EUs_until;
+                        }
+                        else{
+                            if (EU_until + 1 >= u + 1) EU_until++;
+                            else EU_until = u + 1;
+                            regMap[r2].until=EU_until;
+                        }
+                    } else if (u >= dec + 1 && !isMul(blockingIns)) {
+                        /*Basta eseguire l'istruzione appena la EU è libera*/
+                        regMap[r2].inst = num;
+                        if (EU_until + 1 >= dec + 1) EU_until++;
+                        else EU_until = dec + 1;
+                        if (isMul(num)) {
+                            EUs_until = EUs_until + nstages;
+                            regMap[r2].until = EUs_until;
+                        } else
+                            regMap[r2].until = EU_until;
+                    } else if ( u < dec + 1) {
+                        regMap[r2].inst = num;
+                        if (EU_until + 1 >= dec + 1) EU_until++;
+                        else EU_until = dec + 1;
+                        if (isMul(num)) {
+                            EUs_until = EUs_until + nstages;
+                            regMap[r2].until = EUs_until;
+                        } else
+                            regMap[r2].until = EU_until;
+                    }
+                    if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+
+                }
+                else if(type=="STORE"){
+                    /*Dipendenza IU-EU*/
+                    printIUEU(blockingIns, num, u + 1 - dec);
+                    /*Aggiorno decode time dell'istr successiva*/
+                    if (i < code.size() - 1) code[i + 1].decode = u + 2;
+                }
+                else if(type=="LOAD"){
+                    if(busyReg==r0 || busyReg==r1){    /*Dip IU-EU*/
+                        if(u>=dec){
+                            /*Dipendenza*/
+                            printIUEU(blockingIns, num, u - dec+1);
+                            regMap[r2].inst = num;
+                            EU_until=u+3;
+                            regMap[r2].until=EU_until;
+                            /*Aggiorno decode propssima ist*/
+                            if (i < code.size() - 1) code[i + 1].decode = u + 2;
+                        }
+                        else{
+                            /*No dependency*/
+                            regMap[r2].inst = num;
+                            EU_until=dec+2;
+                            regMap[r2].until=EU_until;
+                            if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+                        }
+                    }
+                    else{   /*Dip EU-EU*/
+                        if(u>=dec+2 && isMul(i)){
+                            /*Dipendenza*/
+                            printEUEU(blockingIns, num, u -(EUs_until-1));
+                            regMap[r2].inst = num;
+                            EU_until=u+1;
+                            regMap[r2].until=EU_until;
+                            if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+                        }
+                        else{
+                            /*No dependency*/
+                            regMap[r2].inst = num;
+                            EU_until=dec+2;
+                            regMap[r2].until=EU_until;
+                            if (i < code.size() - 1) code[i + 1].decode = dec + 1;
+                        }
+                    }
+                }
+            }
+            /*Eseguo operazione*/
 
         }
     }

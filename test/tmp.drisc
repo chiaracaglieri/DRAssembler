@@ -1,4 +1,2 @@
-mul R4,3,R3
-mul R3,4,R9
-add R9,1,R8
-store R8,1,R44
+load R6,5,R9
+load R2,1,R9
