@@ -38,10 +38,10 @@ program
     ;
 
 state
-    :MEMLOC VALUE VALUE { memMap[$2]=$3; }
-    |MEMLOCS VALUE seq  { initMemlocs1($2,v1); }
+    :MEMLOC VALUE VALUE {  }
+    |MEMLOCS VALUE seq  {  }
     |LOC VALUE  {  }
-    |REGVAL VALUE VALUE { initReg($2,$3); }
+    |REGVAL VALUE VALUE { }
     |START VALUE    { }
     ;
 

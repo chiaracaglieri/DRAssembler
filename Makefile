@@ -28,6 +28,9 @@ install:
 	chmod +x $(DIR)/interpreter
 	chmod +x $(DIR)/analyzer
 
+test: all install
+
+
 clean:
 	rm -f *.o *.tab.c *.yy.c *.tab.h
 	rm -f asm1.output stack.hh int pars dep

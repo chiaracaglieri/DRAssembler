@@ -123,16 +123,14 @@ int main(int argc, char** argv){
                 }
                 else if(i<code.size()-1) code[i+1].decode=dec+1;
 
-                /*Eseguo Operazione*/
             }
             else{   /*MOVE_I,INCR,DECR,CLEAR*/
                 if(unt!=-1 && unt>=dec+1 && isMul(blockingInst)){
                     printEUEU(blockingInst,num,unt-dec);
                     /*Aggiorno until e prenoto registro*/
                     regMap[r0].inst=num;
-                    regMap[r0].until=unt+1;
-                    /*La prox istruzione avrà cmomunque il decode allo stadio successivo ma dovrà tenere conto che la EU è occupata*/
                     EU_until=EUs_until+1;
+                    regMap[r0].until=EU_until;
                 }
                 else if(unt!=-1 && unt>=dec+1 && !isMul(blockingInst)){
                     /*Basta eseguire l'istruzione appena la EU è libera*/
@@ -140,7 +138,6 @@ int main(int argc, char** argv){
                     if(EU_until+1>=dec+1) EU_until++;
                     else EU_until=dec+1;
                     regMap[r0].until=EU_until;
-
                 }
                 else if(unt==-1 || unt<dec+1){
                     regMap[r0].inst=num;
@@ -149,8 +146,6 @@ int main(int argc, char** argv){
                     regMap[r0].until=EU_until;
                 }
                 if(i<code.size()-1) code[i+1].decode=dec+1;
-
-                /*Eseguo Operazione*/
             }
         }
 
@@ -208,8 +203,6 @@ int main(int argc, char** argv){
                         /*Aggiorno decode time dell'istr successiva*/
                         if (i < code.size() - 1) code[i + 1].decode = u + 2;
                     } else if (i < code.size() - 1) code[i + 1].decode = dec + 1;
-
-                    /*Eseguo Operazione*/
                 } else if (isAritm(type)) {   /*MOVE,ADD_I,SUB_I,MUL_I*/
                     if ( u >= dec + 1 && isMul(blockingInst)) {
                         printEUEU(blockingInst, num, u - EU_until);
@@ -217,7 +210,7 @@ int main(int argc, char** argv){
                         regMap[r1].inst = num;
                         if(isMul(num)){
                             EU_until=EUs_until+1;
-                            EUs_until=EUs_until+nstages+1;
+                            EUs_until=EUs_until+nstages;
                             regMap[r1].until = EUs_until;
                         }
                         else{
@@ -231,7 +224,7 @@ int main(int argc, char** argv){
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
                         if (isMul(num)) {
-                            EUs_until = EUs_until + nstages;
+                            EUs_until = EU_until + nstages+1;
                             regMap[r1].until = EUs_until;
                         } else
                             regMap[r1].until = EU_until;
@@ -240,7 +233,7 @@ int main(int argc, char** argv){
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
                         if (isMul(num)) {
-                            EUs_until = EUs_until + nstages;
+                            EUs_until = EU_until + nstages+1;
                             regMap[r1].until = EUs_until;
                         } else
                             regMap[r1].until = EU_until;
@@ -291,9 +284,6 @@ int main(int argc, char** argv){
                     }
                 }
             }
-            /*Eseguo operazione*/
-
-
         }
         if(code[i].regs.size()==3){
 
@@ -356,15 +346,15 @@ int main(int argc, char** argv){
             if(busyReg>0) { /*Esegue solo se c'è almeno una dipendenza*/
                 int u=regMap[busyReg].until;
                 int blockingIns=regMap[busyReg].inst;
-
                 if (isAritm(type)) {   /*ADD,SUB,MUL*/
                     if ( u >= dec + 1 && isMul(blockingIns)) {
                         printEUEU(blockingIns, num, u - EU_until);
                         /*Aggiorno until e prenoto registro*/
                         regMap[r2].inst = num;
                         if(isMul(num)){
-                            EU_until=EUs_until+1;
-                            EUs_until=EUs_until+nstages+1;
+                            if(EU_until>=dec+1) EU_until++;
+                            else EU_until=dec+1;
+                            EUs_until=EU_until+nstages;
                             regMap[r2].until = EUs_until;
                         }
                         else{
@@ -378,7 +368,7 @@ int main(int argc, char** argv){
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
                         if (isMul(num)) {
-                            EUs_until = EUs_until + nstages;
+                            EUs_until = EU_until + nstages;
                             regMap[r2].until = EUs_until;
                         } else
                             regMap[r2].until = EU_until;
@@ -439,8 +429,6 @@ int main(int argc, char** argv){
                     }
                 }
             }
-            /*Eseguo operazione*/
-
         }
     }
 
