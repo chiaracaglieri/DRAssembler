@@ -12,7 +12,7 @@ string last_string;                     //Contains the last identifier found
 string tmp;                             //Used to manipulate register identifiers
 deque<int> v;                           //Contains the values for memlocs
 int lc;                                 //Location Counter
-ofstream outfile ("assembled.o");     //Contains the resulting binary code
+ofstream outfile;
 
 ofstream reg_out ("registers.o");
 ofstream mem_out ("memory.o");

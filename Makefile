@@ -34,3 +34,4 @@ test: all install
 clean:
 	rm -f *.o *.tab.c *.yy.c *.tab.h
 	rm -f asm1.output stack.hh int pars dep
+	cd test; rm -f *.o

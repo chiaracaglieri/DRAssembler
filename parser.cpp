@@ -41,6 +41,10 @@ int main(int argc,  char** argv) {
             substitute("tmp.drisc", v[1],v[2]);
         }
     }
+    /*Set output file*/
+    string out = filename.substr(0, filename.size()-6);
+    out.append(".o");
+    outfile.open(out);
     yyin=fopen("tmp.drisc","r");
 
     /*Pass 1*/
