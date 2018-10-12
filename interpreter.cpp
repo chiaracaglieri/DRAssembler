@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 #include "state.h"
 
 using namespace std;
@@ -39,6 +40,10 @@ int get_int(string s, int nbits){
     }
 }
 
+string removeSpaces(string input) {
+    input.erase(remove(input.begin(),input.end(),' '),input.end());
+    return input;
+}
 
 void manageInput(){
     string tmp;
@@ -71,6 +76,29 @@ void manageInput(){
     return;
 }
 
+bool hasImmediate(string op){
+    if(op=="ADD_I" || op=="SUB_I" || op=="MUL_I" \
+    || op=="LOAD_I" || op=="STORE_I") return true;
+    return false;
+}
+
+bool isConditional(string t){
+    if(t=="IF="      || \
+       t=="IF>"      || \
+       t=="IF<"      || \
+       t=="IF>="     || \
+       t=="IF<=")
+        return true;
+    return false;
+}
+bool isConditional0(string t){
+    if(t=="IF=0"    || \
+       t=="IF<0"    || \
+       t=="IF>0"    || \
+       t=="IF<=0"   || \
+       t=="IF>=0") return true;
+       return false;
+}
 /** \function execute
   * \brief executes a single operation at a time
   * \param op the operation code
@@ -79,12 +107,40 @@ void manageInput(){
   * \param c the string corresponding to the third parameter
   * \param p4 boolean to indicate the presence of a fourth parameter
   */
-void execute(string op, string a, string b, string c, bool p4){
-    int p1,p2,p3;
-    p1=get_int(a,6);    //retrieve first parameter
-    if(p4==true) p2=get_int(b,12);      //the second parameter is more than 6 bits
-    else if(!b.empty()) p2=get_int(b,6);        //the second parameter is 6 bits
-    if(!c.empty()) p3=get_int(c,6);     //retrieve third parameter
+void execute(string op, string a, string b, string c, string d){
+
+    int p1,p2,p3,p4;
+    if(hasImmediate(op)){
+        p1=get_int(a,6);    //retrieve first parameter
+        string tmp=b.append(d);
+        p2=get_int(tmp,12);
+        p3=get_int(c,6);
+    }
+    else if(op=="MOVE_I"){
+        string tmp=a.append(d);
+        p1=get_int(tmp,12);
+        p2=get_int(b,6);
+    }
+    else if(isConditional(op)){
+        p1=get_int(a,6);
+        p2=get_int(b,6);
+        string tmp=c.append(d);
+        p3=get_int(tmp,12);
+    }
+    else if(isConditional0(op)){
+        p1=get_int(a,6);
+        string tmp=b.append(d);
+        p2=get_int(tmp,12);
+    }
+    else if(op=="GOTO"){
+        string tmp=a.append(d);
+        p1=get_int(tmp,12);
+    }
+    else{
+        p1=get_int(a,6);
+        p2=get_int(b,6);
+        p3=get_int(c,6);
+    }
 
     if(op=="ADD" || op=="SUB" || op=="MUL"){
         cout << op << "\t" << "R" << p1 << " R" << p2 << " R" << p3 << endl;
@@ -209,74 +265,20 @@ int main(int argc,  char** argv) {
     cout << "Starting execution..." << endl;
 
     while(true) {
-        istringstream iss(memCode[i]);
-        iss >> op;
-        cout << op << " ";
-        if(opTable[op]=="END"){
-            cout <<":   END"<< endl;
-            break;
-        }
-        /* No parameters */
-        else if(opTable[op]=="NOP") {
-            cout << ":\t" << opTable[op];
-            cin.ignore();
-            break;
-        }
-        /* 3 REG parameters */
-        else if(opTable[op]=="ADD" || opTable[op]=="SUB" || opTable[op]=="MUL" || opTable[op]=="LOAD" \
-                || opTable[op]=="STORE" || opTable[op]=="IF<" || opTable[op]=="IF>" || opTable[op]=="IF=" \
-                || opTable[op]=="IF<=" || opTable[op]=="IF>="){
-            //Retrieve parameters
-            iss >> p1;
-            iss >> p2;
-            iss >> p3;
-            cout << p1 << " "<< p2 << " " << p3 << ":\t";
-            execute(opTable[op],p1,p2,p3,false);
-        }
-        /* 2 parameters */
-        else if(opTable[op]=="IF<0" || opTable[op]=="IF>0" || opTable[op]=="IF=0" \
-                || opTable[op]=="IF<=0" || opTable[op]=="IF>=0" || opTable[op]=="MOVE" \
-                || opTable[op]=="MOVE_I"){
-            //Retrieve parameters
-            iss >> p1;
-            iss >> p2;
-            cout << p1 << " "<< p2 << ":\t";
-            if(opTable[op]=="MOVE_I" && memCode[i].length()>29){ //Param p3 exists
-                    iss >> p3;
-                    cout << p3 << ":\t";
-                    stringstream ss;
-                    ss << p1 << p3;
-                    p1 = ss.str();
-                    execute(opTable[op],p1,p2,"",true);
-                }
-            else execute(opTable[op],p1,p2,"",false);
-        }
-        /* 3 parameters, one is immediate */
-        else if(opTable[op]=="ADD_I" || opTable[op]=="SUB_I" || opTable[op]=="MUL_I" || opTable[op]=="LOAD_I" || opTable[op]=="STORE_I"){
-            //Retrieve parameters
-            iss >> p1;
-            iss >> p2;
-            iss >> p3;
-            cout << p1 << " "<< p2 << " " << p3 << " ";
-            if(memCode[i].length()>29){ //Param p4 exists
-                iss >> p4;
-                cout << p4 << ":\t";
-                stringstream ss;
-                ss << p2 << p4;
-                p2 = ss.str();
-                execute(opTable[op],p1,p2,p3,true);
-            }
-            else execute(opTable[op],p1,p2,p3,false);
-        }
-        /* 1 REG parameter */
-        else if(opTable[op]=="CLEAR" || opTable[op]=="INCR" || opTable[op]=="DECR" || opTable[op]=="GOTO"){
-            //Retrieve parameter
-            iss >> p1;
-            cout << p1 << ":\t";
-            execute(opTable[op],p1,"","",false);
-        }
+        cout << memCode[i] << " :\t";
+        string current=removeSpaces(memCode[i]);
+        op=current.substr(0,8);
+        //Retrieve parameters
+        p1=current.substr(8,6);
+        p2=current.substr(14,6);
+        p3=current.substr(20,6);
+        p4=current.substr(26,6);
+
+        if(opTable[op]=="END") break;
+        if(opTable[op]!="NOP") execute(opTable[op],p1,p2,p3,p4);
         i++;
     }
+
     cout << endl;
 
     /* Print register output */

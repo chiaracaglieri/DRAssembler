@@ -61,6 +61,10 @@ int main(int argc,  char** argv) {
 
     visit_tree(tmp); //Recursively visits the tree
 
+    /*Print instructions*/
+    for(int i=0; i<words.size(); i++){
+        outfile << words[i].substr(0,8)<<" "<<words[i].substr(8,8)<<" "<<words[i].substr(16,8)<<" "<<words[i].substr(24,8)<<endl;
+    }
     outfile.close();
     reg_out.close();
     mem_out.close();

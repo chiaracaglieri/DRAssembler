@@ -1,6 +1,7 @@
 #include <unordered_map>
 #include <deque>
 #include <string>
+#include <vector>
 #include <fstream>
 
 using namespace std;
@@ -12,6 +13,7 @@ extern int lc;                                  //Location Counter
 extern ofstream outfile;                        //Contains the resulting binary code
 extern ofstream reg_out;
 extern ofstream mem_out;
+extern vector<string> words;
 
 
 void initRegister(int r, int v);

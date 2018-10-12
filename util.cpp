@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <vector>
 #include <bitset>
 #include "util.h"
 
@@ -13,6 +14,7 @@ string tmp;                             //Used to manipulate register identifier
 deque<int> v;                           //Contains the values for memlocs
 int lc;                                 //Location Counter
 ofstream outfile;
+vector<string> words;
 
 ofstream reg_out ("registers.o");
 ofstream mem_out ("memory.o");
@@ -140,6 +142,7 @@ string get_constant_binary(int v){
   * \param tmp the current node to visit
   */
 void visit_tree(node* tmp){
+    string instruction;
 
     if(tmp==NULL) return;
 
@@ -152,140 +155,151 @@ void visit_tree(node* tmp){
         if(tmp->type=="ADD"){
             if(tmp->param2->type=="VALUE"){
                 bitset<8> bin=get_opcode_binary("ADD_I");
-                outfile << bin.to_string() << " ";
+                instruction.append(bin.to_string());
             }
             else{
                 bitset<8> bin = get_opcode_binary("ADD");
-                outfile << bin.to_string() << " ";
+                instruction.append(bin.to_string());
             }
         }
 
         if(tmp->type=="SUB"){
             if(tmp->param2->type=="VALUE"){
                 bitset<8> bin=get_opcode_binary("SUB_I");
-                outfile << bin.to_string() << " ";
+                instruction.append(bin.to_string());
             }
             else{
                 bitset<8> bin = get_opcode_binary("SUB");
-                outfile << bin.to_string() << " ";
+                instruction.append(bin.to_string());
             }
         }
 
         if(tmp->type=="MUL"){
             if(tmp->param2->type=="VALUE"){
                 bitset<8> bin=get_opcode_binary("MUL_I");
-                outfile << bin.to_string() << " ";
+                instruction.append(bin.to_string());
             }
             else{
                 bitset<8> bin = get_opcode_binary("MUL");
-                outfile << bin.to_string() << " ";
+                instruction.append(bin.to_string());
             }
         }
 
         string val=get_param_binary(tmp->param1->value);
-        outfile << val << " ";
+        instruction.append(val);
         if(tmp->param2->type=="VALUE"){
-            if(tmp->param2->value<=63){ //representable on 6 bits two-complement
-                val=get_param_binary(tmp->param2->value);
-                outfile << val << " ";
-                val=get_param_binary(tmp->param3->value);
-                outfile << val<< endl;
-            }
-            else if(tmp->param2->value<=2047){   //representable on 12 bits two-complement
+            if(tmp->param2->value<=2047 && tmp->param2->value>=-2048){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(tmp->param2->value);
-                outfile << val_long.substr(0, 6) << " ";
+                instruction.append(val_long.substr(0,6));
                 val=get_param_binary(tmp->param3->value);
-                outfile << val<< " ";
-                outfile << val_long.substr(6, 12) << endl;
+                instruction.append(val);
+                instruction.append(val_long.substr(6,12));
+            }
+            else{
+                cerr << "Error: "<< tmp->param2->value <<" is not representable on 12 bits 2-complement"<<endl;
+                exit(EXIT_FAILURE);
             }
         }
         else{
             val=get_param_binary(tmp->param2->value);
-            outfile << val << " ";
+            instruction.append(val);
             val=get_param_binary(tmp->param3->value);
-            outfile << val<< endl;
+            instruction.append(val);
+            val=get_param_binary(0);
+            instruction.append(val);
         }
 
+        words.push_back(instruction);
         return;
     }
     else if(tmp->type=="IF=" || tmp->type=="IF<" || tmp->type=="IF>" \
             || tmp->type=="IF<=" || tmp->type=="IF>="){   //Expected 3 parameters, last one is a label
 
         bitset<8> bin=get_opcode_binary(tmp->type);
-        outfile << bin.to_string() << " ";
+        instruction.append(bin.to_string());
 
         string val=get_param_binary(tmp->param1->value);
-        outfile << val << " ";
+        instruction.append(val);
         val=get_param_binary(tmp->param2->value);
-        outfile << val << " ";
+        instruction.append(val);
         int addr=find_symbol(tmp->param3->type);
+
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
             int relative=addr-tmp->lc;
-            if(relative<=63){ //representable on 6 bits two-complement
-                    val=get_param_binary(relative);
-                    outfile << val << endl;
-                }
-            else if(relative<=2047){   //representable on 12 bits two-complement
-                    string val_long=get_constant_binary(relative);
-                    outfile << val_long.substr(0, 6) << " ";
-                    outfile << val_long.substr(6, 12) << endl;
+
+            if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
+                string val_long=get_constant_binary(relative);
+                instruction.append(val_long.substr(0,6));
+                instruction.append(val_long.substr(6,12));
+            }
+            else{
+                cerr << "Error: "<< relative <<" is not representable on 12 bits 2-complement"<<endl;
+                exit(EXIT_FAILURE);
             }
         }
+        words.push_back(instruction);
         return;
     }
     else if(tmp->type=="MOVE"){  //expected 2 parameters
         bitset<8> bin;
         if(tmp->param1->type=="VALUE") bin= get_opcode_binary("MOVE_I");
         else  bin = get_opcode_binary("MOVE");
-        outfile << bin.to_string() << " ";
+        instruction.append(bin.to_string());
 
         if(tmp->param1->type=="VALUE"){
-            string val=get_param_binary(tmp->param1->value);
-            if(tmp->param1->value<=63){ //representable on 6 bits two-complement
-                val=get_param_binary(tmp->param1->value);
-                outfile << val << " "<< endl;
-            }
-            else if(tmp->param1->value<=2047){   //representable on 12 bits two-complement
+            if(tmp->param1->value<=2047 && tmp->param1->value>=-2048){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(tmp->param1->value);
-                outfile << val_long.substr(0, 6) << " ";
-                val=get_param_binary(tmp->param2->value);
-                outfile << val<< " ";
-                outfile << val_long.substr(6, 12) << endl;
-                return;
+                instruction.append(val_long.substr(0,6));
+                string val=get_param_binary(tmp->param2->value);
+                instruction.append(val);
+                val=get_param_binary(0);
+                instruction.append(val);
+                instruction.append(val_long.substr(6,12));
+            }
+            else{
+                cerr << "Error: "<< tmp->param1->value <<" is not representable on 12 bits 2-complement"<<endl;
+                exit(EXIT_FAILURE);
             }
         }
         else{
             string val=get_param_binary(tmp->param1->value);
-            outfile << val << " ";
+            instruction.append(val);
+            val=get_param_binary(tmp->param2->value);
+            instruction.append(val);
+            val=get_param_binary(0);
+            instruction.append(val);
+            instruction.append(val);
         }
 
-        string val=get_param_binary(tmp->param2->value);
-        outfile << val << endl;
 
+        words.push_back(instruction);
         return;
     }
     else if(tmp->type=="IF>0" || tmp->type=="IF=0" || tmp->type=="IF<0" || tmp->type=="IF<=0" \
             || tmp->type=="IF>=0"){ //2 parameters. 2nd is a label
         bitset<8> bin = get_opcode_binary(tmp->type);
-        outfile << bin.to_string() << " ";
+        instruction.append(bin.to_string());
 
         string val=get_param_binary(tmp->param1->value);
-        outfile << val << " ";
+        instruction.append(val);
         int addr=find_symbol(tmp->param2->type);
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
             int relative=addr-tmp->lc;
-            if(relative<=63){ //representable on 6 bits two-complement
-                val=get_param_binary(relative);
-                outfile << val << endl;
-            }
-            else if(relative<=2047){   //representable on 12 bits two-complement
+            if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(relative);
-                outfile << val_long.substr(0, 6) << " ";
-                outfile << val_long.substr(6, 12) << endl;
+                instruction.append(val_long.substr(0,6));
+                instruction.append(val_long.substr(6,12));
+            }
+            else{
+                cerr << "Error: "<< relative <<" is not representable on 12 bits 2-complement"<<endl;
+                exit(EXIT_FAILURE);
             }
         }
+        val=get_param_binary(0);
+        instruction.append(val);
+        words.push_back(instruction);
         return;
     }
     else if(tmp->type=="LABEL"){
@@ -297,87 +311,110 @@ void visit_tree(node* tmp){
     else if(tmp->type=="LOAD"){
         if(tmp->param2->type=="VALUE"){
             bitset<8> bin=get_opcode_binary("LOAD_I");
-            outfile << bin.to_string() << " ";
+            instruction.append(bin.to_string());
         }
         else {
             bitset<8> bin = get_opcode_binary("LOAD");
-            outfile << bin.to_string() << " ";
+            instruction.append(bin.to_string());
         }
 
         string val=get_param_binary(tmp->param1->value);
-        outfile << val << " ";
+        instruction.append(val);
         if(tmp->param2->type=="VALUE"){
-            if(tmp->param2->value<=63){ //representable on 6 bits two-complement
-                val=get_param_binary(tmp->param2->value);
-                outfile << val << " ";
-            }
-            else if(tmp->param2->value<=2047){   //representable on 12 bits two-complement
+            if(tmp->param2->value<=2047 && tmp->param2->value>=-2048){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(tmp->param2->value);
-                outfile << val_long.substr(0, 6) << " ";
+                instruction.append(val_long.substr(0,6));
                 val=get_param_binary(tmp->param3->value);
-                outfile << val<< " ";
-                outfile << val_long.substr(6, 12) << endl;
+                instruction.append(val);
+                instruction.append(val_long.substr(6,12));
+            }
+            else{
+                cerr << "Error: "<< tmp->param2->value <<" is not representable on 12 bits 2-complement"<<endl;
+                exit(EXIT_FAILURE);
             }
         }
         else{
             val=get_param_binary(tmp->param2->value);
-            outfile << val << " ";
+            instruction.append(val);
             val=get_param_binary(tmp->param3->value);
-            outfile << val<< endl;
+            instruction.append(val);
+            val=get_param_binary(0);
+            instruction.append(val);
         }
 
+        words.push_back(instruction);
         return;
     }
 
     else if(tmp->type=="STORE"){ //Expected three values
         if(tmp->param2->type=="VALUE"){
             bitset<8> bin=get_opcode_binary("STORE_I");
-            outfile << bin.to_string() << " ";
+            instruction.append(bin.to_string());
         }
         else{
             bitset<8> bin=get_opcode_binary("STORE");
-            outfile << bin.to_string() << " ";
+            instruction.append(bin.to_string());
         }
 
         string val=get_param_binary(tmp->param1->value);
-        outfile << val << " ";
+        instruction.append(val);
         if(tmp->param2->type=="VALUE"){
-            if(tmp->param2->value<=63){ //representable on 6 bits two-complement
-                val=get_param_binary(tmp->param2->value);
-                outfile << val << " ";
-            }
-            else if(tmp->param2->value<=2047){   //representable on 12 bits two-complement
+            if(tmp->param2->value<=2047 && tmp->param2->value>=-2048){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(tmp->param2->value);
-                outfile << val_long.substr(0, 6) << " ";
+                instruction.append(val_long.substr(0,6));
                 val=get_param_binary(tmp->param3->value);
-                outfile << val<< " ";
-                outfile << val_long.substr(6, 12) << endl;
+                instruction.append(val);
+                instruction.append(val_long.substr(6,12));
+            }
+            else{
+                cerr << "Error: "<< tmp->param2->value <<" is not representable on 12 bits 2-complement"<<endl;
+                exit(EXIT_FAILURE);
             }
         }
         else{
             val=get_param_binary(tmp->param2->value);
-            outfile << val << " ";
+            instruction.append(val);
             val=get_param_binary(tmp->param3->value);
-            outfile << val<< endl;
-            return;
+            instruction.append(val);
+            val=get_param_binary(0);
+            instruction.append(val);
         }
-        val=get_param_binary(tmp->param3->value);
-        outfile << val<< endl;
+
+        words.push_back(instruction);
         return;
     }
+
     else{
             bitset<8> bin=get_opcode_binary(tmp->type);
-            outfile << bin.to_string() << " ";
+            instruction.append(bin.to_string());
     }
-
+    if(tmp->type=="END"){
+        string val=get_param_binary(0);
+        instruction.append(val);
+        instruction.append(val);
+        instruction.append(val);
+        instruction.append(val);
+        words.push_back(instruction);
+        return;
+    }
     if(tmp->type=="CLEAR" || tmp->type=="INCR"  || tmp->type=="DECR"){ //Expected one integer value
         string val=get_param_binary(tmp->param1->value);
-        outfile << val << endl;
+        instruction.append(val);
+        val=get_param_binary(0);
+        instruction.append(val);
+        instruction.append(val);
+        instruction.append(val);
+        words.push_back(instruction);
         return;
     }
     if(tmp->type=="NOP"){
         bitset<8> bin=get_opcode_binary(tmp->type);
-        outfile << bin.to_string() << endl;
+        string val=get_param_binary(0);
+        instruction.append(val);
+        instruction.append(val);
+        instruction.append(val);
+        instruction.append(val);
+        words.push_back(instruction);
         return;
     }
     if(tmp->type=="GOTO"){
@@ -385,17 +422,20 @@ void visit_tree(node* tmp){
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
             int relative=addr-tmp->lc;
-            if(relative<=63){   //Representable on 6 bits two complement
-                string val = get_param_binary(relative);
-                outfile << val << endl;
+            if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
+                string val_long=get_constant_binary(relative);
+                instruction.append(val_long.substr(0,6));
+                string val=get_param_binary(0);
+                instruction.append(val);
+                instruction.append(val);
+                instruction.append(val_long.substr(6,12));
             }
-            else if(relative<=2047){
-                string val = get_constant_binary(relative);
-                outfile << val.substr(0, 6) << " ";
-                outfile << val.substr(6, 12) << endl;
+            else{
+                cerr << "Error: "<< relative <<" is not representable on 12 bits 2-complement"<<endl;
+                exit(EXIT_FAILURE);
             }
-
         }
+        words.push_back(instruction);
         return;
     }
 
