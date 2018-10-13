@@ -9,29 +9,33 @@ using namespace std;
 
 int counter=0;
 deque<int> v1;                           //Contains the values for memlocs
-map<int,reg> regMap;
-vector<instruction> code;
+map<int,reg> rMap;
+map<string,int> symbolMap;
+vector<instruction> prog;
 
+void addSymbol(string s, int pos){
+    symbolMap[s]=pos;
+}
 
 void addReg(int r1, int r2, int r3){
-    if(regMap.find(r1)==regMap.end()){
+    if(rMap.find(r1)==rMap.end()){
         reg a;
         a.inst=-1;
         a.until=-1;
-        regMap[r1]=a;
+        rMap[r1]=a;
     }
 
-    if(r2!=-1 && regMap.find(r2)==regMap.end()){
+    if(r2!=-1 && rMap.find(r2)==rMap.end()){
         reg b;
         b.inst=-1;
         b.until=-1;
-        regMap[r2]=b;
+        rMap[r2]=b;
     }
-    if(r3!=-1 && regMap.find(r3)==regMap.end()){
+    if(r3!=-1 && rMap.find(r3)==rMap.end()){
         reg c;
         c.inst=-1;
         c.until=-1;
-        regMap[r3]=c;
+        rMap[r3]=c;
     }
 
 }
@@ -62,21 +66,22 @@ void printInstruction(instruction i){
         for(int x:i.regs){
             cout<<"R"<<x<<" ";
         }
-        cout << endl;
+        cout << i.label<<endl;
         return;
     }
-    cout<<"R"<<i.regs[0]<<" #"<<i.imm<<" R"<<i.regs[1]<<endl;
+    cout<<"R"<<i.regs[0]<<" #"<<i.imm<<" R"<<i.regs[1]<<" "<<i.label<<endl;
 }
 
-void addInstruction(int n,string t, int imm, vector<int> r){
+void addInstruction(int n,string t, int imm, vector<int> r,string l){
     instruction i;
     i.number=n;
     i.type=t;
     i.regs=r;
     i.decode=n;
+    i.label=l;
     if(t=="ADD_I" || t=="SUB_I" || t=="MUL_I" || t=="LOAD_I" || t=="STORE_I" || t=="MOVE_I")
         i.imm=imm;
-    code.push_back(i);
+    prog.push_back(i);
     printInstruction(i);
 }
 
@@ -85,3 +90,4 @@ bool isAritm(string i){
         || i=="DECR" || i=="CLEAR" || i=="MOVE" || i=="MOVE_I") return true;
     else return false;
 }
+

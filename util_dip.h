@@ -15,6 +15,7 @@ struct instruction{
     int decode;
     vector<int> regs;
     int imm;
+    string label;
 };
 
 struct reg{
@@ -22,8 +23,10 @@ struct reg{
     int until;
 };
 
-extern map<int,reg> regMap;
-extern vector<instruction> code;
+extern map<int,reg> rMap;
+extern map<string,int> symbolMap;
+extern vector<instruction> prog;
 void addReg(int,int,int);
-void addInstruction(int n,string t,int i,vector<int> r);
+void addInstruction(int n,string t,int i,vector<int> r,string l);
+void addSymbol(string,int);
 bool isAritm(string i);

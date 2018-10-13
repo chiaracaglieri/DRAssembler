@@ -5,6 +5,7 @@
 #include <vector>
 #include <deque>
 #include "util_dip.h"
+#include "util.h"
 
 int yylex(void);
 inline void yyerror(const char *s) { std::cout << s << std::endl; }
@@ -49,10 +50,10 @@ state
 instruction
 
     :END    { counter++;
-              addInstruction(counter,"END",-1,vector<int>());
+              addInstruction(counter,"END",-1,vector<int>(),"");
             }
     |NOP { counter++;
-           addInstruction(counter,"NOP",-1,vector<int>());
+           addInstruction(counter,"NOP",-1,vector<int>(),"");
            }
     |ar_instruction REG COMMA REG COMMA REG {   counter++;
                                                 vector<int> tmp;
@@ -60,9 +61,9 @@ instruction
                                                 tmp={$2,$4,$6};
                                                 addReg($2,$4,$6);
 
-                                                if($1==1) addInstruction(counter,"ADD",-1,tmp);
-                                                else if($1==2) addInstruction(counter,"SUB",-1,tmp);
-                                                else addInstruction(counter,"MUL",-1,tmp);
+                                                if($1==1) addInstruction(counter,"ADD",-1,tmp,"");
+                                                else if($1==2) addInstruction(counter,"SUB",-1,tmp,"");
+                                                else addInstruction(counter,"MUL",-1,tmp,"");
                                                 }
     |ar_instruction REG COMMA VALUE COMMA REG {   counter++;
                                                 vector<int> tmp;
@@ -70,39 +71,41 @@ instruction
                                                  tmp={$2,$6};
                                                  addReg($2,$6,-1);
 
-                                                 if($1==1) addInstruction(counter,"ADD_I",$4,tmp);
-                                                 else if($1==2) addInstruction(counter,"SUB_I",$4,tmp);
-                                                 else addInstruction(counter,"MUL_I",$4,tmp);
+                                                 if($1==1) addInstruction(counter,"ADD_I",$4,tmp,"");
+                                                 else if($1==2) addInstruction(counter,"SUB_I",$4,tmp,"");
+                                                 else addInstruction(counter,"MUL_I",$4,tmp,"");
                                                 }
     |rego_instruction REG   {  counter++;
                                vector<int> tmp={$2};
                                addReg($2,-1,-1);
-                               if($1==1) addInstruction(counter,"CLEAR",-1,tmp);
-                               else if($1==2) addInstruction(counter,"INCR",-1,tmp);
-                               else if($1==3) addInstruction(counter,"DECR",-1,tmp);
+                               if($1==1) addInstruction(counter,"CLEAR",-1,tmp,"");
+                               else if($1==2) addInstruction(counter,"INCR",-1,tmp,"");
+                               else if($1==3) addInstruction(counter,"DECR",-1,tmp,"");
                             }
     |ls_instruction REG COMMA REG COMMA REG { counter++;
                                               vector<int> tmp={$2,$4,$6};
                                               addReg($2,$4,$6);
-                                              if($1==1) addInstruction(counter,"LOAD",-1,tmp);
-                                              else addInstruction(counter,"STORE",-1,tmp);
+                                              if($1==1) addInstruction(counter,"LOAD",-1,tmp,"");
+                                              else addInstruction(counter,"STORE",-1,tmp,"");
                                               }
     |ls_instruction REG COMMA VALUE COMMA REG { counter++;
                                                 vector<int> tmp={$2,$6};
                                                 addReg($2,$6,-1);
-                                                if($1==1) addInstruction(counter,"LOAD_I",$4,tmp);
-                                                else addInstruction(counter,"STORE_I",$4,tmp);
+                                                if($1==1) addInstruction(counter,"LOAD_I",$4,tmp,"");
+                                                else addInstruction(counter,"STORE_I",$4,tmp,"");
                                               }
     |cond_instruction REG COMMA REG COMMA ID {    counter++;
                                                   vector<int> tmp;
                                                   tmp={$2,$4};
                                                   addReg($2,$4,-1);
 
-                                                  if($1==1) addInstruction(counter,"EQ",-1,tmp);
-                                                  else if($1==2) addInstruction(counter,"LT",-1,tmp);
-                                                  else if($1==3) addInstruction(counter,"GT",-1,tmp);
-                                                  else if($1==4) addInstruction(counter,"GTE",-1,tmp);
-                                                  else if($1==5) addInstruction(counter,"LTE",-1,tmp);
+                                                  if($1==1) addInstruction(counter,"EQ",-1,tmp,last_string);
+                                                  else if($1==2) addInstruction(counter,"LT",-1,tmp,last_string);
+                                                  else if($1==3) addInstruction(counter,"GT",-1,tmp,last_string);
+                                                  else if($1==4) addInstruction(counter,"GTE",-1,tmp,last_string);
+                                                  else if($1==5) addInstruction(counter,"LTE",-1,tmp,last_string);
+
+                                                  addSymbol(last_string,-1);
                                              }
     |cond_instruction_0 exp COMMA ID { counter++;
                                        vector<int> tmp;
@@ -111,18 +114,19 @@ instruction
                                             addReg($2,-1,-1);
                                        }
                                        else tmp={};
-                                       if($1==1) addInstruction(counter,"EQ_0",-1,tmp);
-                                       else if($1==2) addInstruction(counter,"LT_0",-1,tmp);
-                                       else if($1==3) addInstruction(counter,"GT_0",-1,tmp);
-                                       else if($1==4) addInstruction(counter,"GTE_0",-1,tmp);
-                                       else if($1==5) addInstruction(counter,"LTE_0",-1,tmp);
+                                       if($1==1) addInstruction(counter,"EQ_0",-1,tmp,last_string);
+                                       else if($1==2) addInstruction(counter,"LT_0",-1,tmp,last_string);
+                                       else if($1==3) addInstruction(counter,"GT_0",-1,tmp,last_string);
+                                       else if($1==4) addInstruction(counter,"GTE_0",-1,tmp,last_string);
+                                       else if($1==5) addInstruction(counter,"LTE_0",-1,tmp,last_string);
+                                       addSymbol(last_string,-1);
                                      }
     |MOVE REG COMMA REG {  counter++;
                            vector<int> tmp;
 
                            tmp={$2,$4};
                            addReg($2,$4,-1);
-                           addInstruction(counter,"MOVE",-1,tmp);
+                           addInstruction(counter,"MOVE",-1,tmp,"");
 
                         }
     |MOVE VALUE COMMA REG {  counter++;
@@ -130,11 +134,12 @@ instruction
 
                              tmp={$4};
                              addReg($4,-1,-1);
-                             addInstruction(counter,"MOVE_I",$2,tmp);
+                             addInstruction(counter,"MOVE_I",$2,tmp,"");
                         }
-    |ID SEMICOLON instruction {  }
+    |ID SEMICOLON instruction { addSymbol(last_string,counter); }
     |GOTO ID {  counter++;
-                addInstruction(counter,"GOTO",-1,vector<int>());
+                addSymbol(last_string,-1);
+                addInstruction(counter,"GOTO",-1,vector<int>(),last_string);
              }
     ;
 ls_instruction
