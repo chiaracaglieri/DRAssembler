@@ -10,11 +10,22 @@
 
 extern FILE* yyin;
 
+/** \function check
+  * \brief Checks whether the register is busy or not
+  * \param r the register to check
+  * \param m the table to search in
+  * \return m[r].until the last stage at which the register will be in use
+  *         -1 if the register is not in use
+  */
 int check(int r, map<int,reg> m){
     if(m[r].inst==-1) return -1;
     else return m[r].until;
 }
 
+/** \function isConditional
+  * \brief Checks whether the operation is of conditional type
+  * \param t the mnemonic opcode for the instruction
+  */
 bool isConditional(string t){
     if(t=="EQ"      || \
        t=="LT"      || \
@@ -29,6 +40,11 @@ bool isConditional(string t){
         return true;
     return false;
 }
+
+/** \function isMul
+  * \brief Checks whether the operation is a Mul
+  * \param i the index for the instruction
+  */
 bool isMul(int i){
     if(prog[i-1].type=="MUL" || \
        prog[i-1].type=="MUL_I"  )
@@ -36,18 +52,68 @@ bool isMul(int i){
     return false;
 }
 
+/** \function printIUEU
+  * \brief Formats the output for a IU-EU dependency
+  * \param i1 the index of the instruction causing the dependency
+  * \param i2 the index of the instruction affected by the dependency
+  * \param b the length of the resulting gap
+  */
 void printIUEU(int i1, int i2, int b){
     cout <<"Dip. IU-EU: "<<i1<<" => "<<i2<<"    Bolla da "<<b<<"t"<<endl;
 }
 
+/** \function printEUEU
+  * \brief Formats the output for a EU-EU dependency
+  * \param i1 the index of the instruction causing the dependency
+  * \param i2 the index of the instruction affected by the dependency
+  * \param b the length of the resulting gap
+  */
 void printEUEU(int i1, int i2, int b){
     cout <<"Dip. EU-EU: "<<i1<<" => "<<i2<<"    Bolla da "<<b<<"t"<<endl;
 }
 
+/** \function printJump
+  * \brief Formats the output for a jump instruction
+  * \param i the index of the instruction causing the jump
+  */
 void printJump(int i){
     cout << "Salto preso: "<<i<<" Bolla da 1t"<<endl;
 }
 
+int isBusy(int unt0, int unt1, int unt2, int r0, int r1, int r2){
+    if(unt0!=-1 && unt1==-1 && unt2==-1)  return r0;
+    else if(unt0==-1 && unt1!=-1 && unt2==-1)  return r1;
+    else if(unt0==-1 && unt1==-1)  return r2;
+    else if(unt0!=-1 && unt1!=-1 && unt2==-1){
+        if(unt0>=unt1)  return r0;
+        else  return r1;
+    }
+    else if(unt0==-1 && unt1!=-1 && unt2!=-1){
+        if(unt1>=unt2)  return r1;
+        else return r2;
+    }
+    else if(unt0!=-1 && unt1==-1 && unt2!=-1){
+        if(unt0>=unt2)  return r1;
+        else  return r2;
+    }
+    else {
+    /*All possibly cause dependency, choose worse*/
+        if (unt0 >= unt1 && unt0 >= unt2) return r0;
+        else if (unt1 >= unt2) return r1;
+        else return r2;
+    }
+    return -1;
+}
+/** \function analyzer
+  * \brief Checks for logic dependencies among instructions
+  * \param start the first instruction to examine
+  * \param nstages the number of stages for the EU slave
+  * \param EU_until the stage at which the EU is last in use
+  * \param EUs_until the stage at which the EU slave is last in use
+  * \param termination if set causes the analysis to stop as soon as no dependency is found
+  * \param code the vector containing thew instructions
+  * \param regMap the table containing registers and information on their state
+  */
 void analyzer(int start,int nstages, int EU_until, int EUs_until, int termination,vector<instruction> code, map<int,reg> regMap){
 
     for(int i=start; i<code.size(); i++) {
