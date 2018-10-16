@@ -58,8 +58,8 @@ bool isMul(int i){
   * \param i2 the index of the instruction affected by the dependency
   * \param b the length of the resulting gap
   */
-void printIUEU(int i1, int i2, int b){
-    cout <<"Dip. IU-EU: "<<i1<<" => "<<i2<<"    Bolla da "<<b<<"t"<<endl;
+void printIUEU(int i1, int i2, int b, int reg){
+    cout <<"Dip. IU-EU: "<<i1<<" => "<<i2<<" a causa di R"<<reg<<"    Bolla da "<<b<<"t"<<endl;
 }
 
 /** \function printEUEU
@@ -68,8 +68,8 @@ void printIUEU(int i1, int i2, int b){
   * \param i2 the index of the instruction affected by the dependency
   * \param b the length of the resulting gap
   */
-void printEUEU(int i1, int i2, int b){
-    cout <<"Dip. EU-EU: "<<i1<<" => "<<i2<<"    Bolla da "<<b<<"t"<<endl;
+void printEUEU(int i1, int i2, int b, int reg){
+    cout <<"Dip. EU-EU: "<<i1<<" => "<<i2<<" a causa di R"<<reg<<"    Bolla da "<<b<<"t"<<endl;
 }
 
 /** \function printJump
@@ -152,7 +152,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
             if(isConditional(type)){    /*IF*0*/
                 if(unt!=-1 && unt>=dec){    /*Until indica l'ultimo stadio di occupazione della risorsa*/
                     /*Dipendenza IU-EU*/
-                    printIUEU(blockingInst,num,unt+1-dec);
+                    printIUEU(blockingInst,num,unt+1-dec,r0);
                     /*Aggiorno decode time dell'istr successiva*/
                     if(i<code.size()-1) code[i+1].decode=unt+1;
                 }
@@ -172,7 +172,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
             }
             else{   /*MOVE_I,INCR,DECR,CLEAR*/
                 if(unt!=-1 && unt>=dec+1 && isMul(blockingInst)){
-                    printEUEU(blockingInst,num,unt-dec);
+                    printEUEU(blockingInst,num,unt-dec,r0);
                     /*Aggiorno until e prenoto registro*/
                     regMap[r0].inst=num;
                     EU_until=EUs_until+1;
@@ -259,7 +259,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 if (isConditional(type)) {    /*IF*/
                     if (u >= dec) {    /*Until indica l'ultimo stadio di occupazione della risorsa*/
                         /*Dipendenza IU-EU*/
-                        printIUEU(blockingInst, num, u+1 -dec);
+                        printIUEU(blockingInst, num, u+1 -dec,busyReg);
                         /*Aggiorno decode time dell'istr successiva*/
                         if (i < code.size() - 1) code[i + 1].decode = u + 2;
                     } else if (i < code.size() - 1){
@@ -277,7 +277,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
 
                 } else if (isAritm(type)) {   /*MOVE,ADD_I,SUB_I,MUL_I*/
                     if ( u >= dec + 1 && isMul(blockingInst)) {
-                        printEUEU(blockingInst, num, u - EU_until);
+                        printEUEU(blockingInst, num, u - EU_until,busyReg);
                         /*Aggiorno until e prenoto registro*/
                         regMap[r1].inst = num;
                         if(isMul(num)){
@@ -317,7 +317,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 }
                 else if(type=="STORE_I"){
                     /*Dipendenza IU-EU*/
-                    printIUEU(blockingInst, num, u + 1 - dec);
+                    printIUEU(blockingInst, num, u + 1 - dec,busyReg);
                     /*Aggiorno decode time dell'istr successiva*/
                     if (i < code.size() - 1) code[i + 1].decode = u + 2;
                 }
@@ -325,7 +325,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     if(busyReg==r0){    /*Dip IU-EU*/
                         if(u>=dec){
                             /*Dipendenza*/
-                            printIUEU(blockingInst, num, u - dec+1);
+                            printIUEU(blockingInst, num, u - dec+1,busyReg);
                             regMap[r1].inst = num;
                             EU_until=u+3;
                             regMap[r1].until=EU_until;
@@ -344,7 +344,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     else{   /*Dip EU-EU*/
                         if(u>=dec+2 && isMul(i)){
                             /*Dipendenza*/
-                            printEUEU(blockingInst, num, u -(EUs_until-1));
+                            printEUEU(blockingInst, num, u -(EUs_until-1),busyReg);
                             regMap[r1].inst = num;
                             EU_until=u+1;
                             regMap[r1].until=EU_until;
@@ -425,7 +425,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 int blockingIns=regMap[busyReg].inst;
                 if (isAritm(type)) {   /*ADD,SUB,MUL*/
                     if ( u >= dec + 1 && isMul(blockingIns)) {
-                        printEUEU(blockingIns, num, u - EU_until);
+                        printEUEU(blockingIns, num, u - EU_until,busyReg);
                         /*Aggiorno until e prenoto registro*/
                         regMap[r2].inst = num;
                         if(isMul(num)){
@@ -466,7 +466,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 }
                 else if(type=="STORE"){
                     /*Dipendenza IU-EU*/
-                    printIUEU(blockingIns, num, u + 1 - dec);
+                    printIUEU(blockingIns, num, u + 1 - dec,busyReg);
                     /*Aggiorno decode time dell'istr successiva*/
                     if (i < code.size() - 1) code[i + 1].decode = u + 2;
                 }
@@ -474,7 +474,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     if(busyReg==r0 || busyReg==r1){    /*Dip IU-EU*/
                         if(u>=dec){
                             /*Dipendenza*/
-                            printIUEU(blockingIns, num, u - dec+1);
+                            printIUEU(blockingIns, num, u - dec+1,busyReg);
                             regMap[r2].inst = num;
                             EU_until=u+3;
                             regMap[r2].until=EU_until;
@@ -493,7 +493,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     else{   /*Dip EU-EU*/
                         if(u>=dec+2 && isMul(i)){
                             /*Dipendenza*/
-                            printEUEU(blockingIns, num, u -(EUs_until-1));
+                            printEUEU(blockingIns, num, u -(EUs_until-1),busyReg);
                             regMap[r2].inst = num;
                             EU_until=u+1;
                             regMap[r2].until=EU_until;
