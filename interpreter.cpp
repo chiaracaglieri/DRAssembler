@@ -274,7 +274,7 @@ int main(int argc,  char** argv) {
         p3=current.substr(20,6);
         p4=current.substr(26,6);
 
-        if(opTable[op]=="END") break;
+        if(opTable[op]=="END") {cout<<"END"<<endl; break;}
         if(opTable[op]!="NOP") execute(opTable[op],p1,p2,p3,p4);
         i++;
     }

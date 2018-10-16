@@ -171,8 +171,8 @@ rego_instruction
     |DECR   { $$=3; }
     ;
 seq
-    :VALUE  { v1.push_front($1); }
-    |VALUE seq  { v1.push_front($1); }
+    :VALUE  {  }
+    |VALUE seq  {  }
     ;
 
 exp

@@ -56,11 +56,12 @@ instruction
 
             }
     |NOP { lc++; $$=make_node("NOP",-1,NULL,NULL,NULL); }
-    |ar_instruction exp COMMA exp COMMA REG {   lc++;
-                                                node* v1=make_node("REGISTER", $6, NULL,NULL,NULL);
-                                                if($1==1) $$=make_node("ADD",-1,$2,$4,v1);
-                                                else if($1==2) $$=make_node("SUB",-1,$2,$4,v1);
-                                                else $$=make_node("MUL",-1,$2,$4,v1);
+    |ar_instruction REG COMMA exp COMMA REG {   lc++;
+                                                node* v1=make_node("REGISTER", $2, NULL,NULL,NULL);
+                                                node* v2=make_node("REGISTER", $6, NULL,NULL,NULL);
+                                                if($1==1) $$=make_node("ADD",-1,v1,$4,v2);
+                                                else if($1==2) $$=make_node("SUB",-1,v1,$4,v2);
+                                                else $$=make_node("MUL",-1,v1,$4,v2);
                                                 }
     |rego_instruction REG   {  lc++;
                                node* v1=make_node("REGISTER", $2, NULL,NULL,NULL);
@@ -68,37 +69,36 @@ instruction
                                else if($1==2) $$=make_node("INCR",-1,v1,NULL,NULL);
                                else if($1==3) $$=make_node("DECR",-1,v1,NULL,NULL);
                             }
-    |ls_instruction REG COMMA REG COMMA REG { lc++;
+    |ls_instruction REG COMMA exp COMMA REG { lc++;
                                               node* v1=make_node("REGISTER",$2,NULL,NULL,NULL);
-                                              node* v2=make_node("REGISTER",$4,NULL,NULL,NULL);
                                               node* v3=make_node("REGISTER",$6,NULL,NULL,NULL);
-                                              if($1==1) $$=make_node("LOAD",-1,v1,v2,v3);
-                                              else $$=make_node("STORE",-1,v1,v2,v3);
+                                              if($1==1) $$=make_node("LOAD",-1,v1,$4,v3);
+                                              else $$=make_node("STORE",-1,v1,$4,v3);
                                               }
-    |cond_instruction exp COMMA exp COMMA ID {    lc++;
+    |cond_instruction REG COMMA REG COMMA ID {    lc++;
                                                   node* v1=make_node(last_string,-1,NULL,NULL,NULL);
-                                                  if($1==1) $$=make_node("IF=",-1,$2,$4,v1);
-                                                  else if($1==2) $$=make_node("IF<",-1,$2,$4,v1);
-                                                  else if($1==3) $$=make_node("IF>",-1,$2,$4,v1);
-                                                  else if($1==4) $$=make_node("IF>=",-1,$2,$4,v1);
-                                                  else if($1==5) $$=make_node("IF<=",-1,$2,$4,v1);
+                                                  node* v2=make_node("REGISTER",$2,NULL,NULL,NULL);
+                                                  node* v3=make_node("REGISTER",$4,NULL,NULL,NULL);
+                                                  if($1==1) $$=make_node("IF=",-1,v2,v3,v1);
+                                                  else if($1==2) $$=make_node("IF<",-1,v2,v3,v1);
+                                                  else if($1==3) $$=make_node("IF>",-1,v2,v3,v1);
+                                                  else if($1==4) $$=make_node("IF>=",-1,v2,v3,v1);
+                                                  else if($1==5) $$=make_node("IF<=",-1,v2,v3,v1);
                                                   insert_symbol(last_string,-1);
                                              }
-    |cond_instruction_0 exp COMMA ID { lc++;
+    |cond_instruction_0 REG COMMA ID { lc++;
                                  node* v1=make_node(last_string,-1,NULL,NULL,NULL);
-                                 if($1==1) $$=make_node("IF=0",-1,$2,v1,NULL);
-                                 else if($1==2) $$=make_node("IF<0",-1,$2,v1,NULL);
-                                 else if($1==3) $$=make_node("IF>0",-1,$2,v1,NULL);
-                                 else if($1==4) $$=make_node("IF>=0",-1,$2,v1,NULL);
-                                 else if($1==5) $$=make_node("IF<=0",-1,$2,v1,NULL);
+                                 node* v2=make_node("REGISTER",$2,NULL,NULL,NULL);
+                                 if($1==1) $$=make_node("IF=0",-1,v2,v1,NULL);
+                                 else if($1==2) $$=make_node("IF<0",-1,v2,v1,NULL);
+                                 else if($1==3) $$=make_node("IF>0",-1,v2,v1,NULL);
+                                 else if($1==4) $$=make_node("IF>=0",-1,v2,v1,NULL);
+                                 else if($1==5) $$=make_node("IF<=0",-1,v2,v1,NULL);
                                  insert_symbol(last_string,-1);
-
-
                                 }
     |MOVE exp COMMA REG {  lc++;
                            node* v1=make_node("REGISTER",$4,NULL,NULL,NULL);
                            $$=make_node("MOVE",-1,$2,v1,NULL);
-
                         }
     |ID SEMICOLON instruction { node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                                 $$=make_node("LABEL",-1,v1,$3,NULL);
@@ -107,7 +107,6 @@ instruction
                 insert_symbol(last_string,-1);
                 node* v1=make_node(last_string,-1,NULL,NULL,NULL);
                 $$=make_node("GOTO",-1,v1,NULL,NULL);
-              
              }
     ;
 ls_instruction

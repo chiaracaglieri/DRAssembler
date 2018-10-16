@@ -57,6 +57,7 @@ bool isMul(int i){
   * \param i1 the index of the instruction causing the dependency
   * \param i2 the index of the instruction affected by the dependency
   * \param b the length of the resulting gap
+  * \param reg the register causing the dependency
   */
 void printIUEU(int i1, int i2, int b, int reg){
     cout <<"Dip. IU-EU: "<<i1<<" => "<<i2<<" a causa di R"<<reg<<"    Bolla da "<<b<<"t"<<endl;
@@ -67,6 +68,7 @@ void printIUEU(int i1, int i2, int b, int reg){
   * \param i1 the index of the instruction causing the dependency
   * \param i2 the index of the instruction affected by the dependency
   * \param b the length of the resulting gap
+  * \param reg the register causing the dependency
   */
 void printEUEU(int i1, int i2, int b, int reg){
     cout <<"Dip. EU-EU: "<<i1<<" => "<<i2<<" a causa di R"<<reg<<"    Bolla da "<<b<<"t"<<endl;
@@ -78,31 +80,6 @@ void printEUEU(int i1, int i2, int b, int reg){
   */
 void printJump(int i){
     cout << "Salto preso: "<<i<<" Bolla da 1t"<<endl;
-}
-
-int isBusy(int unt0, int unt1, int unt2, int r0, int r1, int r2){
-    if(unt0!=-1 && unt1==-1 && unt2==-1)  return r0;
-    else if(unt0==-1 && unt1!=-1 && unt2==-1)  return r1;
-    else if(unt0==-1 && unt1==-1)  return r2;
-    else if(unt0!=-1 && unt1!=-1 && unt2==-1){
-        if(unt0>=unt1)  return r0;
-        else  return r1;
-    }
-    else if(unt0==-1 && unt1!=-1 && unt2!=-1){
-        if(unt1>=unt2)  return r1;
-        else return r2;
-    }
-    else if(unt0!=-1 && unt1==-1 && unt2!=-1){
-        if(unt0>=unt2)  return r1;
-        else  return r2;
-    }
-    else {
-    /*All possibly cause dependency, choose worse*/
-        if (unt0 >= unt1 && unt0 >= unt2) return r0;
-        else if (unt1 >= unt2) return r1;
-        else return r2;
-    }
-    return -1;
 }
 /** \function analyzer
   * \brief Checks for logic dependencies among instructions
@@ -118,21 +95,18 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
 
     for(int i=start; i<code.size(); i++) {
         if(i==0) code[i].decode=1;
-        int nregs = code[i].regs.size();
+        int nregs = code[i].regs.size();    //Number of registers to check
         string type = code[i].type;
         int num = code[i].number;
         int dec = code[i].decode;
-        //cout<<num<<" decoded at "<<dec<<endl;
-        /**************************/
 
-        if(code[i].regs.size()==0){
-            /*END,NOP,GOTO*/
+        /*No registers to check*/
+        if(nregs==0){  //END,NOP,GOTO
             if(type=="GOTO"){
                 printJump(num);
-                /*Aggiorno decode time dell'istr successiva*/
-                if(i<code.size()-1) code[symbolMap[code[i].label]-1].decode+=2;
+                if(i<code.size()-1) code[symbolMap[code[i].label]-1].decode+=2; //Update decode of next instr.
                 if(termination==1) break;
-                else termination=1;
+                else termination=1;     //Sets termination flag
                 i=symbolMap[code[i].label]-1;
             }
             else if(i<code.size()-1){
@@ -140,133 +114,110 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 if(termination==1) break;
             }
         }
-
-        /**************************/
-
-        if(code[i].regs.size()==1){
-            /*One register to check*/
+        /*One register to check*/
+        if(nregs==1){
             int r0=code[i].regs[0];
             int blockingInst=regMap[r0].inst;
             int unt=check(r0,regMap);
 
-            if(isConditional(type)){    /*IF*0*/
-                if(unt!=-1 && unt>=dec){    /*Until indica l'ultimo stadio di occupazione della risorsa*/
-                    /*Dipendenza IU-EU*/
+            if(isConditional(type)){    //IF0
+                if(unt!=-1 && unt>=dec){ //EU-IU Dependency
                     printIUEU(blockingInst,num,unt+1-dec,r0);
-                    /*Aggiorno decode time dell'istr successiva*/
                     if(i<code.size()-1) code[i+1].decode=unt+1;
                 }
                 else if(i<code.size()-1){
                     code[i+1].decode=dec+1;
                     if(termination==1) break;
                 }
-                /*Caso salto preso*/
-                cout<<"Caso1:   ";
+                cout<<"Caso 1:   ";
                 printJump(num);
                 int tmp = code[symbolMap[code[i].label]-1].decode;
                 code[symbolMap[code[i].label]-1].decode=code[i+1].decode;
                 analyzer(code[symbolMap[code[i].label]-1].number,nstages,EU_until,EUs_until,1,code,regMap);
-                cout<<"Caso2:  "<<num<<": Salto non preso"<<endl;
-                code[symbolMap[code[i].label]-1].decode=tmp;
-
+                cout<<"Caso 2:  "<<num<<": Salto non preso"<<endl;
+                code[symbolMap[code[i].label]-1].decode=tmp; //Restore decode time of instruction after jump
             }
-            else{   /*MOVE_I,INCR,DECR,CLEAR*/
-                if(unt!=-1 && unt>=dec+1 && isMul(blockingInst)){
+            else{   //MOVE_I,INCR,DECR,CLEAR
+                if(unt!=-1 && unt>=dec+1 && isMul(blockingInst)){ //EU-EU Dependency
                     printEUEU(blockingInst,num,unt-dec,r0);
-                    /*Aggiorno until e prenoto registro*/
-                    regMap[r0].inst=num;
+                    regMap[r0].inst=num;    //Claim register
                     EU_until=EUs_until+1;
                     regMap[r0].until=EU_until;
                 }
-                else if(unt!=-1 && unt>=dec+1 && !isMul(blockingInst)){
-                    /*Basta eseguire l'istruzione appena la EU è libera*/
-                    regMap[r0].inst=num;
+                else if(unt!=-1 && unt>=dec+1 && !isMul(blockingInst)){ //Wait for EU to be free, then proceed
+                    regMap[r0].inst=num;    //Claim register
                     if(EU_until+1>=dec+1) EU_until++;
                     else EU_until=dec+1;
                     regMap[r0].until=EU_until;
                     if(termination==1) break;
                 }
                 else if(unt==-1 || unt<dec+1){
-                    regMap[r0].inst=num;
+                    regMap[r0].inst=num;    //Claim register
                     if(EU_until+1>=dec+1) EU_until++;
                     else EU_until=dec+1;
                     regMap[r0].until=EU_until;
                     if(termination==1) break;
                 }
-                if(i<code.size()-1) code[i+1].decode=dec+1;
+                if(i<code.size()-1) code[i+1].decode=dec+1; //Update decode of next instr.
             }
         }
-
-        /**************************/
-
-        if(code[i].regs.size()==2){
-            /*Two registers to check*/
+        /*Two registers to check*/
+        if(nregs==2){
             int r0=code[i].regs[0];
             int r1=code[i].regs[1];
             int unt0=check(r0,regMap);
             int unt1=check(r1,regMap);
             int busyReg=-1;
-            if(unt0==-1 && unt1==-1){
-                /*No dependencies*/
-                if(isAritm(type)){
-                    /*Prenoto registro*/
-                    regMap[r1].inst=num;
-                    if(isMul(num)){
-                        if(EU_until+1>=dec+1) EU_until++;
-                        else EU_until=dec+1;
-                        EUs_until=EU_until+nstages;
-                        regMap[r1].until=EUs_until;
-                    }
-                    else if(!isConditional(type)){
-                        if(EU_until+1>=dec+1) EU_until++;
-                        else EU_until=dec+1;
-                        regMap[r1].until=EU_until;
-                    }
-                    else if(isConditional(type)){
-                        /*Caso salto preso*/
-                        cout<<"Caso 1:  ";
-                        printJump(num);
-                        int tmp = code[symbolMap[code[i].label]-1].decode;
-                        code[symbolMap[code[i].label]-1].decode=code[i+1].decode;
-                        analyzer(code[symbolMap[code[i].label]-1].number,nstages,EU_until,EUs_until,1,code,regMap);
-                        cout<<"Caso 2:   "<<num<<": Salto non preso"<<endl;
-                        code[symbolMap[code[i].label]-1].decode=tmp;
+            if(unt0==-1 && unt1==-1){ //No dependencies
+                if(isAritm(type)) {  //ADD_I,SUB_I,MUL_I,MOVE
+                    regMap[r1].inst = num;    //Claim register
+                    if (isMul(num)) {
+                        if (EU_until + 1 >= dec + 1) EU_until++;
+                        else EU_until = dec + 1;
+                        EUs_until = EU_until + nstages;
+                        regMap[r1].until = EUs_until;
                     }
                 }
+                else if(type=="STORE_I"){
+                    if(EU_until+1>=dec+1) EU_until++;
+                    else EU_until=dec+1;
+                    regMap[r1].until=EU_until;
+                }
                 else if(type=="LOAD_I"){
-                    /*Prenoto registro*/
                     regMap[r1].inst=num;
                     if(EU_until+1>=dec+2) EU_until++;
                     else EU_until=dec+2;
                     regMap[r1].until=EU_until;
                 }
+                else if(isConditional(type)){   //IF
+                    cout<<"Caso 1:  ";
+                    printJump(num);
+                    int tmp = code[symbolMap[code[i].label]-1].decode;
+                    code[symbolMap[code[i].label]-1].decode=code[i+1].decode;
+                    analyzer(code[symbolMap[code[i].label]-1].number,nstages,EU_until,EUs_until,1,code,regMap);
+                    cout<<"Caso 2:   "<<num<<": Salto non preso"<<endl;
+                    code[symbolMap[code[i].label]-1].decode=tmp;    //Restore decode time of instruction after jump
+                }
                 if(termination==1) break;
-                if (i < code.size() - 1) code[i + 1].decode = dec + 1;
-
+                if (i < code.size() - 1) code[i + 1].decode = dec + 1;  //Update decode of next instr.
             }
             else if (unt0==-1) busyReg=r1;
             else if(unt1==-1) busyReg=r0;
-            else{
-                /*Both possibly cause dependency, choose worse*/
+            else{  //Both can potentially cause dependency, choose worst case
                 if(unt0>=unt1) busyReg=r0;
                 else busyReg=r1;
             }
-
-            if(busyReg>0) { /*Esegue solo se c'è almeno una dipendenza*/
+            if(busyReg>0) { // Runs only if there's at least one dependency
                 int u=regMap[busyReg].until;
                 int blockingInst=regMap[busyReg].inst;
-
-                if (isConditional(type)) {    /*IF*/
-                    if (u >= dec) {    /*Until indica l'ultimo stadio di occupazione della risorsa*/
-                        /*Dipendenza IU-EU*/
+                if (isConditional(type)) { //IF
+                    if (u >= dec) { // EU-IU Dependency
                         printIUEU(blockingInst, num, u+1 -dec,busyReg);
-                        /*Aggiorno decode time dell'istr successiva*/
                         if (i < code.size() - 1) code[i + 1].decode = u + 2;
                     } else if (i < code.size() - 1){
                         if(termination==1) break;
                         code[i + 1].decode = dec + 1;
                     }
-                    /*Caso salto preso*/
                     cout<<"Caso 1:   ";
                     printJump(num);
                     int tmp = code[symbolMap[code[i].label]-1].decode;
@@ -274,12 +225,11 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     analyzer(code[symbolMap[code[i].label]-1].number,nstages,EU_until,EUs_until,1,code,regMap);
                     cout<<"Caso 2:   "<<num<<": Salto non preso"<<endl;
                     code[symbolMap[code[i].label]-1].decode=tmp;
-
-                } else if (isAritm(type)) {   /*MOVE,ADD_I,SUB_I,MUL_I*/
+                }
+                else if (isAritm(type)) {   //MOVE,ADD_I,SUB_I,MUL_I
                     if ( u >= dec + 1 && isMul(blockingInst)) {
                         printEUEU(blockingInst, num, u - EU_until,busyReg);
-                        /*Aggiorno until e prenoto registro*/
-                        regMap[r1].inst = num;
+                        regMap[r1].inst = num;  //Claim register
                         if(isMul(num)){
                             EU_until=EUs_until+1;
                             EUs_until=EUs_until+nstages;
@@ -290,9 +240,8 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                             else EU_until = u + 1;
                             regMap[r1].until=EU_until;
                         }
-                    } else if (u >= dec + 1 && !isMul(blockingInst)) {
-                        /*Basta eseguire l'istruzione appena la EU è libera*/
-                        regMap[r1].inst = num;
+                    } else if (u >= dec + 1 && !isMul(blockingInst)) {  //Wait for EU to be free, then proceed
+                        regMap[r1].inst = num;  //Claim register
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
                         if (isMul(num)) {
@@ -313,45 +262,34 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                         if(termination==1) break;
                     }
                     if (i < code.size() - 1) code[i + 1].decode = dec + 1;
-
                 }
-                else if(type=="STORE_I"){
-                    /*Dipendenza IU-EU*/
+                else if(type=="STORE_I"){ //EU-IU Dependency
                     printIUEU(blockingInst, num, u + 1 - dec,busyReg);
-                    /*Aggiorno decode time dell'istr successiva*/
                     if (i < code.size() - 1) code[i + 1].decode = u + 2;
                 }
                 else if(type=="LOAD_I"){
-                    if(busyReg==r0){    /*Dip IU-EU*/
-                        if(u>=dec){
-                            /*Dipendenza*/
+                    regMap[r1].inst = num; //Claim register
+                    if(busyReg==r0){
+                        if(u>=dec){ //EU-IU Dependency
                             printIUEU(blockingInst, num, u - dec+1,busyReg);
-                            regMap[r1].inst = num;
                             EU_until=u+3;
                             regMap[r1].until=EU_until;
-                            /*Aggiorno decode propssima ist*/
                             if (i < code.size() - 1) code[i + 1].decode = u + 2;
                         }
                         else{
-                            /*No dependency*/
-                            regMap[r1].inst = num;
                             EU_until=dec+2;
                             regMap[r1].until=EU_until;
                             if(termination==1) break;
                             if (i < code.size() - 1) code[i + 1].decode = dec + 1;
                         }
                     }
-                    else{   /*Dip EU-EU*/
-                        if(u>=dec+2 && isMul(i)){
-                            /*Dipendenza*/
+                    else{
+                        if(u>=dec+2 && isMul(i)){ //EU-EU Dependency
                             printEUEU(blockingInst, num, u -(EUs_until-1),busyReg);
-                            regMap[r1].inst = num;
                             EU_until=u+1;
                             regMap[r1].until=EU_until;
                         }
                         else{
-                            /*No dependency*/
-                            regMap[r1].inst = num;
                             EU_until=dec+2;
                             regMap[r1].until=EU_until;
                             if(termination==1) break;
@@ -361,9 +299,8 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 }
             }
         }
-        if(code[i].regs.size()==3){
-
-            /*Three registers to check*/
+        /*Three registers to check*/
+        if(nregs==3){
             int r0=code[i].regs[0];
             int r1=code[i].regs[1];
             int r2=code[i].regs[2];
@@ -371,12 +308,10 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
             int unt1=check(r1,regMap);
             int unt2=check(r2,regMap);
             int busyReg=-1;
-            if(unt0==-1 && unt1==-1 && unt2==-1){
-                /*No dependencies*/
+            if(unt0==-1 && unt1==-1 && unt2==-1){   //No dependencies
                 if(termination==1) break;
-                if(isAritm(type)){
-                    /*Prenoto registro*/
-                    regMap[r1].inst=num;
+                if(isAritm(type)){  //ADD,SUB,MUL
+                    regMap[r1].inst=num;    //Claim register
                     if(isMul(num)){
                         if(EU_until+1>=dec+1) EU_until++;
                         else EU_until=dec+1;
@@ -390,8 +325,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     }
                 }
                 else if(type=="LOAD"){
-                    /*Prenoto registro*/
-                    regMap[r2].inst=num;
+                    regMap[r2].inst=num;    //Claim register
                     if(EU_until+1>=dec+2) EU_until++;
                     else EU_until=dec+2;
                     regMap[r2].until=EU_until;
@@ -414,20 +348,17 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 else busyReg=r2;
             }
             else {
-                /*All possibly cause dependency, choose worse*/
                 if (unt0 >= unt1 && unt0 >= unt2) busyReg = r0;
                 else if (unt1 >= unt2) busyReg = r1;
                 else busyReg = r2;
             }
-
-            if(busyReg>0) { /*Esegue solo se c'è almeno una dipendenza*/
+            if(busyReg>0) { //Runs only if there's at least one dependency
                 int u=regMap[busyReg].until;
                 int blockingIns=regMap[busyReg].inst;
-                if (isAritm(type)) {   /*ADD,SUB,MUL*/
-                    if ( u >= dec + 1 && isMul(blockingIns)) {
+                if (isAritm(type)) {   //ADD,SUB,MUL
+                    if ( u >= dec + 1 && isMul(blockingIns)) {  //EU-EU Dependency
                         printEUEU(blockingIns, num, u - EU_until,busyReg);
-                        /*Aggiorno until e prenoto registro*/
-                        regMap[r2].inst = num;
+                        regMap[r2].inst = num;  //Claim register
                         if(isMul(num)){
                             if(EU_until>=dec+1) EU_until++;
                             else EU_until=dec+1;
@@ -439,9 +370,9 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                             else EU_until = u + 1;
                             regMap[r2].until=EU_until;
                         }
-                    } else if (u >= dec + 1 && !isMul(blockingIns)) {
-                        /*Basta eseguire l'istruzione appena la EU è libera*/
-                        regMap[r2].inst = num;
+                    }
+                    else if (u >= dec + 1 && !isMul(blockingIns)) {//Wait for EU to be free, then proceed
+                        regMap[r2].inst = num;  //Claim register
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
                         if (isMul(num)) {
@@ -462,46 +393,35 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                         if(termination==1) break;
                     }
                     if (i < code.size() - 1) code[i + 1].decode = dec + 1;
-
                 }
-                else if(type=="STORE"){
-                    /*Dipendenza IU-EU*/
+                    else if(type=="STORE"){ //EU-IU Dependency
                     printIUEU(blockingIns, num, u + 1 - dec,busyReg);
-                    /*Aggiorno decode time dell'istr successiva*/
                     if (i < code.size() - 1) code[i + 1].decode = u + 2;
                 }
                 else if(type=="LOAD"){
-                    if(busyReg==r0 || busyReg==r1){    /*Dip IU-EU*/
-                        if(u>=dec){
-                            /*Dipendenza*/
+                    regMap[r2].inst = num;  //Claim register
+                    if(busyReg==r0 || busyReg==r1){
+                        if(u>=dec){ //EU-IU Dependency
                             printIUEU(blockingIns, num, u - dec+1,busyReg);
-                            regMap[r2].inst = num;
                             EU_until=u+3;
                             regMap[r2].until=EU_until;
-                            /*Aggiorno decode propssima ist*/
                             if (i < code.size() - 1) code[i + 1].decode = u + 2;
                         }
                         else{
-                            /*No dependency*/
-                            regMap[r2].inst = num;
                             EU_until=dec+2;
                             regMap[r2].until=EU_until;
                             if(termination==1) break;
                             if (i < code.size() - 1) code[i + 1].decode = dec + 1;
                         }
                     }
-                    else{   /*Dip EU-EU*/
-                        if(u>=dec+2 && isMul(i)){
-                            /*Dipendenza*/
+                    else{
+                        if(u>=dec+2 && isMul(i)){ //EU-EU Dependency
                             printEUEU(blockingIns, num, u -(EUs_until-1),busyReg);
-                            regMap[r2].inst = num;
                             EU_until=u+1;
                             regMap[r2].until=EU_until;
                             if (i < code.size() - 1) code[i + 1].decode = dec + 1;
                         }
                         else{
-                            /*No dependency*/
-                            regMap[r2].inst = num;
                             EU_until=dec+2;
                             regMap[r2].until=EU_until;
                             if(termination==1) break;
@@ -510,15 +430,12 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     }
                 }
             }
-        }
-    }
-
+        }   //Close nregs check
+    }   //Close for
     return;
 }
 
-
 int main(int argc, char** argv){
-
     /*Preprocessing*/
     cout << "Start preprocessing..." << endl;
     int nstages=atoi(argv[2]);
