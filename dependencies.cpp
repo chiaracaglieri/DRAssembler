@@ -4,9 +4,9 @@
 #include <vector>
 #include <unordered_map>
 #include <map>
-#include "asm1.tab.h"
-#include "util.h"
-#include "util_dip.h"
+#include "asm.tab.h"
+#include "parse_util.h"
+#include "dep_util.h"
 
 extern FILE* yyin;
 

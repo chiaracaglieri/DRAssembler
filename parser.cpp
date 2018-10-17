@@ -1,9 +1,15 @@
+/**
+ * @file parser.cpp
+ * @author Chiara Caglieri
+ * @brief File containing main() for the assembler
+ */
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include "asm1.tab.h"
-#include "util.h"
+#include "asm.tab.h"
+#include "parse_util.h"
 #include <vector>
 
 using namespace std;
