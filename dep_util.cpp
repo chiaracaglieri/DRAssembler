@@ -70,6 +70,7 @@ void printInstruction(instruction i){
     else if(i.type=="ADD_I") cout <<"ADD ";
     else if(i.type=="SUB_I") cout <<"SUB ";
     else if(i.type=="MUL_I") cout <<"MUL ";
+    else if(i.type=="MUL_I") cout <<"DIV ";
     else if(i.type=="MOVE_I"){
         cout <<"MOVE "<<"#"<<i.imm<<" R"<<i.regs[0]<<endl;
         return;
@@ -80,11 +81,13 @@ void printInstruction(instruction i){
         else if(i.type=="GT") cout << "IF> ";
         else if(i.type=="LTE") cout << "IF<= ";
         else if(i.type=="GTE") cout << "IF>= ";
+        else if(i.type=="NEQ") cout << "IF!= ";
         else if(i.type=="EQ_0") cout << "IF=0 ";
         else if(i.type=="LT_0") cout << "IF<0 ";
         else if(i.type=="GT_0") cout << "IF>0 ";
         else if(i.type=="LTE_0") cout << "IF<=0 ";
         else if(i.type=="GTE_0") cout << "IF>=0 ";
+        else if(i.type=="NEQ_0") cout << "IF!=0 ";
         else cout<<i.type<<" ";
         for(int x:i.regs){
             cout<<"R"<<x<<" ";
@@ -109,7 +112,7 @@ void addInstruction(int n,string t, int imm, vector<int> r,string l){
     i.regs=r;
     i.decode=n;
     i.label=l;
-    if(t=="ADD_I" || t=="SUB_I" || t=="MUL_I" || t=="LOAD_I" || t=="STORE_I" || t=="MOVE_I")
+    if(t=="ADD_I" || t=="SUB_I" || t=="MUL_I" || t=="LOAD_I" || t=="STORE_I" || t=="MOVE_I" || t=="DIV_I")
         i.imm=imm;
     prog.push_back(i);
     printInstruction(i);
@@ -122,7 +125,7 @@ void addInstruction(int n,string t, int imm, vector<int> r,string l){
  */
 bool isAritm(string i){
     if(i=="ADD" || i=="SUB" || i=="ADD_I" || i=="SUB_I" || i=="MUL" || i=="MUL_I" || i=="INCR" \
-        || i=="DECR" || i=="CLEAR" || i=="MOVE" || i=="MOVE_I") return true;
+        || i=="DECR" || i=="CLEAR" || i=="MOVE" || i=="MOVE_I" || i=="DIV_I" || i=="DIV") return true;
     else return false;
 }
 

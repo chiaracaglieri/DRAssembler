@@ -32,22 +32,26 @@ bool isConditional(string t){
        t=="GT"      || \
        t=="LTE"     || \
        t=="GTE"     || \
+       t=="NEQ"     || \
        t=="EQ_0"    || \
        t=="LT_0"    || \
        t=="GT_0"    || \
        t=="LTE_0"   || \
-       t=="GTE_0"   )
+       t=="GTE_0"   || \
+       t=="NEQ_0")
         return true;
     return false;
 }
 
-/** \function isMul
+/** \function isLong
   * \brief Checks whether the operation is a Mul
   * \param i the index for the instruction
   */
-bool isMul(int i){
+bool isLong(int i){
     if(prog[i-1].type=="MUL" || \
-       prog[i-1].type=="MUL_I"  )
+       prog[i-1].type=="MUL_I" || \
+       prog[i-1].type=="DIV" || \
+       prog[i-1].type=="DIV_I")
         return true;
     return false;
 }
@@ -60,7 +64,7 @@ bool isMul(int i){
   * \param reg the register causing the dependency
   */
 void printIUEU(int i1, int i2, int b, int reg){
-    cout <<"Dip. IU-EU: "<<i1<<" => "<<i2<<" a causa di R"<<reg<<"    Bolla da "<<b<<"t"<<endl;
+    cout <<"Dip. EU-IU: "<<i1<<" => "<<i2<<" a causa di R"<<reg<<"    Bolla da "<<b<<"t"<<endl;
 }
 
 /** \function printEUEU
@@ -102,12 +106,15 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
 
         /*No registers to check*/
         if(nregs==0){  //END,NOP,GOTO
-            if(type=="GOTO"){
+            if(type=="GOTO_I"){
                 printJump(num);
                 if(i<code.size()-1) code[symbolMap[code[i].label]-1].decode+=2; //Update decode of next instr.
                 if(termination==1) break;
                 else termination=1;     //Sets termination flag
                 i=symbolMap[code[i].label]-1;
+            }
+            else if(type=="GOTO"){
+                                        //TODO
             }
             else if(i<code.size()-1){
                 code[i+1].decode=dec+1;
@@ -138,13 +145,13 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 code[symbolMap[code[i].label]-1].decode=tmp; //Restore decode time of instruction after jump
             }
             else{   //MOVE_I,INCR,DECR,CLEAR
-                if(unt!=-1 && unt>=dec+1 && isMul(blockingInst)){ //EU-EU Dependency
+                if(unt!=-1 && unt>=dec+1 && isLong(blockingInst)){ //EU-EU Dependency
                     printEUEU(blockingInst,num,unt-dec,r0);
                     regMap[r0].inst=num;    //Claim register
                     EU_until=EUs_until+1;
                     regMap[r0].until=EU_until;
                 }
-                else if(unt!=-1 && unt>=dec+1 && !isMul(blockingInst)){ //Wait for EU to be free, then proceed
+                else if(unt!=-1 && unt>=dec+1 && !isLong(blockingInst)){ //Wait for EU to be free, then proceed
                     regMap[r0].inst=num;    //Claim register
                     if(EU_until+1>=dec+1) EU_until++;
                     else EU_until=dec+1;
@@ -169,9 +176,9 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
             int unt1=check(r1,regMap);
             int busyReg=-1;
             if(unt0==-1 && unt1==-1){ //No dependencies
-                if(isAritm(type)) {  //ADD_I,SUB_I,MUL_I,MOVE
+                if(isAritm(type)) {  //ADD_I,SUB_I,MUL_I,MOVE, DIV_I
                     regMap[r1].inst = num;    //Claim register
-                    if (isMul(num)) {
+                    if (isLong(num)) {
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
                         EUs_until = EU_until + nstages;
@@ -227,10 +234,10 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     code[symbolMap[code[i].label]-1].decode=tmp;
                 }
                 else if (isAritm(type)) {   //MOVE,ADD_I,SUB_I,MUL_I
-                    if ( u >= dec + 1 && isMul(blockingInst)) {
+                    if ( u >= dec + 1 && isLong(blockingInst)) {
                         printEUEU(blockingInst, num, u - EU_until,busyReg);
                         regMap[r1].inst = num;  //Claim register
-                        if(isMul(num)){
+                        if(isLong(num)){
                             EU_until=EUs_until+1;
                             EUs_until=EUs_until+nstages;
                             regMap[r1].until = EUs_until;
@@ -240,11 +247,11 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                             else EU_until = u + 1;
                             regMap[r1].until=EU_until;
                         }
-                    } else if (u >= dec + 1 && !isMul(blockingInst)) {  //Wait for EU to be free, then proceed
+                    } else if (u >= dec + 1 && !isLong(blockingInst)) {  //Wait for EU to be free, then proceed
                         regMap[r1].inst = num;  //Claim register
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
-                        if (isMul(num)) {
+                        if (isLong(num)) {
                             EUs_until = EU_until + nstages+1;
                             regMap[r1].until = EUs_until;
                         } else
@@ -254,7 +261,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                         regMap[r1].inst = num;
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
-                        if (isMul(num)) {
+                        if (isLong(num)) {
                             EUs_until = EU_until + nstages+1;
                             regMap[r1].until = EUs_until;
                         } else
@@ -284,7 +291,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                         }
                     }
                     else{
-                        if(u>=dec+2 && isMul(i)){ //EU-EU Dependency
+                        if(u>=dec+2 && isLong(i)){ //EU-EU Dependency
                             printEUEU(blockingInst, num, u -(EUs_until-1),busyReg);
                             EU_until=u+1;
                             regMap[r1].until=EU_until;
@@ -312,7 +319,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 if(termination==1) break;
                 if(isAritm(type)){  //ADD,SUB,MUL
                     regMap[r1].inst=num;    //Claim register
-                    if(isMul(num)){
+                    if(isLong(num)){
                         if(EU_until+1>=dec+1) EU_until++;
                         else EU_until=dec+1;
                         EUs_until=EU_until+nstages;
@@ -356,10 +363,10 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                 int u=regMap[busyReg].until;
                 int blockingIns=regMap[busyReg].inst;
                 if (isAritm(type)) {   //ADD,SUB,MUL
-                    if ( u >= dec + 1 && isMul(blockingIns)) {  //EU-EU Dependency
+                    if ( u >= dec + 1 && isLong(blockingIns)) {  //EU-EU Dependency
                         printEUEU(blockingIns, num, u - EU_until,busyReg);
                         regMap[r2].inst = num;  //Claim register
-                        if(isMul(num)){
+                        if(isLong(num)){
                             if(EU_until>=dec+1) EU_until++;
                             else EU_until=dec+1;
                             EUs_until=EU_until+nstages;
@@ -371,11 +378,11 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                             regMap[r2].until=EU_until;
                         }
                     }
-                    else if (u >= dec + 1 && !isMul(blockingIns)) {//Wait for EU to be free, then proceed
+                    else if (u >= dec + 1 && !isLong(blockingIns)) {//Wait for EU to be free, then proceed
                         regMap[r2].inst = num;  //Claim register
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
-                        if (isMul(num)) {
+                        if (isLong(num)) {
                             EUs_until = EU_until + nstages;
                             regMap[r2].until = EUs_until;
                         } else
@@ -385,7 +392,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                         regMap[r2].inst = num;
                         if (EU_until + 1 >= dec + 1) EU_until++;
                         else EU_until = dec + 1;
-                        if (isMul(num)) {
+                        if (isLong(num)) {
                             EUs_until = EUs_until + nstages;
                             regMap[r2].until = EUs_until;
                         } else
@@ -415,7 +422,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                         }
                     }
                     else{
-                        if(u>=dec+2 && isMul(i)){ //EU-EU Dependency
+                        if(u>=dec+2 && isLong(i)){ //EU-EU Dependency
                             printEUEU(blockingIns, num, u -(EUs_until-1),busyReg);
                             EU_until=u+1;
                             regMap[r2].until=EU_until;

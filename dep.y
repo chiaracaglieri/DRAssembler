@@ -55,6 +55,11 @@ instruction
     |NOP { counter++;
            addInstruction(counter,"NOP",-1,vector<int>(),"");
            }
+    |CALL REG COMMA REG { counter++;
+                          vector<int> tmp={$2,$4};
+                          addReg($2,$4,-1);
+                          addInstruction(counter,"CALL",-1,tmp,"");
+                         }
     |ar_instruction REG COMMA REG COMMA REG {   counter++;
                                                 vector<int> tmp;
 
@@ -63,7 +68,8 @@ instruction
 
                                                 if($1==1) addInstruction(counter,"ADD",-1,tmp,"");
                                                 else if($1==2) addInstruction(counter,"SUB",-1,tmp,"");
-                                                else addInstruction(counter,"MUL",-1,tmp,"");
+                                                else if($1==3) addInstruction(counter,"MUL",-1,tmp,"");
+                                                else if($1==4) addInstruction(counter,"DIV",-1,tmp,"");
                                                 }
     |ar_instruction REG COMMA VALUE COMMA REG {   counter++;
                                                 vector<int> tmp;
@@ -73,7 +79,8 @@ instruction
 
                                                  if($1==1) addInstruction(counter,"ADD_I",$4,tmp,"");
                                                  else if($1==2) addInstruction(counter,"SUB_I",$4,tmp,"");
-                                                 else addInstruction(counter,"MUL_I",$4,tmp,"");
+                                                 else if($1==3) addInstruction(counter,"MUL_I",$4,tmp,"");
+                                                 else if($1==4) addInstruction(counter,"DIV_I",$4,tmp,"");
                                                 }
     |rego_instruction REG   {  counter++;
                                vector<int> tmp={$2};
@@ -104,7 +111,7 @@ instruction
                                                   else if($1==3) addInstruction(counter,"GT",-1,tmp,last_string);
                                                   else if($1==4) addInstruction(counter,"GTE",-1,tmp,last_string);
                                                   else if($1==5) addInstruction(counter,"LTE",-1,tmp,last_string);
-
+                                                  else if($1==6) addInstruction(counter,"NEQ",-1,tmp,last_string);
                                                   addSymbol(last_string,-1);
                                              }
     |cond_instruction_0 exp COMMA ID { counter++;
@@ -119,6 +126,7 @@ instruction
                                        else if($1==3) addInstruction(counter,"GT_0",-1,tmp,last_string);
                                        else if($1==4) addInstruction(counter,"GTE_0",-1,tmp,last_string);
                                        else if($1==5) addInstruction(counter,"LTE_0",-1,tmp,last_string);
+                                       else if($1==6) addInstruction(counter,"NEQ_0",-1,tmp,last_string);
                                        addSymbol(last_string,-1);
                                      }
     |MOVE REG COMMA REG {  counter++;
@@ -139,7 +147,12 @@ instruction
     |ID SEMICOLON instruction { addSymbol(last_string,counter); }
     |GOTO ID {  counter++;
                 addSymbol(last_string,-1);
-                addInstruction(counter,"GOTO",-1,vector<int>(),last_string);
+                addInstruction(counter,"GOTO_I",-1,vector<int>(),last_string);
+             }
+    |GOTO REG {  counter++;
+                 vector<int> tmp={$2};
+                 addReg($2,-1,-1);
+                 addInstruction(counter,"GOTO",-1,tmp,NULL);
              }
     ;
 ls_instruction
@@ -150,6 +163,7 @@ ar_instruction
     :ADD  { $$=1; }
     |SUB  { $$=2; }
     |MUL  { $$=3; }
+    |DIV  { $$=4; }
     ;
 cond_instruction
     :EQ   { $$=1; }
@@ -157,6 +171,7 @@ cond_instruction
     |GT   { $$=3; }
     |GTE  { $$=4; }
     |LTE  { $$=5; }
+    |NEQ  { $$=6; }
     ;
 cond_instruction_0
     :EQ_0   { $$=1; }
@@ -164,6 +179,7 @@ cond_instruction_0
     |GT_0   { $$=3; }
     |GTE_0  { $$=4; }
     |LTE_0  { $$=5; }
+    |NEQ_0  { $$=6; }
     ;
 rego_instruction
     :CLEAR  { $$=1; }
