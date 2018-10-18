@@ -207,7 +207,7 @@ void visit_tree(node* tmp){
         visit_tree(tmp->param2);
         visit_tree(tmp->param3);
     }
-    else if(tmp->type=="ADD" || tmp->type=="SUB" || tmp->type=="MUL"){   //Expected 3 parameters
+    else if(tmp->type=="ADD" || tmp->type=="SUB" || tmp->type=="MUL" || tmp->type=="DIV"){   //Expected 3 parameters
         if(tmp->type=="ADD"){
             if(tmp->param2->type=="VALUE"){
                 bitset<8> bin=get_opcode_binary("ADD_I");
@@ -241,6 +241,16 @@ void visit_tree(node* tmp){
             }
         }
 
+        if(tmp->type=="DIV"){
+            if(tmp->param2->type=="VALUE"){
+                bitset<8> bin=get_opcode_binary("DIV_I");
+                instruction.append(bin.to_string());
+            }
+            else{
+                bitset<8> bin = get_opcode_binary("DIV");
+                instruction.append(bin.to_string());
+            }
+        }
         string val=get_param_binary(tmp->param1->value);
         instruction.append(val);
         if(tmp->param2->type=="VALUE"){
@@ -269,7 +279,7 @@ void visit_tree(node* tmp){
         return;
     }
     else if(tmp->type=="IF=" || tmp->type=="IF<" || tmp->type=="IF>" \
-            || tmp->type=="IF<=" || tmp->type=="IF>="){   //Expected 3 parameters, last one is a label
+            || tmp->type=="IF<=" || tmp->type=="IF>=" || tmp->type=="IF!="){   //Expected 3 parameters, last one is a label
 
         bitset<8> bin=get_opcode_binary(tmp->type);
         instruction.append(bin.to_string());
@@ -333,7 +343,7 @@ void visit_tree(node* tmp){
         return;
     }
     else if(tmp->type=="IF>0" || tmp->type=="IF=0" || tmp->type=="IF<0" || tmp->type=="IF<=0" \
-            || tmp->type=="IF>=0"){ //2 parameters. 2nd is a label
+            || tmp->type=="IF>=0" || tmp->type=="IF!=0"){ //2 parameters. 2nd is a label
         bitset<8> bin = get_opcode_binary(tmp->type);
         instruction.append(bin.to_string());
 
@@ -453,6 +463,17 @@ void visit_tree(node* tmp){
         words.push_back(instruction);
         return;
     }
+    if(tmp->type=="CALL"){
+        string val=get_param_binary(tmp->param1->value);
+        instruction.append(val);
+        val=get_param_binary(tmp->param2->value);
+        instruction.append(val);
+        val=get_param_binary(0);
+        instruction.append(val);
+        instruction.append(val);
+        words.push_back(instruction);
+        return;
+    }
     if(tmp->type=="CLEAR" || tmp->type=="INCR"  || tmp->type=="DECR"){ //Expected one integer value
         string val=get_param_binary(tmp->param1->value);
         instruction.append(val);
@@ -473,7 +494,7 @@ void visit_tree(node* tmp){
         words.push_back(instruction);
         return;
     }
-    if(tmp->type=="GOTO"){
+    if(tmp->type=="GOTO_I"){
         int addr=find_symbol(tmp->param1->type);
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
@@ -491,6 +512,16 @@ void visit_tree(node* tmp){
                 exit(EXIT_FAILURE);
             }
         }
+        words.push_back(instruction);
+        return;
+    }
+    if(tmp->type=="GOTO"){
+        string val=get_param_binary(tmp->param1->value);
+        instruction.append(val);
+        val=get_param_binary(0);
+        instruction.append(val);
+        instruction.append(val);
+        instruction.append(val);
         words.push_back(instruction);
         return;
     }

@@ -19,6 +19,7 @@
 "add" return ADD;
 "sub" return SUB;
 "mul" return MUL;
+"div" return DIV;
 "load" return LOAD;
 "store" return STORE;
 "move" return MOVE;
@@ -33,7 +34,10 @@
 "if<" return LT;
 "if>=" return GTE;
 "if<=" return LTE;
+"if!=" return NEQ;
+"if!=0" return NEQ_0;
 "goto" return GOTO;
+"call" return CALL;
 "start" return START;
 "end"   return END;
 [R][0-9]* { tmp=yytext;

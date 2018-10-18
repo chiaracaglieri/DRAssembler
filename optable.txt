@@ -26,3 +26,9 @@ STORE_I      18
 SUB          19
 SUB_I        1A
 GOTO         1B
+GOTO_I       1C
+CALL         1D
+IF!=         1E
+IF!=0        1F
+DIV          20
+DIV_I        21

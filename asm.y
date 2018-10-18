@@ -19,9 +19,9 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token SEMICOLON COMMA
 %token <intval> REG
 %token ID LOAD STORE MOVE
-%token ADD SUB MUL
-%token EQ GT LT EQ_0 LT_0 GT_0 GTE LTE GTE_0 LTE_0
-%token CLEAR INCR DECR GOTO NOP
+%token ADD SUB MUL DIV
+%token EQ GT LT EQ_0 LT_0 GT_0 GTE LTE GTE_0 LTE_0 NEQ NEQ_0
+%token CLEAR INCR DECR GOTO NOP CALL
 %token MEMLOC MEMLOCS LOC REGVAL
 %token END START
 %start program
@@ -61,8 +61,14 @@ instruction
                                                 node* v2=make_node("REGISTER", $6, NULL,NULL,NULL);
                                                 if($1==1) $$=make_node("ADD",-1,v1,$4,v2);
                                                 else if($1==2) $$=make_node("SUB",-1,v1,$4,v2);
-                                                else $$=make_node("MUL",-1,v1,$4,v2);
+                                                else if($1==3) $$=make_node("MUL",-1,v1,$4,v2);
+                                                else if($1==4) $$=make_node("DIV",-1,v1,$4,v2);
                                                 }
+    |CALL REG COMMA REG { lc++;
+                          node* v1=make_node("REGISTER", $2, NULL,NULL,NULL);
+                          node* v2=make_node("REGISTER", $4, NULL,NULL,NULL);
+                          $$=make_node("CALL",-1,v1,v2,NULL);
+                        }
     |rego_instruction REG   {  lc++;
                                node* v1=make_node("REGISTER", $2, NULL,NULL,NULL);
                                if($1==1) $$=make_node("CLEAR",-1,v1,NULL,NULL);
@@ -84,6 +90,7 @@ instruction
                                                   else if($1==3) $$=make_node("IF>",-1,v2,v3,v1);
                                                   else if($1==4) $$=make_node("IF>=",-1,v2,v3,v1);
                                                   else if($1==5) $$=make_node("IF<=",-1,v2,v3,v1);
+                                                  else if($1==6) $$=make_node("IF!=",-1,v2,v3,v1);
                                                   insert_symbol(last_string,-1);
                                              }
     |cond_instruction_0 REG COMMA ID { lc++;
@@ -94,6 +101,7 @@ instruction
                                  else if($1==3) $$=make_node("IF>0",-1,v2,v1,NULL);
                                  else if($1==4) $$=make_node("IF>=0",-1,v2,v1,NULL);
                                  else if($1==5) $$=make_node("IF<=0",-1,v2,v1,NULL);
+                                 else if($1==6) $$=make_node("IF!=0",-1,v2,v1,NULL);
                                  insert_symbol(last_string,-1);
                                 }
     |MOVE exp COMMA REG {  lc++;
@@ -106,7 +114,11 @@ instruction
     |GOTO ID {  lc++;
                 insert_symbol(last_string,-1);
                 node* v1=make_node(last_string,-1,NULL,NULL,NULL);
-                $$=make_node("GOTO",-1,v1,NULL,NULL);
+                $$=make_node("GOTO_I",-1,v1,NULL,NULL);
+             }
+    |GOTO REG {  lc++;
+                 node* v1=make_node("REGISTER",$2,NULL,NULL,NULL);
+                 $$=make_node("GOTO",-1,v1,NULL,NULL);
              }
     ;
 ls_instruction
@@ -117,6 +129,7 @@ ar_instruction
     :ADD  { $$=1; }
     |SUB  { $$=2; }
     |MUL  { $$=3; }
+    |DIV  { $$=4; }
     ;
 cond_instruction
     :EQ   { $$=1; }
@@ -124,6 +137,7 @@ cond_instruction
     |GT   { $$=3; }
     |GTE  { $$=4; }
     |LTE  { $$=5; }
+    |NEQ  { $$=6; }
     ;
 cond_instruction_0
     :EQ_0   { $$=1; }
@@ -131,6 +145,7 @@ cond_instruction_0
     |GT_0   { $$=3; }
     |GTE_0  { $$=4; }
     |LTE_0  { $$=5; }
+    |NEQ_0  { $$=6; }
     ;
 rego_instruction
     :CLEAR  { $$=1; }

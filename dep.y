@@ -22,9 +22,9 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token SEMICOLON COMMA
 %token <intval> REG
 %token ID LOAD STORE MOVE
-%token ADD SUB MUL
-%token EQ GT LT EQ_0 LT_0 GT_0 GTE LTE GTE_0 LTE_0
-%token CLEAR INCR DECR GOTO NOP
+%token ADD SUB MUL DIV
+%token EQ GT LT EQ_0 LT_0 GT_0 GTE LTE GTE_0 LTE_0 NEQ NEQ_0
+%token CLEAR INCR DECR GOTO NOP CALL
 %token MEMLOC MEMLOCS LOC REGVAL
 %token END START
 %start program
