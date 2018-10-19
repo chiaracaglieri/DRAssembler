@@ -49,16 +49,15 @@ void manageInput(){
     string tmp;
 
     if(disableManagement==false && counter<0) {
-        cout << "s (step)   c(continue)     n(n steps)      a(abort)" << endl;
+        cout << "enter (step)   c(continue)     n(n steps)      a(abort)" << endl;
         tmp.clear();
         getline(cin,tmp);
         if(tmp == "c"){
             disableManagement = true;
             return;
         }
-        else if(tmp=="s") return;
         else if(tmp=="a") exit(EXIT_FAILURE);
-
+        else if(tmp=="") return;
         int i=0;
         while(tmp[i]){
             //if there is a letter in a string then string is not a number
@@ -277,9 +276,9 @@ int main(int argc,  char** argv) {
     cout << "Loading optable..." << endl;
     loadOptable();
     cout << "Loading registers..." << endl;
-    loadRegisters();
+    loadRegisters(argv[1]);
     cout << "Loading memory..." << endl;
-    loadMemory();
+    loadMemory(argv[1]);
     cout << "Loading code..." << endl;
     loadProgram(argv[1]);
 

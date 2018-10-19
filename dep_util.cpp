@@ -15,6 +15,7 @@
 using namespace std;
 
 int counter=0;
+int loc=0;
 deque<int> v1;                           //Contains the values for memlocs
 map<int,reg> rMap;
 map<string,int> symbolMap;
@@ -70,7 +71,7 @@ void printInstruction(instruction i){
     else if(i.type=="ADD_I") cout <<"ADD ";
     else if(i.type=="SUB_I") cout <<"SUB ";
     else if(i.type=="MUL_I") cout <<"MUL ";
-    else if(i.type=="MUL_I") cout <<"DIV ";
+    else if(i.type=="DIV_I") cout <<"DIV ";
     else if(i.type=="MOVE_I"){
         cout <<"MOVE "<<"#"<<i.imm<<" R"<<i.regs[0]<<endl;
         return;

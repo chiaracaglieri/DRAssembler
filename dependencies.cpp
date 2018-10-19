@@ -44,7 +44,7 @@ bool isConditional(string t){
 }
 
 /** \function isLong
-  * \brief Checks whether the operation is a Mul
+  * \brief Checks whether the operation is a Mul or Div
   * \param i the index for the instruction
   */
 bool isLong(int i){
@@ -108,13 +108,9 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
         if(nregs==0){  //END,NOP,GOTO
             if(type=="GOTO_I"){
                 printJump(num);
-                if(i<code.size()-1) code[symbolMap[code[i].label]-1].decode+=2; //Update decode of next instr.
+                /*if(i<code.size()-1)*/ code[symbolMap[code[i].label]-1].decode+=2; //Update decode of next instr.
                 if(termination==1) break;
-                else termination=1;     //Sets termination flag
                 i=symbolMap[code[i].label]-1;
-            }
-            else if(type=="GOTO"){
-                                        //TODO
             }
             else if(i<code.size()-1){
                 code[i+1].decode=dec+1;
@@ -233,7 +229,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
                     cout<<"Caso 2:   "<<num<<": Salto non preso"<<endl;
                     code[symbolMap[code[i].label]-1].decode=tmp;
                 }
-                else if (isAritm(type)) {   //MOVE,ADD_I,SUB_I,MUL_I
+                else if (isAritm(type)) {   //MOVE,ADD_I,SUB_I,MUL_I,DIV_I
                     if ( u >= dec + 1 && isLong(blockingInst)) {
                         printEUEU(blockingInst, num, u - EU_until,busyReg);
                         regMap[r1].inst = num;  //Claim register
@@ -317,7 +313,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
             int busyReg=-1;
             if(unt0==-1 && unt1==-1 && unt2==-1){   //No dependencies
                 if(termination==1) break;
-                if(isAritm(type)){  //ADD,SUB,MUL
+                if(isAritm(type)){  //ADD,SUB,MUL,DIV
                     regMap[r1].inst=num;    //Claim register
                     if(isLong(num)){
                         if(EU_until+1>=dec+1) EU_until++;
@@ -362,7 +358,7 @@ void analyzer(int start,int nstages, int EU_until, int EUs_until, int terminatio
             if(busyReg>0) { //Runs only if there's at least one dependency
                 int u=regMap[busyReg].until;
                 int blockingIns=regMap[busyReg].inst;
-                if (isAritm(type)) {   //ADD,SUB,MUL
+                if (isAritm(type)) {   //ADD,SUB,MUL,DIV
                     if ( u >= dec + 1 && isLong(blockingIns)) {  //EU-EU Dependency
                         printEUEU(blockingIns, num, u - EU_until,busyReg);
                         regMap[r2].inst = num;  //Claim register

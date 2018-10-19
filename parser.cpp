@@ -49,6 +49,18 @@ int main(int argc,  char** argv) {
     }
     /*Set output file*/
     string out = filename.substr(0, filename.size()-6);
+    /*Set Memory and reg files*/
+
+    string mem ="-mem.o";
+    string fname=filename.substr(0, filename.size()-6);
+    fname.append(mem);
+    mem_out.open(fname);
+
+    string reg ="-regs.o";
+    fname=filename.substr(0, filename.size()-6);
+    fname.append(reg);
+    reg_out.open(fname);
+
     out.append(".o");
     outfile.open(out);
     yyin=fopen("tmp.drisc","r");

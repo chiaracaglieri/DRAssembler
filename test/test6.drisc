@@ -10,4 +10,3 @@ cont: add R1,4,R1
       call R2,R3
       end
 proc: clear R1
-      goto R3

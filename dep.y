@@ -41,7 +41,7 @@ program
 state
     :MEMLOC VALUE VALUE {  }
     |MEMLOCS VALUE seq  {  }
-    |LOC VALUE  {  }
+    |LOC VALUE  { loc=$2; }
     |REGVAL VALUE VALUE { }
     |START VALUE    { }
     ;
@@ -152,7 +152,7 @@ instruction
     |GOTO REG {  counter++;
                  vector<int> tmp={$2};
                  addReg($2,-1,-1);
-                 addInstruction(counter,"GOTO",-1,tmp,NULL);
+                 addInstruction(counter,"GOTO",-1,tmp,"");
              }
     ;
 ls_instruction

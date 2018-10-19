@@ -51,8 +51,11 @@ void loadOptable(){
 /** \function loadRegisters
   * \brief reads the registers file and imports it into a map structure
   */
-void loadRegisters(){
-    ifstream regFile("registers.o");
+void loadRegisters(string fname){
+    string out = fname.substr(0, fname.size()-2);
+    out.append("-regs.o");
+
+    ifstream regFile(out);
     if(!regFile){
 	cerr << "Error, \"registers.o\" does not exist, relaunch parser..." << endl;
 	exit(EXIT_FAILURE);
@@ -70,8 +73,11 @@ void loadRegisters(){
 /** \function loadMemory
   * \brief reads the memory file and imports it into a map structure
   */
-void loadMemory(){
-    ifstream memFile("memory.o");
+void loadMemory(string fname){
+    string out = fname.substr(0, fname.size()-2);
+    out.append("-mem.o");
+
+    ifstream memFile(out);
     if(!memFile){
 	cerr << "Error, \"memory.o\" does not exist, relaunch parser..." << endl;
 	exit(EXIT_FAILURE);

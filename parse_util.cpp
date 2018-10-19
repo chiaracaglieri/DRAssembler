@@ -22,8 +22,8 @@ int lc;                                 //Location Counter
 ofstream outfile;
 vector<string> words;
 
-ofstream reg_out ("registers.o");
-ofstream mem_out ("memory.o");
+ofstream reg_out;
+ofstream mem_out;
 
 unordered_map<string, string > opTable;
 unordered_map<string, int> symTable;

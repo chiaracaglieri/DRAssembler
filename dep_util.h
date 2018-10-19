@@ -13,6 +13,7 @@
 using namespace std;
 
 extern int counter;
+extern int loc;
 extern deque<int> v1;                            //Contains the values for memlocs
 
 struct instruction{
@@ -27,6 +28,7 @@ struct instruction{
 struct reg{
     int inst;
     int until;
+    int value;
 };
 
 extern map<int,reg> rMap;
