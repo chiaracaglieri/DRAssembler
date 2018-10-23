@@ -1,3 +1,9 @@
+/**
+ * @file interpreter.cpp
+ * @author Chiara Caglieri
+ * @brief The interpreter's main file
+ */
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -7,15 +13,15 @@
 
 using namespace std;
 
-int i;
-bool disableManagement=false;
-int counter=-1;
+int i;                          /**<Current instruction*/
+bool disableManagement=false;   /**<Flag to enable display of prompt after instruction*/
+int counter=-1;                 /**<Keeps track of the number of instructions ledt to execute after command "n steps" entered*/
 
 /** \function get_int
-  * \brief generates the int corresponding to a string of binary digits
-  * \param s the string
-  * \param nbits the number of bits in the string
-  * \return (int) b.to_ulong() the integer translation of the digits
+  * @brief generates the int corresponding to a string of binary digits
+  * @param s the string
+  * @param nbits the number of bits in the string
+  * @return (int) b.to_ulong() the integer translation of the digits
   */
 int get_int(string s, int nbits){
     if(nbits==6){
@@ -39,12 +45,19 @@ int get_int(string s, int nbits){
         exit(EXIT_FAILURE);
     }
 }
-
-string removeSpaces(string input) {
+/** \function remove_spaces
+  * @brief removes spaces in a string
+  * @param input
+  * @return input the string without spaces
+  */
+string remove_spaces(string input) {
     input.erase(remove(input.begin(),input.end(),' '),input.end());
     return input;
 }
 
+/** \function manageInput
+ *  @brief displays the interactive options on the command line
+ */
 void manageInput(){
     string tmp;
 
@@ -75,41 +88,61 @@ void manageInput(){
     return;
 }
 
+/** \function hasImmediate
+  * @brief determines whether the operation has an immediate parameter
+  * @param op the operation to check
+  * @return true if the op. has an immediate value
+  *         false otherwise
+ */
 bool hasImmediate(string op){
     if(op=="ADD_I" || op=="SUB_I" || op=="MUL_I" \
     || op=="LOAD_I" || op=="STORE_I" || op=="DIV_I") return true;
     return false;
 }
 
-bool isConditional(string t){
-    if(t=="IF="      || \
-       t=="IF>"      || \
-       t=="IF<"      || \
-       t=="IF>="     || \
-       t=="IF<="     || \
-       t=="IF!=")
+/** \function isConditional
+  * @brief determines whether the operation is of conditional type
+  * @param op the operation to check
+  * @return true if the op. is of conditional type
+  *         false otherwise
+ */
+bool isConditional(string op){
+    if(op=="IF="      || \
+       op=="IF>"      || \
+       op=="IF<"      || \
+       op=="IF>="     || \
+       op=="IF<="     || \
+       op=="IF!=")
         return true;
     return false;
 }
-bool isConditional0(string t){
-    if(t=="IF=0"    || \
-       t=="IF<0"    || \
-       t=="IF>0"    || \
-       t=="IF<=0"   || \
-       t=="IF>=0"   || \
-       t=="IF!=0") return true;
-       return false;
+
+/** \function isConditional0
+  * @brief determines whether the operation is of conditional_0 type
+  * @param op the operation to check
+  * @return true if the op. is of conditional_0 type
+  *         false otherwise
+ */
+bool isConditional0(string op){
+    if(op=="IF=0"      || \
+       op=="IF>0"      || \
+       op=="IF<0"      || \
+       op=="IF>=0"     || \
+       op=="IF<=0"     || \
+       op=="IF!=0")
+        return true;
+    return false;
 }
+
 /** \function execute
-  * \brief executes a single operation at a time
-  * \param op the operation code
-  * \param a the string corresponding to the first parameter
-  * \param b the string corresponding to the second parameter
-  * \param c the string corresponding to the third parameter
-  * \param p4 boolean to indicate the presence of a fourth parameter
+  * @brief executes a single operation at a time
+  * @param op the operation code
+  * @param a the string corresponding to the first parameter
+  * @param b the string corresponding to the second parameter
+  * @param c the string corresponding to the third parameter
+  * @param p4 boolean to indicate the presence of a fourth parameter
   */
 void execute(string op, string a, string b, string c, string d){
-
     int p1,p2,p3,p4;
     if(hasImmediate(op)){
         p1=get_int(a,6);    //retrieve first parameter
@@ -215,7 +248,7 @@ void execute(string op, string a, string b, string c, string d){
         }
         if(op=="STORE"){
             memTable[addr]=regTable[p3];
-            cout << "LOC " << addr << " = " << regTable[p3]<<endl;
+            cout << "pc " << addr << " = " << regTable[p3]<<endl;
         }
     }
 
@@ -229,7 +262,7 @@ void execute(string op, string a, string b, string c, string d){
         }
         if(op=="STORE_I"){
             memTable[addr]=regTable[p3];
-            cout << "LOC " << p3 << " = " << regTable[p3]<<endl;
+            cout << "pc " << p3 << " = " << regTable[p3]<<endl;
         }
         cin.ignore();
     }
@@ -283,7 +316,7 @@ int main(int argc,  char** argv) {
     loadProgram(argv[1]);
 
     int terminate=0;
-    i=loc;      //keeps track of address of current instruction
+    i=pc;      //keeps track of address of current instruction
     string op;
     string p1;
     string p2;
@@ -293,7 +326,7 @@ int main(int argc,  char** argv) {
 
     while(true) {
         cout << memCode[i] << " :\t";
-        string current=removeSpaces(memCode[i]);
+        string current=remove_spaces(memCode[i]);
         op=current.substr(0,8);
         //Retrieve parameters
         p1=current.substr(8,6);
@@ -319,7 +352,7 @@ int main(int argc,  char** argv) {
 
     /* Print memory output */
     while(it!=memTable.end()){
-        cout << "LOC " << it->first << " => " << it->second;
+        cout << "pc " << it->first << " => " << it->second;
         tmp=it->first;
         it++;
         while(it->first==tmp+1){

@@ -1,3 +1,9 @@
+/**
+ * @file dependencies.cpp
+ * @author Chiara Caglieri
+ * @brief Main file for the analyzer
+ */
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -9,15 +15,16 @@
 #include "parse_util.h"
 #include "dep_util.h"
 
-extern FILE* yyin;
+extern FILE* yyin;     /**<Pointer to the file containing the data to parse*/
 
-string divider="";
-vector<int> already;
+string divider="";     /**<Divider to better format the output*/
+vector<int> already;   /**<Keeps track of the instructions that have been analyzed already*/
+
 /** \function check
-  * \brief Checks whether the register is busy or not
-  * \param r the register to check
-  * \param m the table to search in
-  * \return m[r].until the last stage at which the register will be in use
+  * @brief Checks whether the register is busy or not
+  * @param r the register to check
+  * @param m the table to search in
+  * @return m[r].until the last stage at which the register will be in use
   *         -1 if the register is not in use
   */
 int check(int r, map<int,reg> m){
@@ -26,9 +33,11 @@ int check(int r, map<int,reg> m){
 }
 
 /** \function isConditional
-  * \brief Checks whether the operation is of conditional type
-  * \param t the mnemonic opcode for the instruction
-  */
+  * @brief determines whether the operation is of conditional type
+  * @param op the operation to check
+  * @return true if the op. is of conditional type
+  *         false otherwise
+ */
 bool isConditional(string t){
     if(t=="EQ"      || \
        t=="LT"      || \
@@ -47,9 +56,11 @@ bool isConditional(string t){
 }
 
 /** \function isLong
-  * \brief Checks whether the operation is a Mul or Div
-  * \param i the index for the instruction
-  */
+  * @brief determines whether the operation is a long arithmetic
+  * @param op the operation to check
+  * @return true if the op. is a long arithmetic
+  *         false otherwise
+ */
 bool isLong(int i){
     if(prog[i-1].type=="MUL" || \
        prog[i-1].type=="MUL_I" || \
@@ -60,43 +71,44 @@ bool isLong(int i){
 }
 
 /** \function printIUEU
-  * \brief Formats the output for a IU-EU dependency
-  * \param i1 the index of the instruction causing the dependency
-  * \param i2 the index of the instruction affected by the dependency
-  * \param b the length of the resulting gap
-  * \param reg the register causing the dependency
+  * @brief Formats the output for a IU-EU dependency
+  * @param i1 the index of the instruction causing the dependency
+  * @param i2 the index of the instruction affected by the dependency
+  * @param b the length of the resulting gap
+  * @param reg the register causing the dependency
   */
 void printIUEU(int i1, int i2, int b, int reg){
     cout <<divider<<"Dip. EU-IU: "<<i1<<" => "<<i2<<" a causa di R"<<reg<<"    Bolla da "<<b<<"t"<<endl;
 }
 
 /** \function printEUEU
-  * \brief Formats the output for a EU-EU dependency
-  * \param i1 the index of the instruction causing the dependency
-  * \param i2 the index of the instruction affected by the dependency
-  * \param b the length of the resulting gap
-  * \param reg the register causing the dependency
+  * @brief Formats the output for a EU-EU dependency
+  * @param i1 the index of the instruction causing the dependency
+  * @param i2 the index of the instruction affected by the dependency
+  * @param b the length of the resulting gap
+  * @param reg the register causing the dependency
   */
 void printEUEU(int i1, int i2, int b, int reg){
     cout <<divider<<"Dip. EU-EU: "<<i1<<" => "<<i2<<" a causa di R"<<reg<<"    Bolla da "<<b<<"t"<<endl;
 }
 
 /** \function printJump
-  * \brief Formats the output for a jump instruction
-  * \param i the index of the instruction causing the jump
+  * @brief Formats the output for a jump instruction
+  * @param i the index of the instruction causing the jump
   */
 void printJump(int i){
     cout <<divider<<i<< ": Salto preso   Bolla da 1t"<<endl;
 }
+
 /** \function analyzer
-  * \brief Checks for logic dependencies among instructions
-  * \param start the first instruction to examine
-  * \param nstages the number of stages for the EU slave
-  * \param EU_until the stage at which the EU is last in use
-  * \param EUs_until the stage at which the EU slave is last in use
-  * \param termination if set causes the analysis to stop as soon as no dependency is found
-  * \param code the vector containing thew instructions
-  * \param regMap the table containing registers and information on their state
+  * @brief Checks for logic dependencies among instructions
+  * @param start the first instruction to examine
+  * @param nstages the number of stages for the EU slave
+  * @param EU_until the stage at which the EU is last in use
+  * @param EUs_until the stage at which the EU slave is last in use
+  * @param termination if set causes the analysis to stop as soon as no dependency is found
+  * @param code the vector containing thew instructions
+  * @param regMap the table containing registers and information on their state
   */
 void analyzer(int start,int stop,int nstages, int EU_until, int EUs_until, int termination,vector<instruction> code, map<int,reg> regMap){
 

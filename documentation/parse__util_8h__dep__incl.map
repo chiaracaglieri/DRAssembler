@@ -1,4 +1,5 @@
 <map id="parse_util.h" name="parse_util.h">
-<area shape="rect" id="node2" href="$parse__util_8cpp.html" title="File containing the implementation of utility functions for the assembler. " alt="" coords="5,80,108,107"/>
-<area shape="rect" id="node3" href="$parser_8cpp.html" title="File containing main() for the assembler. " alt="" coords="133,80,215,107"/>
+<area shape="rect" id="node2" href="$dependencies_8cpp.html" title="Main file for the analyzer. " alt="" coords="5,80,132,107"/>
+<area shape="rect" id="node3" href="$parse__util_8cpp.html" title="File containing the implementation of utility functions for the assembler. " alt="" coords="156,80,259,107"/>
+<area shape="rect" id="node4" href="$parser_8cpp.html" title="File containing main() for the assembler. " alt="" coords="283,80,366,107"/>
 </map>

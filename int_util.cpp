@@ -1,3 +1,9 @@
+/**
+ * @file  int_util.cpp
+ * @author Chiara Caglieri
+ * @brief File containing the implementation of utility functions for the interpreter
+ */
+
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -14,12 +20,12 @@ map<int,int> memTable;
 map<int,string> memCode;
 unordered_map<string, string > opTable;
 int start=-1;
-int loc=-1;
+int pc=-1;
 
 /** \function get_opcode_binary
-  * \brief generates the string containing the binary digits for the opcode
-  * \param s the string
-  * \return b.to_string() the string of binary digits
+  * @brief generates the string containing the binary digits for the opcode
+  * @param s the string
+  * @return b.to_string() the string of binary digits
   */
 string get_opcode_binary(string s){
     stringstream ss;
@@ -30,7 +36,7 @@ string get_opcode_binary(string s){
     return b.to_string();
 }
 /** \function loadOptable
-  * \brief reads the optable file and imports it into a map structure
+  * @brief reads the optable file and imports it into a map structure
   */
 void loadOptable(){
     ifstream opcodes("optable.txt");
@@ -49,7 +55,7 @@ void loadOptable(){
 }
 
 /** \function loadRegisters
-  * \brief reads the registers file and imports it into a map structure
+  * @brief reads the registers file and imports it into a map structure
   */
 void loadRegisters(string fname){
     string out = fname.substr(0, fname.size()-2);
@@ -71,7 +77,7 @@ void loadRegisters(string fname){
 }
 
 /** \function loadMemory
-  * \brief reads the memory file and imports it into a map structure
+  * @brief reads the memory file and imports it into a map structure
   */
 void loadMemory(string fname){
     string out = fname.substr(0, fname.size()-2);
@@ -91,7 +97,7 @@ void loadMemory(string fname){
         }
         else if(value=="l"){
             memFile >> value;
-            loc=stoi(value);
+            pc=stoi(value);
         }
         else {
             tmp = value;
@@ -103,7 +109,7 @@ void loadMemory(string fname){
 }
 
 /** \function loadProgram
-  * \brief reads the code file and imports it into a map structure
+  * @brief reads the code file and imports it into a map structure
   */
 void loadProgram(string filename){
     /*Check file type*/
@@ -117,7 +123,7 @@ void loadProgram(string filename){
 	exit(EXIT_FAILURE);
     }
     string instruction;
-    int memptr=loc;
+    int memptr=pc;
     while (getline(codeFile, instruction)) {
         memCode[memptr]=instruction;
         memptr++;

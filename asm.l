@@ -1,8 +1,16 @@
 %{
+/**
+ * @file asm.l
+ * @author Chiara Caglieri
+ * @brief Flex token file
+ */
+
 #include <string>
 #include <iostream>
 #include "parse_util.h"
 #include "asm.tab.h"
+
+string tmp;     /**<Temporary buffer to store data*/
 %}
 
 %option noyywrap

@@ -15,16 +15,13 @@
 
 using namespace std;
 
-string last_string;                     //Contains the last identifier found
-string tmp;                             //Used to manipulate register identifiers
-deque<int> v;                           //Contains the values for memlocs
-int lc;                                 //Location Counter
+string last_string;
+deque<int> v;
+int pc;
 ofstream outfile;
 vector<string> words;
-
 ofstream reg_out;
 ofstream mem_out;
-
 unordered_map<string, string > opTable;
 unordered_map<string, int> symTable;
 
@@ -63,7 +60,7 @@ void initMemlocs(int l, deque<int> v){
 /** \function find_symbol
   * @brief Searches for symbol in Symbol Table.
   * @param sym the symbol to be found
-  * @return symTable[sym] value of lc associated with sym
+  * @return symTable[sym] value of pc associated with sym
   *         -1 if unsuccessful
   */
 int find_symbol(string sym){
@@ -75,13 +72,13 @@ int find_symbol(string sym){
 /** \function insert_symbol
   * @brief Inserts symbol in Symbol Table.
   * @param sym the symbol to be inserted
-  * @param lc the location counter associated with the symbol
-  *        (-1 if LC is not relevant)
+  * @param pc the location counter associated with the symbol
+  *        (-1 if pc is not relevant)
   */
-void insert_symbol(string sym, int lc){
+void insert_symbol(string sym, int pc){
 
     if(find_symbol(sym)!=-1) cout << "Symbol " << sym << " is already in Symbol Table" << endl;
-    else {symTable[sym]=lc; cout << "Symbol " << sym << " inserted at position " << lc << endl;}
+    else {symTable[sym]=pc; cout << "Symbol " << sym << " inserted at position " << pc << endl;}
 }
 
 
@@ -108,7 +105,7 @@ tree make_node(string type, int value, node* p1, node* p2, node* p3){
         exit(EXIT_FAILURE);
     }
     new_node->value=value;
-    new_node->lc=lc;
+    new_node->pc=pc;
     new_node->type=type;
     new_node->param1=p1;
     new_node->param2=p2;
@@ -292,7 +289,7 @@ void visit_tree(node* tmp){
 
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
-            int relative=addr-tmp->lc;
+            int relative=addr-tmp->pc;
 
             if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(relative);
@@ -352,7 +349,7 @@ void visit_tree(node* tmp){
         int addr=find_symbol(tmp->param2->type);
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
-            int relative=addr-tmp->lc;
+            int relative=addr-tmp->pc;
             if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(relative);
                 instruction.append(val_long.substr(0,6));
@@ -498,7 +495,7 @@ void visit_tree(node* tmp){
         int addr=find_symbol(tmp->param1->type);
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
-            int relative=addr-tmp->lc;
+            int relative=addr-tmp->pc;
             if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
                 string val_long=get_constant_binary(relative);
                 instruction.append(val_long.substr(0,6));

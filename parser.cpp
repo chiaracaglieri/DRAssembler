@@ -14,11 +14,7 @@
 
 using namespace std;
 
-#if defined(__APPLE__) && defined(__MACH__)
-void yyparse();     //eliminates MacOS compile error
-#endif
-
-extern FILE* yyin;
+extern FILE* yyin;      /**<Pointer to the file containing the data to parse*/
 
 int main(int argc,  char** argv) {
 
@@ -66,10 +62,10 @@ int main(int argc,  char** argv) {
     yyin=fopen("tmp.drisc","r");
 
     /*Pass 1*/
-    lc=0;
+    pc=0;
     cout << "Starting Pass 1..." << endl;
     yyparse();
-    cout << "Parsing finished, final LC is "<< lc << endl;
+    cout << "Parsing finished, final pc is "<< pc << endl;
     cout << "Starting Pass 2..." << endl;
 
     /*Pass 2*/

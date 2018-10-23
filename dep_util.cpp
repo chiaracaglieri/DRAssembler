@@ -15,8 +15,6 @@
 using namespace std;
 
 int counter=0;
-int loc=0;
-deque<int> v1;                           //Contains the values for memlocs
 map<int,reg> rMap;
 map<string,int> symbolMap;
 vector<instruction> prog;

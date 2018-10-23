@@ -41,7 +41,7 @@ program
 state
     :MEMLOC VALUE VALUE {  }
     |MEMLOCS VALUE seq  {  }
-    |LOC VALUE  { loc=$2; }
+    |LOC VALUE  {  }
     |REGVAL VALUE VALUE { }
     |START VALUE    { }
     ;

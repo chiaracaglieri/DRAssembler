@@ -12,28 +12,27 @@
 
 using namespace std;
 
-extern int counter;
-extern int loc;
-extern deque<int> v1;                            //Contains the values for memlocs
+
 
 struct instruction{
-    int number;
-    string type;
-    int decode;
-    vector<int> regs;
-    int imm;
-    string label;
+    int number;         /**<The number associated with the instruction*/
+    string type;        /**<The type of the instruction*/
+    int decode;         /**<The stage at which the instruction is decoded*/
+    vector<int> regs;   /**<The registers needed by the instruction*/
+    int imm;            /**<The immediate value, if it exists*/
+    string label;       /**<The label, if it exists*/
 };
 
 struct reg{
-    int inst;
-    int until;
-    int value;
+    int inst;           /**<The instruction that is blocking the register*/
+    int until;          /**<The last stage at which the register is busy*/
 };
 
-extern map<int,reg> rMap;
-extern map<string,int> symbolMap;
-extern vector<instruction> prog;
+extern int counter;                 /**<Instruction counter*/
+extern map<int,reg> rMap;           /**<The Register Table*/
+extern map<string,int> symbolMap;   /**<The Symbol Table*/
+extern vector<instruction> prog;    /**<The instructions*/
+
 void addReg(int,int,int);
 void addInstruction(int n,string t,int i,vector<int> r,string l);
 void addSymbol(string,int);
