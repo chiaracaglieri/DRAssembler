@@ -57,7 +57,7 @@ void loadRegisters(string fname){
 
     ifstream regFile(out);
     if(!regFile){
-	cerr << "Error, \"registers.o\" does not exist, relaunch parser..." << endl;
+	cerr << "Error,"<<out<<" does not exist, relaunch parser..." << endl;
 	exit(EXIT_FAILURE);
     }
     string value;
@@ -79,7 +79,7 @@ void loadMemory(string fname){
 
     ifstream memFile(out);
     if(!memFile){
-	cerr << "Error, \"memory.o\" does not exist, relaunch parser..." << endl;
+	cerr << "Error,"<<out<<" does not exist, relaunch parser..." << endl;
 	exit(EXIT_FAILURE);
     }
     string value;

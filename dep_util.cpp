@@ -28,7 +28,7 @@ vector<instruction> prog;
  *            found in the code
  */
 void addSymbol(string s, int pos){
-    symbolMap[s]=pos;
+    if(!symbolMap[s] || symbolMap[s]==-1) symbolMap[s]=pos;
 }
 
 /**

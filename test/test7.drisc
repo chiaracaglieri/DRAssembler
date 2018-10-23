@@ -1,0 +1,11 @@
+loop: add R1,2,R9
+      mul R3,5,R9
+      call R9,R7
+      if>0 R7, cont1
+      if=0 R8, cont2
+      end
+cont1: incr R1
+       add R5,7,R5
+       if=0 R5, loop
+cont2: incr R2
+       if=0 R2,cont1

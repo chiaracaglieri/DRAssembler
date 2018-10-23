@@ -3,10 +3,7 @@ regval 5 5
 regval 2 1030
 loc 1024
 start 1024
-loop: div R1,2,R1
-      if!= R1,R5,cont
-      goto loop
-cont: add R1,4,R1
-      call R2,R3
+loop: mul R1,4,R1
+      if=0 R4,loop
       end
-proc: clear R1
+
