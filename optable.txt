@@ -32,3 +32,5 @@ IF!=         1E
 IF!=0        1F
 DIV          20
 DIV_I        21
+MOD	         22
+MOD_I        23

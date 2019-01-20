@@ -16,6 +16,7 @@
 using namespace std;
 
 map<int,int> regTable;
+map<int,string> symRegTable;
 map<int,int> memTable;
 map<int,string> memCode;
 unordered_map<string, string > opTable;
@@ -69,9 +70,18 @@ void loadRegisters(string fname){
     string value;
     string tmp;
     while (regFile >> value){
-        tmp=value;
-        regFile >> value;
-        regTable[stoi(tmp)]=stoi(value);
+        if(value=="#"){
+            /*Symbolic register association found*/
+            regFile >> value;
+            tmp=value;
+            regFile >> value;
+            symRegTable[stoi(value.substr(1,value.size()-1))]=tmp;
+        }
+        else {
+            tmp = value;
+            regFile >> value;
+            regTable[stoi(tmp)] = stoi(value);
+        }
     }
     regFile.close();
 }
@@ -129,4 +139,13 @@ void loadProgram(string filename){
         memptr++;
     }
     codeFile.close();
+}
+
+string checkSym(int reg){
+    if(symRegTable.find(reg) == symRegTable.end() ) {
+        stringstream s;
+        s << "R"<< reg;
+        return s.str();
+    }
+    else return symRegTable[reg];
 }

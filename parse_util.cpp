@@ -204,7 +204,7 @@ void visit_tree(node* tmp){
         visit_tree(tmp->param2);
         visit_tree(tmp->param3);
     }
-    else if(tmp->type=="ADD" || tmp->type=="SUB" || tmp->type=="MUL" || tmp->type=="DIV"){   //Expected 3 parameters
+    else if(tmp->type=="ADD" || tmp->type=="SUB" || tmp->type=="MUL" || tmp->type=="DIV" || tmp->type=="MOD"){   //Expected 3 parameters
         if(tmp->type=="ADD"){
             if(tmp->param2->type=="VALUE"){
                 bitset<8> bin=get_opcode_binary("ADD_I");
@@ -245,6 +245,16 @@ void visit_tree(node* tmp){
             }
             else{
                 bitset<8> bin = get_opcode_binary("DIV");
+                instruction.append(bin.to_string());
+            }
+        }
+        if(tmp->type=="MOD"){
+            if(tmp->param2->type=="VALUE"){
+                bitset<8> bin=get_opcode_binary("MOD_I");
+                instruction.append(bin.to_string());
+            }
+            else{
+                bitset<8> bin = get_opcode_binary("MOD");
                 instruction.append(bin.to_string());
             }
         }

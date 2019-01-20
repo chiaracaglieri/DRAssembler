@@ -1,9 +1,31 @@
-regval 1 10
-regval 5 5
-regval 2 1030
-loc 1024
-start 1024
-loop: mul R1,4,R1
-      if=0 R4,loop
-      end
-
+#define Ri R1
+#define Rj R2
+#define Rbasex R10
+#define Rxi R3
+#define Rtemp1 R4
+#define Rxj R5
+#define Rtemp2 R6
+#define Rn R11
+#define Rm R7
+memlocs 1024 4 19 12 7 16 21 32 18
+regval 10 1024
+regval 11 8
+start 0
+loc 0
+clear Ri
+loopi: add Ri,1,Rj
+loopj:  load Rbasex,Ri,Rxi
+        mul Rxi,3,Rtemp1
+        mod Rtemp1,8,Rtemp1
+	load Rbasex,Rj,Rxj
+	mul Rxj,3,Rtemp2
+	mod Rtemp2,8,Rtemp2
+	if>= Rtemp2,Rtemp1,cont
+	store Rbasex,Ri,Rxj
+	store Rbasex,Rj,Rxi
+cont:	incr Rj
+	if< Rj,Rn,loopj
+	incr Ri
+	sub Rn,1,Rm
+	if< Ri,Rm,loopi
+end

@@ -22,7 +22,7 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token SEMICOLON COMMA
 %token <intval> REG
 %token ID LOAD STORE MOVE
-%token ADD SUB MUL DIV
+%token ADD SUB MUL DIV MOD
 %token EQ GT LT EQ_0 LT_0 GT_0 GTE LTE GTE_0 LTE_0 NEQ NEQ_0
 %token CLEAR INCR DECR GOTO NOP CALL
 %token MEMLOC MEMLOCS LOC REGVAL
@@ -70,6 +70,7 @@ instruction
                                                 else if($1==2) addInstruction(counter,"SUB",-1,tmp,"");
                                                 else if($1==3) addInstruction(counter,"MUL",-1,tmp,"");
                                                 else if($1==4) addInstruction(counter,"DIV",-1,tmp,"");
+                                                else if($1==5) addInstruction(counter,"MOD",-1,tmp,"");
                                                 }
     |ar_instruction REG COMMA VALUE COMMA REG {   counter++;
                                                 vector<int> tmp;
@@ -81,6 +82,7 @@ instruction
                                                  else if($1==2) addInstruction(counter,"SUB_I",$4,tmp,"");
                                                  else if($1==3) addInstruction(counter,"MUL_I",$4,tmp,"");
                                                  else if($1==4) addInstruction(counter,"DIV_I",$4,tmp,"");
+                                                 else if($1==5) addInstruction(counter,"MOD_I",$4,tmp,"");
                                                 }
     |rego_instruction REG   {  counter++;
                                vector<int> tmp={$2};
@@ -164,6 +166,7 @@ ar_instruction
     |SUB  { $$=2; }
     |MUL  { $$=3; }
     |DIV  { $$=4; }
+    |MOD  { $$=5; }
     ;
 cond_instruction
     :EQ   { $$=1; }

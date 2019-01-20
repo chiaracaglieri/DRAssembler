@@ -96,7 +96,7 @@ void manageInput(){
  */
 bool hasImmediate(string op){
     if(op=="ADD_I" || op=="SUB_I" || op=="MUL_I" \
-    || op=="LOAD_I" || op=="STORE_I" || op=="DIV_I") return true;
+    || op=="LOAD_I" || op=="STORE_I" || op=="DIV_I" || op=="MOD_I") return true;
     return false;
 }
 
@@ -183,37 +183,39 @@ void execute(string op, string a, string b, string c, string d){
         p3=get_int(c,6);
     }
 
-    if(op=="ADD" || op=="SUB" || op=="MUL" || op=="DIV"){
-        cout << op << "\t" << "R" << p1 << " R" << p2 << " R" << p3 << endl;
+    if(op=="ADD" || op=="SUB" || op=="MUL" || op=="DIV" || op=="MOD"){
+        cout << op << "\t" << checkSym(p1) << " " << checkSym(p2) << " " << checkSym(p3) << endl;
         manageInput();
         if(op=="ADD") regTable[p3]=regTable[p1]+regTable[p2];
         if(op=="SUB") regTable[p3]=regTable[p1]-regTable[p2];
         if(op=="MUL") regTable[p3]=regTable[p1]*regTable[p2];
         if(op=="DIV") regTable[p3]=regTable[p1]/regTable[p2];
-        cout << "R" << p3 <<" = " << regTable[p3]<<endl;
+        if(op=="MOD") regTable[p3]=regTable[p1]%regTable[p2];
+        cout << checkSym(p3) <<" = " << regTable[p3]<<endl;
     }
-    else if(op=="ADD_I" || op=="SUB_I" || op=="MUL_I" || op=="DIV_I"){
-        cout << op << "\t" << "R" << p1 << " #" << p2 << " R" << p3 << endl;
+    else if(op=="ADD_I" || op=="SUB_I" || op=="MUL_I" || op=="DIV_I" || op=="MOD_I"){
+        cout << op << "\t" << checkSym(p1) << " #" << p2 << " " << checkSym(p3) << endl;
         manageInput();
         int value=0;
         if(op=="ADD_I") value=regTable[p1]+p2;
         if(op=="SUB_I") value=regTable[p1]-p2;
         if(op=="MUL_I") value=regTable[p1]*p2;
         if(op=="DIV_I") value=regTable[p1]/p2;
+        if(op=="MOD_I") value=regTable[p1]%p2;
         regTable[p3]=value;
-        cout << "R" << p3 <<" = " << regTable[p3]<<endl;
+        cout << checkSym(p3) <<" = " << regTable[p3]<<endl;
     }
     else if(op=="CLEAR" || op=="INCR" || op=="DECR"){
-        cout << op << "\t" << "R" << p1 << endl;
+        cout << op << "\t" << checkSym(p1) << endl;
         manageInput();
         if(op=="CLEAR") regTable[p1]=0;
         if(op=="INCR") regTable[p1]++;
         if(op=="DECR") regTable[p1]--;
-        cout << "R" << p1 <<" = " << regTable[p1]<<endl;
+        cout << checkSym(p1) <<" = " << regTable[p1]<<endl;
     }
 
     else if(op=="IF=" || op=="IF>" || op=="IF<" || op=="IF>=" || op=="IF<=" || op=="IF!="){
-        cout << op << "\t" << "R" << p1<< " R" << p2 << " #"<< p3 << endl;
+        cout << op << "\t" << checkSym(p1)<< " " << checkSym(p2) << " #"<< p3 << endl;
         manageInput();
         int tmp=regTable[p1]-regTable[p2];
         if(op=="IF=" && tmp==0) i+=p3-1;
@@ -226,7 +228,7 @@ void execute(string op, string a, string b, string c, string d){
 
     }
     else if(op=="IF=0" || op=="IF>0" || op=="IF<0" || op=="IF>=0" || op=="IF<=0" || op=="IF!=0"){
-        cout << op << "\t" << "R" << p1<<" #"<<p2<<endl;
+        cout << op << "\t" << checkSym(p1)<<" #"<<p2<<endl;
         manageInput();
         if(op=="IF=0" && regTable[p1]==0) i+=p2-1;
         if(op=="IF>0" && regTable[p1]>0) i+=p2-1;
@@ -239,12 +241,12 @@ void execute(string op, string a, string b, string c, string d){
     }
 
     else if(op=="LOAD" || op=="STORE"){
-        cout << op << "\t" << "R" << p1 << " R" << p2 << " R" << p3<<endl;
+        cout << op << "\t" << checkSym(p1) << " " << checkSym(p2) << " " << checkSym(p3)<<endl;
         manageInput();
         int addr=regTable[p1]+regTable[p2];
         if(op=="LOAD"){
             regTable[p3]=memTable[addr];
-            cout << "R" << p3 << " = " << memTable[addr]<<endl;
+            cout << checkSym(p3) << " = " << memTable[addr]<<endl;
         }
         if(op=="STORE"){
             memTable[addr]=regTable[p3];
@@ -253,12 +255,12 @@ void execute(string op, string a, string b, string c, string d){
     }
 
     else if(op=="LOAD_I" || op=="STORE_I"){
-        cout << op << "\t" << "R" << p1 << " #" << p2 << " R" << p3<<endl;
+        cout << op << "\t" << checkSym(p1) << " #" << p2 << " " << checkSym(p3)<<endl;
         manageInput();
         int addr=regTable[p1]+p2;
         if(op=="LOAD_I"){
             regTable[p3]=memTable[addr];
-            cout << "R" << p3 << " = " << memTable[addr]<<endl;
+            cout << checkSym(p3) << " = " << memTable[addr]<<endl;
         }
         if(op=="STORE_I"){
             memTable[addr]=regTable[p3];
@@ -267,16 +269,16 @@ void execute(string op, string a, string b, string c, string d){
         cin.ignore();
     }
     else if(op=="MOVE"){
-        cout << op << "\t" << "R" << p1 << " R" << p2<<endl;
+        cout << op << "\t" << checkSym(p1) << " " << checkSym(p2)<<endl;
         manageInput();
         regTable[p2]=regTable[p1];
-        cout << "R" << p2 << " = " << regTable[p2]<<endl;
+        cout << checkSym(p2) << " = " << regTable[p2]<<endl;
     }
     else if(op=="MOVE_I"){
-        cout << op << "\t#" << p1 << " R" << p2<<endl;
+        cout << op << "\t#" << p1 << " " << checkSym(p2)<<endl;
         manageInput();
         regTable[p2]=p1;
-        cout << "R" << p2 << " = " << regTable[p2]<<endl;
+        cout << checkSym(p2) << " = " << regTable[p2]<<endl;
     }
     else if(op=="GOTO_I"){
         cout << op << "\t#" << p1<<endl;
@@ -286,18 +288,18 @@ void execute(string op, string a, string b, string c, string d){
 
     }
     else if(op=="GOTO"){
-        cout << op << "\tR" << p1<<endl;
+        cout << op << "\t" << checkSym(p1)<<endl;
         manageInput();
         i=regTable[p1];
         cout << "PC = "<<i+1<<endl;
 
     }
     else if(op=="CALL"){
-        cout << op << "\tR" << p1<< " R" << p2<<endl;
+        cout << op << "\t" << checkSym(p1)<< " " << checkSym(p2)<<endl;
         manageInput();
         regTable[p2]=i;
         i=regTable[p1]-1;
-        cout << "R" << p2 << " = " << regTable[p2]<<endl;
+        cout << checkSym(p2) << " = " << regTable[p2]<<endl;
         cout << "PC = "<<i<<endl;
 
     }
@@ -343,7 +345,7 @@ int main(int argc,  char** argv) {
 
     /* Print register output */
     for (map<int,int>::iterator it=regTable.begin(); it!=regTable.end(); ++it){
-        cout << "R" << it->first << " => " << it->second << endl;
+        cout << checkSym(it->first) << " => " << it->second << endl;
     }
     cout << endl;
 

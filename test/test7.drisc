@@ -1,11 +1,25 @@
-loop: add R1,2,R9
-      mul R3,5,R9
-      call R9,R7
-      if>0 R7, cont1
-      if=0 R8, cont2
-      end
-cont1: incr R1
-       add R5,7,R5
-       if=0 R5, loop
-cont2: incr R2
-       if=0 R2,cont1
+memloc	1024	3
+memloc	1025	2
+memloc  1026	1
+memloc  2048	4
+memloc  2049	5
+memloc  2050    6
+memloc  4096	0
+memloc  4097	0
+memloc  4098	0
+regval  1	1024
+regval  2	2048
+regval  3 	4096
+regval  4       3
+regval  11      6
+start   1024
+loc     1024
+	double R11,R9
+	clear R10
+loop:   load R1,R9,R20
+	load R2,R9,R30
+	mul  R20,R30,R20
+        add  R20,R10,R10
+        incr R9
+        if< R9,R4,loop
+        end

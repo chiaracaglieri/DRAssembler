@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <sstream>
 #include <map>
 #include "dep_util.h"
 
@@ -17,6 +18,7 @@ using namespace std;
 int counter=0;
 map<int,reg> rMap;
 map<string,int> symbolMap;
+map<int,string> symRegTable;
 vector<instruction> prog;
 
 /**
@@ -70,8 +72,9 @@ void printInstruction(instruction i){
     else if(i.type=="SUB_I") cout <<"SUB ";
     else if(i.type=="MUL_I") cout <<"MUL ";
     else if(i.type=="DIV_I") cout <<"DIV ";
+    else if(i.type=="MOD_I") cout <<"MOD ";
     else if(i.type=="MOVE_I"){
-        cout <<"MOVE "<<"#"<<i.imm<<" R"<<i.regs[0]<<endl;
+        cout <<"MOVE "<<"#"<<i.imm<<" "<<checkSym(i.regs[0])<<endl;
         return;
     }
     else{
@@ -89,12 +92,12 @@ void printInstruction(instruction i){
         else if(i.type=="NEQ_0") cout << "IF!=0 ";
         else cout<<i.type<<" ";
         for(int x:i.regs){
-            cout<<"R"<<x<<" ";
+            cout<<checkSym(x)<<" ";
         }
         cout << i.label<<endl;
         return;
     }
-    cout<<"R"<<i.regs[0]<<" #"<<i.imm<<" R"<<i.regs[1]<<" "<<i.label<<endl;
+    cout<<checkSym(i.regs[0])<<" #"<<i.imm<<" "<<checkSym(i.regs[1])<<" "<<i.label<<endl;
 }
 /**
  * @brief Initializes an instruction object
@@ -111,7 +114,7 @@ void addInstruction(int n,string t, int imm, vector<int> r,string l){
     i.regs=r;
     i.decode=n;
     i.label=l;
-    if(t=="ADD_I" || t=="SUB_I" || t=="MUL_I" || t=="LOAD_I" || t=="STORE_I" || t=="MOVE_I" || t=="DIV_I")
+    if(t=="ADD_I" || t=="SUB_I" || t=="MUL_I" || t=="LOAD_I" || t=="STORE_I" || t=="MOVE_I" || t=="DIV_I" || t=="MOD_I")
         i.imm=imm;
     prog.push_back(i);
     printInstruction(i);
@@ -124,7 +127,15 @@ void addInstruction(int n,string t, int imm, vector<int> r,string l){
  */
 bool isAritm(string i){
     if(i=="ADD" || i=="SUB" || i=="ADD_I" || i=="SUB_I" || i=="MUL" || i=="MUL_I" || i=="INCR" \
-        || i=="DECR" || i=="CLEAR" || i=="MOVE" || i=="MOVE_I" || i=="DIV_I" || i=="DIV") return true;
+        || i=="DECR" || i=="CLEAR" || i=="MOVE" || i=="MOVE_I" || i=="DIV_I" || i=="DIV" || i=="MOD_I" || i=="MOD") return true;
     else return false;
 }
 
+string checkSym(int reg){
+    if(symRegTable.find(reg) == symRegTable.end() ) {
+        stringstream s;
+        s << "R"<< reg;
+        return s.str();
+    }
+    else return symRegTable[reg];
+}

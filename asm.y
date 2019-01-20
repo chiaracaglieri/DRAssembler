@@ -25,7 +25,7 @@ inline void yyerror(const char *s) { std::cout << s << std::endl; }
 %token SEMICOLON COMMA
 %token <intval> REG
 %token ID LOAD STORE MOVE
-%token ADD SUB MUL DIV
+%token ADD SUB MUL DIV MOD
 %token EQ GT LT EQ_0 LT_0 GT_0 GTE LTE GTE_0 LTE_0 NEQ NEQ_0
 %token CLEAR INCR DECR GOTO NOP CALL
 %token MEMLOC MEMLOCS LOC REGVAL
@@ -69,6 +69,7 @@ instruction
                                                 else if($1==2) $$=make_node("SUB",-1,v1,$4,v2);
                                                 else if($1==3) $$=make_node("MUL",-1,v1,$4,v2);
                                                 else if($1==4) $$=make_node("DIV",-1,v1,$4,v2);
+						else if($1==5) $$=make_node("MOD",-1,v1,$4,v2);
                                                 }
     |CALL REG COMMA REG { pc++;
                           node* v1=make_node("REGISTER", $2, NULL,NULL,NULL);
@@ -136,6 +137,7 @@ ar_instruction
     |SUB  { $$=2; }
     |MUL  { $$=3; }
     |DIV  { $$=4; }
+    |MOD  { $$=5; }
     ;
 cond_instruction
     :EQ   { $$=1; }

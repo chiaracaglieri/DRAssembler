@@ -1,12 +1,15 @@
-loop: load R1,R2,R3
-      if>= R3,R6,then2
-      if<= R3,R5,then1
-      move R3,R4
-      goto continua
-then1: move R5,R4
-       goto continua
-then2: move R6,R4
-continua: store R8,R2,R4
-          incr R2
-          if< R2,R7,loop
-          end
+#define Rsum R3
+#define Ri R4
+#define Rtemp R5
+start 1024
+regval 1 2048
+regval 2 8
+memlocs 2048 1 2 3 4 5 6 7 8
+loc 1024
+clear Rsum
+clear Ri
+loop: load R1,Ri,Rtemp
+      add Rtemp,Rsum,Rsum
+      incr Ri
+      if< Ri,R2,loop
+      end

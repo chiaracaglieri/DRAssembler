@@ -22,3 +22,5 @@ void loadRegisters(string filename );
 void loadMemory(string filename );
 void loadProgram(string filename);
 void loadOptable();
+
+string checkSym(int reg);

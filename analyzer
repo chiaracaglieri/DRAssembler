@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage(){
-    echo "Usage: ./analyze -f file.drisc -s n"
+    echo "Usage: ./analyzer -f file.drisc -s n"
     exit
 }
 

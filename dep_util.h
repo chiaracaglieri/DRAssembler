@@ -31,9 +31,11 @@ struct reg{
 extern int counter;                 /**<Instruction counter*/
 extern map<int,reg> rMap;           /**<The Register Table*/
 extern map<string,int> symbolMap;   /**<The Symbol Table*/
+extern map<int,string> symRegTable;
 extern vector<instruction> prog;    /**<The instructions*/
 
 void addReg(int,int,int);
 void addInstruction(int n,string t,int i,vector<int> r,string l);
 void addSymbol(string,int);
 bool isAritm(string i);
+string checkSym(int reg);

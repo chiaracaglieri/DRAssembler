@@ -27,6 +27,7 @@ string tmp;     /**<Temporary buffer to store data*/
 "add" return ADD;
 "sub" return SUB;
 "mul" return MUL;
+"mod" return MOD;
 "div" return DIV;
 "load" return LOAD;
 "store" return STORE;
@@ -59,7 +60,7 @@ string tmp;     /**<Temporary buffer to store data*/
 [0-9]* {yylval.intval=atoi(yytext); return VALUE;}
 [:] return SEMICOLON;
 [,] return COMMA;
-"#define R"[a-zA-Z]*" R"[0-9]* ;
+"#define R"[a-zA-Z][_a-zA-Z0-9]*" R"[0-9]* ;
 [$^ \t\n]+ ;
 
 %%
