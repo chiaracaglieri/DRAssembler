@@ -13,7 +13,6 @@
 using namespace std;
 
 
-
 struct instruction{
     int number;         /**<The number associated with the instruction*/
     string type;        /**<The type of the instruction*/
@@ -31,7 +30,7 @@ struct reg{
 extern int counter;                 /**<Instruction counter*/
 extern map<int,reg> rMap;           /**<The Register Table*/
 extern map<string,int> symbolMap;   /**<The Symbol Table*/
-extern map<int,string> symRegTable;
+extern map<int,string> symRegTable; /**<The symbolic registers table*/
 extern vector<instruction> prog;    /**<The instructions*/
 
 void addReg(int,int,int);

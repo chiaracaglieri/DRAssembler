@@ -57,6 +57,7 @@ void loadOptable(){
 
 /** \function loadRegisters
   * @brief reads the registers file and imports it into a map structure
+  * @brief fname the name of the file to read from
   */
 void loadRegisters(string fname){
     string out = fname.substr(0, fname.size()-2);
@@ -88,6 +89,7 @@ void loadRegisters(string fname){
 
 /** \function loadMemory
   * @brief reads the memory file and imports it into a map structure
+  * @param fname the name of the file to read from
   */
 void loadMemory(string fname){
     string out = fname.substr(0, fname.size()-2);
@@ -120,6 +122,7 @@ void loadMemory(string fname){
 
 /** \function loadProgram
   * @brief reads the code file and imports it into a map structure
+  * @param filename the name of the file to read from
   */
 void loadProgram(string filename){
     /*Check file type*/
@@ -140,7 +143,12 @@ void loadProgram(string filename){
     }
     codeFile.close();
 }
-
+/** \function checkSym
+  * @brief checks whether the given register has a symbolic register associated
+  * @param reg the register to check
+  * @return the string containing the symbolic register if this exists
+  *			the string containing the numeric register otherwise
+  */
 string checkSym(int reg){
     if(symRegTable.find(reg) == symRegTable.end() ) {
         stringstream s;

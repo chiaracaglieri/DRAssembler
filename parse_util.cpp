@@ -146,15 +146,36 @@ string get_param_binary(int v){
 
 }
 
-/** \function get_constant_binary
+/** \function get_constant_binary_12
   * @brief Generates binary value for int value
   * @param v the int value
   * @return b the 12-bit binary equivalent for v
   */
-string get_constant_binary(int v){
+string get_constant_binary_12(int v){
     bitset<12> b(v);
     return b.to_string();
 }
+
+/** \function get_constant_binary_18
+  * @brief Generates binary value for int value
+  * @param v the int value
+  * @return b the 18-bit binary equivalent for v
+  */
+string get_constant_binary_18(int v){
+    bitset<18> b(v);
+    return b.to_string();
+}
+
+/** \function get_constant_binary_24
+  * @brief Generates binary value for int value
+  * @param v the int value
+  * @return b the 24-bit binary equivalent for v
+  */
+string get_constant_binary_24(int v){
+    bitset<24> b(v);
+    return b.to_string();
+}
+
 
 /** \function substitute
  * @brief Performs expansion of #define
@@ -262,7 +283,7 @@ void visit_tree(node* tmp){
         instruction.append(val);
         if(tmp->param2->type=="VALUE"){
             if(tmp->param2->value<=2047 && tmp->param2->value>=-2048){   //representable on 12 bits two-complement
-                string val_long=get_constant_binary(tmp->param2->value);
+                string val_long=get_constant_binary_12(tmp->param2->value);
                 instruction.append(val_long.substr(0,6));
                 val=get_param_binary(tmp->param3->value);
                 instruction.append(val);
@@ -302,9 +323,8 @@ void visit_tree(node* tmp){
             int relative=addr-tmp->pc;
 
             if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
-                string val_long=get_constant_binary(relative);
-                instruction.append(val_long.substr(0,6));
-                instruction.append(val_long.substr(6,12));
+                string val_long=get_constant_binary_12(relative);
+                instruction.append(val_long);
             }
             else{
                 cerr << "Error: "<< relative <<" is not representable on 12 bits 2-complement"<<endl;
@@ -321,17 +341,16 @@ void visit_tree(node* tmp){
         instruction.append(bin.to_string());
 
         if(tmp->param1->type=="VALUE"){
-            if(tmp->param1->value<=2047 && tmp->param1->value>=-2048){   //representable on 12 bits two-complement
-                string val_long=get_constant_binary(tmp->param1->value);
+            if(tmp->param1->value<=131071 && tmp->param1->value>=-131072){   //representable on 18 bits two-complement
+                string val_long=get_constant_binary_18(tmp->param1->value);
                 instruction.append(val_long.substr(0,6));
                 string val=get_param_binary(tmp->param2->value);
                 instruction.append(val);
-                val=get_param_binary(0);
-                instruction.append(val);
-                instruction.append(val_long.substr(6,12));
+                instruction.append(val_long.substr(6,18));
+                
             }
             else{
-                cerr << "Error: "<< tmp->param1->value <<" is not representable on 12 bits 2-complement"<<endl;
+                cerr << "Error: "<< tmp->param1->value <<" is not representable on 18 bits 2-complement"<<endl;
                 exit(EXIT_FAILURE);
             }
         }
@@ -360,18 +379,15 @@ void visit_tree(node* tmp){
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
             int relative=addr-tmp->pc;
-            if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
-                string val_long=get_constant_binary(relative);
-                instruction.append(val_long.substr(0,6));
-                instruction.append(val_long.substr(6,12));
+            if(relative<=131071 && relative>=-131072){   //representable on 18 bits two-complement
+                string val_long=get_constant_binary_18(relative);
+                instruction.append(val_long);
             }
             else{
-                cerr << "Error: "<< relative <<" is not representable on 12 bits 2-complement"<<endl;
+                cerr << "Error: "<< relative <<" is not representable on 18 bits 2-complement"<<endl;
                 exit(EXIT_FAILURE);
             }
         }
-        val=get_param_binary(0);
-        instruction.append(val);
         words.push_back(instruction);
         return;
     }
@@ -395,7 +411,7 @@ void visit_tree(node* tmp){
         instruction.append(val);
         if(tmp->param2->type=="VALUE"){
             if(tmp->param2->value<=2047 && tmp->param2->value>=-2048){   //representable on 12 bits two-complement
-                string val_long=get_constant_binary(tmp->param2->value);
+                string val_long=get_constant_binary_12(tmp->param2->value);
                 instruction.append(val_long.substr(0,6));
                 val=get_param_binary(tmp->param3->value);
                 instruction.append(val);
@@ -433,7 +449,7 @@ void visit_tree(node* tmp){
         instruction.append(val);
         if(tmp->param2->type=="VALUE"){
             if(tmp->param2->value<=2047 && tmp->param2->value>=-2048){   //representable on 12 bits two-complement
-                string val_long=get_constant_binary(tmp->param2->value);
+                string val_long=get_constant_binary_12(tmp->param2->value);
                 instruction.append(val_long.substr(0,6));
                 val=get_param_binary(tmp->param3->value);
                 instruction.append(val);
@@ -506,16 +522,12 @@ void visit_tree(node* tmp){
         if(addr==-1) cout << "Error, symbol not in Symbol Table!" << endl;
         else {
             int relative=addr-tmp->pc;
-            if(relative<=2047 && relative>=-2048){   //representable on 12 bits two-complement
-                string val_long=get_constant_binary(relative);
-                instruction.append(val_long.substr(0,6));
-                string val=get_param_binary(0);
-                instruction.append(val);
-                instruction.append(val);
-                instruction.append(val_long.substr(6,12));
+            if(relative<=8388607 && relative>=-8388608){   //representable on 24 bits two-complement
+                string val_long=get_constant_binary_24(relative);
+                instruction.append(val_long);
             }
             else{
-                cerr << "Error: "<< relative <<" is not representable on 12 bits 2-complement"<<endl;
+                cerr << "Error: "<< relative <<" is not representable on 24 bits 2-complement"<<endl;
                 exit(EXIT_FAILURE);
             }
         }

@@ -498,7 +498,7 @@ int main(int argc, char** argv){
             istringstream buf(str);
             for(string word; buf >> word; )
                 v.push_back(word);
-            /*Memorize association*/
+            /*Memorize association in dedicated table*/
             symRegTable[stoi(v[2].substr(1,v[2].size()-1))]=v[1];
             substitute("tmp.drisc", v[1],v[2]);
         }

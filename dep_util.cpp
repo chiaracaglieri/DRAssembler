@@ -131,6 +131,12 @@ bool isAritm(string i){
     else return false;
 }
 
+/** \function checkSym
+  * @brief checks whether the given register has a symbolic register associated
+  * @param reg the register to check
+  * @return the string containing the symbolic register if this exists
+  *			the string containing the numeric register otherwise
+  */
 string checkSym(int reg){
     if(symRegTable.find(reg) == symRegTable.end() ) {
         stringstream s;

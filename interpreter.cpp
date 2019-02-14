@@ -40,6 +40,22 @@ int get_int(string s, int nbits){
         }
         return (int)(b.to_ulong());
     }
+    if(nbits==18){
+        bitset<18> b(s);
+        if(b[17]==1){
+            b.flip();
+            return (int)(b.to_ulong()+1)*(-1);
+        }
+        return (int)(b.to_ulong());
+    }
+    if(nbits==24){
+        bitset<24> b(s);
+        if(b[23]==1){
+            b.flip();
+            return (int)(b.to_ulong()+1)*(-1);
+        }
+        return (int)(b.to_ulong());
+    }
     else{
         cout << "Error" << endl;
         exit(EXIT_FAILURE);
@@ -151,8 +167,8 @@ void execute(string op, string a, string b, string c, string d){
         p3=get_int(c,6);
     }
     else if(op=="MOVE_I"){
-        string tmp=a.append(d);
-        p1=get_int(tmp,12);
+        string tmp=a.append(c).append(d);
+        p1=get_int(tmp,18);
         p2=get_int(b,6);
     }
     else if(isConditional(op)){
@@ -163,12 +179,12 @@ void execute(string op, string a, string b, string c, string d){
     }
     else if(isConditional0(op)){
         p1=get_int(a,6);
-        string tmp=b.append(d);
-        p2=get_int(tmp,12);
+        string tmp=b.append(c).append(d);
+        p2=get_int(tmp,18);
     }
     else if(op=="GOTO_I"){
-        string tmp=a.append(d);
-        p1=get_int(tmp,12);
+        string tmp=a.append(b).append(c).append(d);
+        p1=get_int(tmp,24);
     }
     else if(op=="GOTO"){
         p1=get_int(a,6);

@@ -46,7 +46,7 @@ int main(int argc,  char** argv) {
             istringstream buf(str);
             for(string word; buf >> word; )
                 v.push_back(word);
-            /*Memorize the association*/
+            /*Memorize the association on the output file*/
             reg_out << "# " << v[1] <<" "<<v[2]<<endl;
             substitute("tmp.drisc", v[1],v[2]);
         }
